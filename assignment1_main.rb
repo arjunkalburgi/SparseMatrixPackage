@@ -8,3 +8,6 @@
 #     Andrew McKernan
 #     Arjun Kalburgi
 
+require_relative 'sparsematrixpackage'
+
+# All functionality 
