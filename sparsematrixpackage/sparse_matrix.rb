@@ -1,13 +1,22 @@
 # definition for the sparse matrix class
-
+require 'matrix'
 
 class SparseMatrix
-	
+
+	attr_reader :matrix_structure
+
 	def initialize()
 		#Pre 
+
+		@matrix_structure = Hash.new
+		create(rowcount, colcount)
 		
 		#Post
 		
+	end
+
+	def create(rowcount, colcount)
+
 	end
 	
 	
@@ -20,6 +29,9 @@ class SparseMatrix
 	
 	def -(matrix)
 		#Pre 
+			begin
+				
+			end
 		
 		#Post
 		# this sparse matrix has had the contents of given matrix subtracted from it
