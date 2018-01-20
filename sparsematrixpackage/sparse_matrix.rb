@@ -11,28 +11,28 @@ class SparseMatrix
 	end
 	
 	
-	def add(matrix)
+	def +(matrix)
 		#Pre 
 		
 		#Post
 		# this sparse matrix has had the contents of give matrix added to it
 	end
 	
-	def subtract(matrix)
+	def -(matrix)
 		#Pre 
 		
 		#Post
 		# this sparse matrix has had the contents of given matrix subtracted from it
 	end
 	
-	def multiply(matrix)
+	def *(matrix)
 		#Pre 
 		
 		#Post
 		# this sparse matrix has been multiplied by given matrix 
 	end
 	
-	def divide(matrix)
+	def /(matrix)
 		#Pre 
 		
 		#Post
