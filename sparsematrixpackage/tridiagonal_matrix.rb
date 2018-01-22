@@ -10,13 +10,12 @@ class TriDiagonalMatrix < Matrix
 	 
 	def initialize(matrixarray)
 		#PRE
-		is_array(matrixarray)
 		ensuresquare(matrixarray) #ensure nxn
 		ensuretridiagonality(matrixarray) #ensure there are 3 diagonals of proper sizes
 		
 		rows = convert_to_array(matrixarray, true) # not sure if true is needed to copy object
 		
-		@size = (rows[0] || []).size 
+		@size = rows[0].size 
 		
 		topDiag = []
 		middleDiag = []
@@ -42,6 +41,19 @@ class TriDiagonalMatrix < Matrix
 		@bottomDiagonal = bottom
 		
 		#POST
+		diagonalarraysizes()
+	end
+	
+	def /(mat)
+		if mat.respond_to?("inverse")
+			self * mat.inverse
+		else 
+			map {|x| x/mat}	
+		end
+	end
+	
+	def map
+		to_enum :map
 	end
 
 	# all private methods...
@@ -50,15 +62,18 @@ class TriDiagonalMatrix < Matrix
 	
 	def ensuretridiagonality(matrixarray)
 		#pre 
-		is_array(matrixarray)
 		
 		n = matrixarray.size
 		for index_i in 0..n do
 			for index_j in 0..n do
 				if index_i == index_j or index_i == index_j+1 or index_i == index_j-1
-					raise "This matrix is not tridiagonal" unless matrixarray[index_i][index_j] == 0
+					raise "This matrix is not tridiagonal" unless matrixarray[index_i][index_j] == 0 end
 				end
 			end
 		end
 	end 
+
+	def diagonalarraysizes()
+		raise "The diagonal arrays are of impropersize" unless @middle_diag.size == @top_diag.size+2 and @middle_diag.size == @bottom_diag.size+2 end
+	end
 end
