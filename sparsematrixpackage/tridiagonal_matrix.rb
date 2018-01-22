@@ -51,6 +51,10 @@ class TriDiagonalMatrix < Matrix
 			map {|x| x/mat}	
 		end
 	end
+	
+	def map
+		to_enum :map
+	end
 
 	# all private methods...
 	
