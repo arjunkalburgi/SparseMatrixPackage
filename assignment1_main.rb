@@ -11,3 +11,11 @@
 require_relative 'sparsematrixpackage'
 
 # All functionality 
+
+# Plan to utilize factory and call different matricies
+sparseMatrix = MatrixFactory.create(SparseMatrix, [[1, 0, 0], [0, 4, 0], [0, 1, 0]])
+triDiagonal = MatrixFactory.create(TridiagonalMatrix, [[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+
+# test operations
+sparseMatrix - triDiagonal
+# add, divide, det, etc
