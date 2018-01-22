@@ -16,7 +16,7 @@ class TriDiagonalMatrix < Matrix
 		
 		rows = convert_to_array(matrixarray, true) # not sure if true is needed to copy object
 		
-		@size = (rows[0] || []).size 
+		@size = rows[0].size 
 		
 		topDiag = []
 		middleDiag = []
@@ -42,6 +42,14 @@ class TriDiagonalMatrix < Matrix
 		@bottomDiagonal = bottom
 		
 		#POST
+	end
+	
+	def /(mat)
+		if mat.respond_to?("inverse")
+			self * mat.inverse
+		else 
+			map {|x| x/mat}	
+		end
 	end
 
 	# all private methods...
