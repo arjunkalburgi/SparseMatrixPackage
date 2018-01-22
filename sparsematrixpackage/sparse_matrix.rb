@@ -1,15 +1,30 @@
 # definition for the sparse matrix class
 require 'matrix'
+require 'enumerator'
 
 class SparseMatrix
 
 	attr_reader :matrix_structure
 
-	def initialize()
+	def initialize(matrixarray)
 		#Pre 
 
-		@matrix_structure = Hash.new
-		create(rowcount, colcount)
+		@num_rows = matrixarray.size
+		@num_columns = matrixarray[0].size
+
+		matrix_structure = Hash.new(0)
+		matrixarray.each_index do |i|
+			matrixarray[i].each_index do |j|
+				if matrixarray[i][j] != 0
+					matrix_structure[{row: i, col: j}] = matrixarray[i][j] 
+				end
+			end
+		end
+
+		# GET THE INDEXES 
+		### @matrix_structure.keys.each do |i|
+		### 	puts i[:row], i[:col] 
+		### end
 		
 		#Post
 		
