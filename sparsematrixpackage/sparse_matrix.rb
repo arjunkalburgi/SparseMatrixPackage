@@ -1,6 +1,5 @@
 # definition for the sparse matrix class
 require 'matrix'
-require 'enumerator'
 
 class SparseMatrix
 
@@ -35,10 +34,12 @@ class SparseMatrix
 	end
 	
 	
-	def +(matrix)
+	def +(othermatrix)
 		#Pre 
 		# matrix is sparsematrix
 		# same dimensions
+
+		matrix = othermatrix.matrix_structure
 		
 		@matrix_structure.keys.each do |key| 
 			matrix_structure[key] += matrix[key]
