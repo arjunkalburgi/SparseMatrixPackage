@@ -12,18 +12,18 @@ class SparseMatrix
 		@num_rows = matrixarray.size
 		@num_columns = matrixarray[0].size
 
-		matrix_structure = Hash.new(0)
+		@matrix_structure = Hash.new(0)
 		matrixarray.each_index do |i|
 			matrixarray[i].each_index do |j|
 				if matrixarray[i][j] != 0
-					matrix_structure[{row: i, col: j}] = matrixarray[i][j] 
+					@matrix_structure[{row: i, col: j}] = matrixarray[i][j] 
 				end
 			end
 		end
 
 		# GET THE INDEXES 
 		### @matrix_structure.keys.each do |i|
-		### 	puts i[:row], i[:col] 
+		### 	puts i[:row], i[:col]
 		### end
 		
 		#Post
