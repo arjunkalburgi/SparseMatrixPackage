@@ -37,6 +37,16 @@ class SparseMatrix
 	
 	def +(matrix)
 		#Pre 
+		# matrix is sparsematrix
+		# same dimensions
+		
+		@matrix_structure.keys.each do |key| 
+			matrix_structure[key] += matrix[key]
+			matrix[key] = 0
+		end
+		matrix.keys.each do |key| 
+			matrix_structure[key] += matrix[key]
+		end
 		
 		#Post
 		# this sparse matrix has had the contents of give matrix added to it
