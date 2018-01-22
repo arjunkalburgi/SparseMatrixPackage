@@ -7,6 +7,7 @@ class TriagonalMatrix
 		@top_diag = top
 		@middle_diag = middle
 		@bottom_diag = bottom
+		
 	end
 	
 	

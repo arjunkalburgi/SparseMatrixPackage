@@ -4,16 +4,7 @@ require 'sparse_matrix'
 module MatrixFactory 
 
     def self.create(classname, matrixarray)
-
-        case classname
-        when :tridiagonal
-            puts "hi tri"
-            TriagonalMatrix.new(matrixarray)
-        when :sparse 
-            puts "hi spar"
-            SparseMatrix.new(matrixarray)
-        end
-
+        classname.new(matrixarray)
     end
     
 end
