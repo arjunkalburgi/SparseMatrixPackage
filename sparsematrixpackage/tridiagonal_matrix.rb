@@ -3,7 +3,6 @@ require 'matrix'
 
 # inherits from Matrix for utilization of 
 class TriDiagonalMatrix < Matrix
-	
 	# let matrix handle these functions
 	# delegate [:+, :**, :-, :hermitian?, :normal?, :permutation?] => :Matrix.send(:new, to_a)
 	
@@ -19,14 +18,32 @@ class TriDiagonalMatrix < Matrix
 		
 		@size = (rows[0] || []).size 
 		
-		@top_diag = top
-		@middle_diag = middle
-		@bottom_diag = bottom
+		topDiag = []
+		middleDiag = []
+		bottomDiag = []
+		
+		rows.each_with_index do |row, i|
+			row.each_with_index do |val, j|
+				case i
+					when j - 1
+						topDiag << val
+					when j
+						middleDiag << val
+					when j + 1
+						bottomDiag << val
+					else 
+						raise "Not a tridiagonal matrix" unless val == 0
+				end		
+			end
+		end
+		
+		@topDiagonal = topDiagonal
+		@middleDiagonal = middle
+		@bottomDiagonal = bottom
 		
 		#POST
 	end
 
-	
 	# all private methods...
 	
 	private 
