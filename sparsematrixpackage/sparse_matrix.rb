@@ -41,11 +41,9 @@ class SparseMatrix
 
 		matrix = othermatrix.matrix_structure
 		
-		@matrix_structure.keys.each do |key| 
-			matrix_structure[key] += matrix[key]
-			matrix[key] = 0
-		end
-		matrix.keys.each do |key| 
+		all_keys_with_value = @matrix_structure.keys + matrix.keys
+
+		all_keys_with_value.each do |key| 
 			matrix_structure[key] += matrix[key]
 		end
 		
@@ -59,13 +57,27 @@ class SparseMatrix
 				
 			end
 		
+		matrix = othermatrix.matrix_structure
+		
+		all_keys_with_value = @matrix_structure.keys + matrix.keys
+
+		all_keys_with_value.each do |key| 
+			matrix_structure[key] -= matrix[key]
+		end
+
 		#Post
 		# this sparse matrix has had the contents of given matrix subtracted from it
 	end
 	
 	def *(matrix)
 		#Pre 
+		matrix = othermatrix.matrix_structure
 		
+		all_keys_with_value = @matrix_structure.keys + matrix.keys
+
+		all_keys_with_value.each do |key| 
+			matrix_structure[key] *= matrix[key]
+		end
 		#Post
 		# this sparse matrix has been multiplied by given matrix 
 	end
