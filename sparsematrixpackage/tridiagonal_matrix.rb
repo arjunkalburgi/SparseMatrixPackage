@@ -14,38 +14,39 @@ class TriDiagonalMatrix < Matrix
 		
 		#rows = convert_to_array(matrixarray, true) # not sure if true is needed to copy object
 		
-		# basing size on first row
-		@size = matrix_array[0].size 
+		@num_rows = matrix_array.size 
+		# basing column size on first row
+		@num_columns = matrix_array[0].size 
 		
-		topDiag = []
-		middleDiag = []
-		bottomDiag = []
+		top_diag = []
+		middle_diag = []
+		bottom_diag = []
 		
 		# ensure there are 3 diagonals of proper sizes
 		# ensure tridiagonality at assignment (reduces 
 	
 		for i in 0..matrix_array.size do 
 			raise "Matrix not tridiagonal: rows of various sizes" unless 
-					@size == row.size
+					@num_columns == matrix_array[i].size
 			raise "Matrix not tridiagonal: matrix not square" unless 
-					matrix_array[i].size == row.size
+					@num_rows == matrix_array[i].size
 			for j in 0..matrix_array[i].size do 
 				case i
 					when j - 1
-						topDiag << matrix_array[i][j]
+						top_diag << matrix_array[i][j]
 					when j
-						middleDiag << matrix_array[i][j]
+						middle_diag << matrix_array[i][j]
 					when j + 1
-						bottomDiag << matrix_array[i][j]
+						bottom_diag << matrix_array[i][j]
 					else 
-						raise "Not a tridiagonal matrix" unless matrix_array[i][j] == 0
+						raise "Matrix not tridiagonal: does not obey upper and lower Hessenberg matrix properties" unless matrix_array[i][j] == 0
 				end		
 			end
 		end
 		
-		@topDiagonal = topDiagonal
-		@middleDiagonal = middle
-		@bottomDiagonal = bottom
+		@top_diagonal = top_diag
+		@middle_diagonal = middle_diag
+		@bottom_diagonal = bottom_diag
 		
 		#POST
 		diagonal_array_sizes()
@@ -73,6 +74,6 @@ class TriDiagonalMatrix < Matrix
 
 	def diagonal_array_sizes()
 		raise "The diagonal arrays are of impropersize" unless 
-			@middle_diag.size == @top_diag.size+2 and @middle_diag.size == @bottom_diag.size+2
+			@middle_diagonal.size == @top_diagonal.size+2 and @middle_diagonal.size == @bottom_diagonal.size+2
 	end
 end
