@@ -6,32 +6,39 @@ class TriDiagonalMatrix < Matrix
 	# let matrix handle these functions
 	# delegate [:+, :**, :-, :hermitian?, :normal?, :permutation?] => :Matrix.send(:new, to_a)
 	
-	# all public methods...
+	# all public methods
 	 
-	def initialize(matrixarray)
+	def initialize(matrix_array)
 		#PRE
-		ensuresquare(matrixarray) #ensure nxn
-		ensuretridiagonality(matrixarray) #ensure there are 3 diagonals of proper sizes
+		ensuresquare(matrix_array) #ensure nxn		
 		
-		rows = convert_to_array(matrixarray, true) # not sure if true is needed to copy object
+		#rows = convert_to_array(matrixarray, true) # not sure if true is needed to copy object
 		
-		@size = rows[0].size 
+		# basing size on first row
+		@size = matrix_array[0].size 
 		
 		topDiag = []
 		middleDiag = []
 		bottomDiag = []
 		
-		rows.each_with_index do |row, i|
-			row.each_with_index do |val, j|
+		# ensure there are 3 diagonals of proper sizes
+		# ensure tridiagonality at assignment (reduces 
+	
+		for i in 0..matrix_array.size do 
+			raise "Matrix not tridiagonal: rows of various sizes" unless 
+					@size == row.size
+			raise "Matrix not tridiagonal: matrix not square" unless 
+					matrix_array[i].size == row.size
+			for j in 0..matrix_array[i].size do 
 				case i
 					when j - 1
-						topDiag << val
+						topDiag << matrix_array[i][j]
 					when j
-						middleDiag << val
+						middleDiag << matrix_array[i][j]
 					when j + 1
-						bottomDiag << val
+						bottomDiag << matrix_array[i][j]
 					else 
-						raise "Not a tridiagonal matrix" unless val == 0
+						raise "Not a tridiagonal matrix" unless matrix_array[i][j] == 0
 				end		
 			end
 		end
@@ -41,7 +48,7 @@ class TriDiagonalMatrix < Matrix
 		@bottomDiagonal = bottom
 		
 		#POST
-		diagonalarraysizes()
+		diagonal_array_sizes()
 	end
 	
 	def /(mat)
@@ -56,24 +63,16 @@ class TriDiagonalMatrix < Matrix
 		to_enum :map
 	end
 
-	# all private methods...
+	# all private methods
 	
 	private 
 	
-	def ensuretridiagonality(matrixarray)
-		#pre 
+	def ensure_square(matrix_array) 
 		
-		n = matrixarray.size
-		for index_i in 0..n do
-			for index_j in 0..n do
-				if index_i == index_j or index_i == index_j+1 or index_i == index_j-1
-					raise "This matrix is not tridiagonal" unless matrixarray[index_i][index_j] == 0 end
-				end
-			end
-		end
-	end 
+	end
 
-	def diagonalarraysizes()
-		raise "The diagonal arrays are of impropersize" unless @middle_diag.size == @top_diag.size+2 and @middle_diag.size == @bottom_diag.size+2 end
+	def diagonal_array_sizes()
+		raise "The diagonal arrays are of impropersize" unless 
+			@middle_diag.size == @top_diag.size+2 and @middle_diag.size == @bottom_diag.size+2
 	end
 end
