@@ -10,13 +10,12 @@ class TriDiagonalMatrix < Matrix
 	 
 	def initialize(matrix_array)
 		#PRE
-		ensuresquare(matrix_array) #ensure nxn		
 		
 		#rows = convert_to_array(matrixarray, true) # not sure if true is needed to copy object
 		
-		@num_rows = matrix_array.size 
 		# basing column size on first row
 		@num_columns = matrix_array[0].size 
+		@num_rows = matrix_array.size 
 		
 		top_diag = []
 		middle_diag = []
@@ -26,8 +25,10 @@ class TriDiagonalMatrix < Matrix
 		# ensure tridiagonality at assignment (reduces 
 	
 		for i in 0..matrix_array.size do 
+			# ensures that the input is correct
 			raise "Matrix not tridiagonal: rows of various sizes" unless 
 					@num_columns == matrix_array[i].size
+			# ensures that matrix is nxn
 			raise "Matrix not tridiagonal: matrix not square" unless 
 					@num_rows == matrix_array[i].size
 			for j in 0..matrix_array[i].size do 
@@ -49,7 +50,42 @@ class TriDiagonalMatrix < Matrix
 		@bottom_diagonal = bottom_diag
 		
 		#POST
-		diagonal_array_sizes()
+		begin 
+			diagonal_array_sizes()
+		end
+	end
+	
+	def get_upper_diagonal
+		@upper_diagonal
+	end
+
+	def get_middle_diagonal
+		@middle_diagonal
+	end
+
+	def get_lower_diagonal
+		@lower_diagonal
+	end
+	
+	# overwrite methods by matrix
+	def ==(other_object) 
+		return false unless TriDiagonalMatrix === other_object && 
+			other_object.respond_to?(:get_upper_diagonal) && 
+			other_object.respond_to?(:get_middle_diagonal) && 
+			other_object.respond_to?(:get_lower_diagonal) && 
+			@upper_diagonal.eql?(other_object.get_upper_diagonal) &&
+			@middle_diagonal.eql?(other_object.get_middle_diagonal) &&
+			@lower_diagonal.eql?(other_object.get_lower_diagonal)
+	end
+	
+	def eql?(other_object)
+		return false unless TriDiagonalMatrix === other_object && 
+			other_object.respond_to?(:get_upper_diagonal) && 
+			other_object.respond_to?(:get_middle_diagonal) && 
+			other_object.respond_to?(:get_lower_diagonal) && 
+			@upper_diagonal.eql?(other_object.get_upper_diagonal) &&
+			@middle_diagonal.eql?(other_object.get_middle_diagonal) &&
+			@lower_diagonal.eql?(other_object.get_lower_diagonal)
 	end
 	
 	def /(mat)
@@ -67,13 +103,9 @@ class TriDiagonalMatrix < Matrix
 	# all private methods
 	
 	private 
-	
-	def ensure_square(matrix_array) 
-		
-	end
 
 	def diagonal_array_sizes()
-		raise "The diagonal arrays are of impropersize" unless 
+		raise "The diagonal arrays are of improper size" unless 
 			@middle_diagonal.size == @top_diagonal.size+2 and @middle_diagonal.size == @bottom_diagonal.size+2
 	end
 end
