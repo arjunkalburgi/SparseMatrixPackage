@@ -29,12 +29,6 @@ class SparseMatrix
 		#Post
 		
 	end
-
-
-	def create(rowcount, colcount)
-
-	end
-	
 	
 	def +(othermatrix)
 		begin
@@ -104,10 +98,11 @@ class SparseMatrix
 	
 	def getDeterminant()
 		begin
-			raise "Cannot perform operation, dimensions are not compatible." unless @num_columns == other_object.num_rows
+			raise "Cannot perform operation, dimensions are not compatible." unless @num_columns == @num_rows
 		end
 		
 		begin
+			raise "Determinant is a number" unless self.getDeterminant().is_a? Numeric
 		end
 	end
 	
