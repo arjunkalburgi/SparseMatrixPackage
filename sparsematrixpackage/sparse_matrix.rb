@@ -3,7 +3,7 @@ require 'matrix'
 
 class SparseMatrix
 
-	attr_reader :matrix_structure
+	attr_reader :matrix_table, :num_rows, :num_columns
 
 	def initialize(matrixarray)
 		#Pre 
@@ -11,17 +11,18 @@ class SparseMatrix
 		@num_rows = matrixarray.size
 		@num_columns = matrixarray[0].size
 
-		@matrix_structure = Hash.new(0)
+		@matrix_table = Hash.new(0)
 		matrixarray.each_index do |i|
+			raise "Not all columns are the same size." unless matrixarray[i].size != @num_columns 
 			matrixarray[i].each_index do |j|
 				if matrixarray[i][j] != 0
-					@matrix_structure[{row: i, col: j}] = matrixarray[i][j] 
+					@matrix_table[{row: i, col: j}] = matrixarray[i][j] 
 				end
 			end
 		end
 
 		# GET THE INDEXES 
-		### @matrix_structure.keys.each do |i|
+		### @matrix_table.keys.each do |i|
 		### 	puts i[:row], i[:col]
 		### end
 		
@@ -29,94 +30,120 @@ class SparseMatrix
 		
 	end
 
+
 	def create(rowcount, colcount)
 
 	end
 	
 	
 	def +(othermatrix)
-		#Pre 
-		# matrix is sparsematrix
-		# same dimensions
+		begin
+			raise "Cannot perform operation, deminsions do not match." unless @num_rows == other_object.num_rows && @num_columns == other_object.num_columns
+		end
 
-		matrix = othermatrix.matrix_structure
+
+		matrix = othermatrix.matrix_table
 		
-		all_keys_with_value = @matrix_structure.keys + matrix.keys
+		all_keys_with_value = @matrix_table.keys + matrix.keys
 
 		all_keys_with_value.each do |key| 
-			matrix_structure[key] += matrix[key]
+			@matrix_table[key] += matrix[key]
 		end
+
 		
-		#Post
-		# this sparse matrix has had the contents of give matrix added to it
+		begin
+			raise "Matrix dimensions must remain the same." unless othermatrix.num_rows == (self+matrix).num_rows && othermatrix.num_columns == (self+matrix).num_columns
+		end
 	end
 	
 	def -(matrix)
-		#Pre 
-			begin
-				
-			end
+		begin
+			raise "Cannot perform operation, deminsions do not match." unless @num_rows == other_object.num_rows && @num_columns == other_object.num_columns
+		end
 		
-		matrix = othermatrix.matrix_structure
-		
-		all_keys_with_value = @matrix_structure.keys + matrix.keys
+
+		matrix = othermatrix.matrix_table
+		all_keys_with_value = @matrix_table.keys + matrix.keys
 
 		all_keys_with_value.each do |key| 
-			matrix_structure[key] -= matrix[key]
+			@matrix_table[key] -= matrix[key]
 		end
 
-		#Post
-		# this sparse matrix has had the contents of given matrix subtracted from it
+
+		begin
+			raise "Matrix dimensions must remain the same." unless othermatrix.num_rows == (self-matrix).num_rows && othermatrix.num_columns == (self-matrix).num_columns
+		end
 	end
 	
 	def *(matrix)
-		#Pre 
-		matrix = othermatrix.matrix_structure
-		
-		all_keys_with_value = @matrix_structure.keys + matrix.keys
-
-		all_keys_with_value.each do |key| 
-			matrix_structure[key] *= matrix[key]
+		begin
+			raise "Cannot perform operation, deminsions are not compatible." unless @num_columns == other_object.num_rows
+			original_rows = @num_rows
+			orignal2_columns = other_object.num_columns
 		end
-		#Post
-		# this sparse matrix has been multiplied by given matrix 
+		
+
+		begin
+			raise "Multiplication dimensions are incorrect." unless original_rows == (self*matrix).num_rows && orignal2_columns == (self*matrix).num_columns
+		end
 	end
 	
 	def /(matrix)
-		#Pre 
+		begin
+			raise "Cannot perform operation, deminsions are not compatible." unless @num_columns == matrix.getInverse().num_rows
+			original_rows = @num_rows
+			orignal2_columns = matrix.getInverse().num_columns
+		end
+
+		self * matrix.getInverse()
 		
-		#Post
-		# this sparse matrix has been divided by given matrix
-	end
-	
-	def exponent(matrix)
-		#Pre 
-		
-		#Post
-		# this sparse matrix has been set to the exponent of given matrix (???)
+		begin
+			raise "Multiplication dimensions are incorrect." unless original_rows == (self/matrix).num_rows && orignal2_columns == (self/matrix).num_columns
+		end
 	end
 	
 	def getDeterminant()
-		#Pre 
+		begin
+			raise "Cannot perform operation, dimensions are not compatible." unless @num_columns == other_object.num_rows
+		end
 		
-		#Post
-		# none, determinant is returned
+		begin
+		end
 	end
 	
 	def getInverse()
-		#Pre 
+		begin
+			raise "Matrix dimensions must be the same." unless @num_rows == @num_columns
+		end
 		
-		#Post
-		# matrix is set to its own inverse
+		begin
+			raise "Matrix dimensions must remain the same." unless @num_rows == @num_columns
+			# raise "Inverse Matrix must obey A*A.inv = I property" unless (A * A.getInverse()) == 
+		end
 	end
 	
 	def getTranspose()
-		#Pre 
+		begin
+			raise "Cannot perform operation, deminsions are not compatible." unless @num_columns == other_object.num_rows
+			original_rows = @num_rows
+			orignal2_columns = @num_columns
+		end
 		
-		#Post
-		# matrix is set to its own transpose
+		begin
+			raise "Incorrect matrix dimensions." unless @original_rows == @num_columns && @num_rows == @orignal2_columns
+		end
 	end
 	
+	def ==(other_object)
+		begin
+			raise "Cannot perform operation, deminsions do not match." unless @num_rows == other_object.num_rows && @num_columns == other_object.num_columns	
+		end
+		
+		@matrix_table == other_object.matrix_table
+		
+		begin
+		end
+	end
 	
 end
 
