@@ -6,42 +6,86 @@ class TriDiagonalMatrix < Matrix
 	# let matrix handle these functions
 	# delegate [:+, :**, :-, :hermitian?, :normal?, :permutation?] => :Matrix.send(:new, to_a)
 	
-	# all public methods...
+	# all public methods
 	 
-	def initialize(matrixarray)
+	def initialize(matrix_array)
 		#PRE
-		ensuresquare(matrixarray) #ensure nxn
-		ensuretridiagonality(matrixarray) #ensure there are 3 diagonals of proper sizes
 		
-		rows = convert_to_array(matrixarray, true) # not sure if true is needed to copy object
+		#rows = convert_to_array(matrixarray, true) # not sure if true is needed to copy object
 		
-		@size = rows[0].size 
+		# basing column size on first row
+		@num_columns = matrix_array[0].size 
+		@num_rows = matrix_array.size 
 		
-		topDiag = []
-		middleDiag = []
-		bottomDiag = []
+		top_diag = []
+		middle_diag = []
+		bottom_diag = []
 		
-		rows.each_with_index do |row, i|
-			row.each_with_index do |val, j|
+		# ensure there are 3 diagonals of proper sizes
+		# ensure tridiagonality at assignment (reduces 
+	
+		for i in 0..matrix_array.size do 
+			# ensures that the input is correct
+			raise "Matrix not tridiagonal: rows of various sizes" unless 
+					@num_columns == matrix_array[i].size
+			# ensures that matrix is nxn
+			raise "Matrix not tridiagonal: matrix not square" unless 
+					@num_rows == matrix_array[i].size
+			for j in 0..matrix_array[i].size do 
 				case i
 					when j - 1
-						topDiag << val
+						top_diag << matrix_array[i][j]
 					when j
-						middleDiag << val
+						middle_diag << matrix_array[i][j]
 					when j + 1
-						bottomDiag << val
+						bottom_diag << matrix_array[i][j]
 					else 
-						raise "Not a tridiagonal matrix" unless val == 0
+						raise "Matrix not tridiagonal: does not obey upper and lower Hessenberg matrix properties" unless matrix_array[i][j] == 0
 				end		
 			end
 		end
 		
-		@topDiagonal = topDiagonal
-		@middleDiagonal = middle
-		@bottomDiagonal = bottom
+		@top_diagonal = top_diag
+		@middle_diagonal = middle_diag
+		@bottom_diagonal = bottom_diag
 		
 		#POST
-		diagonalarraysizes()
+		begin 
+			diagonal_array_sizes()
+		end
+	end
+	
+	def get_upper_diagonal
+		@upper_diagonal
+	end
+
+	def get_middle_diagonal
+		@middle_diagonal
+	end
+
+	def get_lower_diagonal
+		@lower_diagonal
+	end
+	
+	# overwrite methods by matrix
+	def ==(other_object) 
+		return false unless TriDiagonalMatrix === other_object && 
+			other_object.respond_to?(:get_upper_diagonal) && 
+			other_object.respond_to?(:get_middle_diagonal) && 
+			other_object.respond_to?(:get_lower_diagonal) && 
+			@upper_diagonal.eql?(other_object.get_upper_diagonal) &&
+			@middle_diagonal.eql?(other_object.get_middle_diagonal) &&
+			@lower_diagonal.eql?(other_object.get_lower_diagonal)
+	end
+	
+	def eql?(other_object)
+		return false unless TriDiagonalMatrix === other_object && 
+			other_object.respond_to?(:get_upper_diagonal) && 
+			other_object.respond_to?(:get_middle_diagonal) && 
+			other_object.respond_to?(:get_lower_diagonal) && 
+			@upper_diagonal.eql?(other_object.get_upper_diagonal) &&
+			@middle_diagonal.eql?(other_object.get_middle_diagonal) &&
+			@lower_diagonal.eql?(other_object.get_lower_diagonal)
 	end
 	
 	def /(mat)
@@ -56,24 +100,12 @@ class TriDiagonalMatrix < Matrix
 		to_enum :map
 	end
 
-	# all private methods...
+	# all private methods
 	
 	private 
-	
-	def ensuretridiagonality(matrixarray)
-		#pre 
-		
-		n = matrixarray.size
-		for index_i in 0..n do
-			for index_j in 0..n do
-				if index_i == index_j or index_i == index_j+1 or index_i == index_j-1
-					raise "This matrix is not tridiagonal" unless matrixarray[index_i][index_j] == 0 end
-				end
-			end
-		end
-	end 
 
-	def diagonalarraysizes()
-		raise "The diagonal arrays are of impropersize" unless @middle_diag.size == @top_diag.size+2 and @middle_diag.size == @bottom_diag.size+2 end
+	def diagonal_array_sizes()
+		raise "The diagonal arrays are of improper size" unless 
+			@middle_diagonal.size == @top_diagonal.size+2 and @middle_diagonal.size == @bottom_diagonal.size+2
 	end
 end
