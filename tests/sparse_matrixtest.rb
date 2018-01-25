@@ -18,7 +18,9 @@ class SparseMatrixTest < Test::Unit::TestCase
 		matrix1 = SparseMatrix.new([0, 0, 1, 0])
 		matrix2 = SparseMatrix.new([1, 0, 0, 0])
 		addedMatrix = SparseMatrix.new([1, 0, 1, 0])
-		assert_equal(addedMatrix, matrix1+matrix2)
+		#put addedMatrix
+		matrix1+matrix2
+		assert_equal(addedMatrix, matrix1)
 	end
 	
 	def test_subtract
@@ -44,18 +46,22 @@ class SparseMatrixTest < Test::Unit::TestCase
 	
 	def test_exponent
 		# how does this work though
+		assert(false, "Not done")
 	end
 	
 	def test_determinant
-	
+		matrix1 = SparseMatrix.new([[3, 8],
+									[4, 6]])
+		determinant = -14 #calculated by hand
+		assert_equal(determinant, matrix1.getDeterminant)
 	end
 	
 	def test_inverse
-	
+		assert(false, "Not done")
 	end
 	
 	def test_transpose
-	
+		assert(false, "Not done")
 	end
 	
 end
