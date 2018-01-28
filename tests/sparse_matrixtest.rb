@@ -22,19 +22,35 @@ class SparseMatrixTest < Test::Unit::TestCase
 		assert_equal(addedMatrix, @matrix1+@matrix2)
 	end
 	
+	def test_invalid_add
+		assert_throws("Cannot perform operation, deminsions do not match."){
+			@matrix1+5
+		}
+	end
+	
 	def test_subtract
 		subtractedMatrix = SparseMatrix.new([[4, 5], [-1, -4]])
 		assert_equal(subtractedMatrix, @matrix1-@matrix2)
 	end
 	
+	def test_invalid_subtract
+		assert_throws("Cannot perform operation, deminsions do not match."){
+			@matrix1-5
+		}
+	end
+	
 	def test_multiply
 		multipliedMatrix = SparseMatrix.new([[32, 80], [0, 0]])
 		assert_equal(multipliedMatrix, @matrix1*@matrix2)
+		multipliedMatrix2 = SparseMatrix.new([[16, 20], [0, 0]])
+		assert_equal(multipliedMatrix2, @matrix1*2)
 	end
 	
 	def test_divide
 		dividedMatrix = SparseMatrix.new([[2, 2], [0, 0]])
 		assert_equal(dividedMatrix, @matrix1/@matrix2)
+		dividedMatrix2 = SparseMatrix.new([[4, 5], [0, 0]])
+		assert_equal(dividedMatrix2, matrix1/2)
 	end
 	
 	def test_equals
