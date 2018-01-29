@@ -26,6 +26,10 @@ class SparseMatrixTest < Test::Unit::TestCase
 		assert_throws("Cannot perform operation, deminsions do not match."){
 			@matrix1+5
 		}
+		matrix3 = SparseMatrix.new([[12, 15], [1, 4], [9, 0]])
+		assert_throws("Cannot perform operation, deminsions do not match."){
+			@matrix1+matrix3
+		}
 	end
 	
 	def test_subtract
@@ -36,6 +40,10 @@ class SparseMatrixTest < Test::Unit::TestCase
 	def test_invalid_subtract
 		assert_throws("Cannot perform operation, deminsions do not match."){
 			@matrix1-5
+		}
+		matrix3 = SparseMatrix.new([[12, 15], [1, 4], [9, 0]])
+		assert_throws("Cannot perform operation, deminsions do not match."){
+			@matrix1-matrix3
 		}
 	end
 	
