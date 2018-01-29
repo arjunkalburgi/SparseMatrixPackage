@@ -5,9 +5,7 @@ require 'matrix'
 class TriDiagonalMatrix < Matrix
 	# let matrix handle these functions
 	# delegate [:+, :**, :-, :hermitian?, :normal?, :permutation?] => :Matrix.send(:new, to_a)
-	
-	# all public methods
-	 
+		 
 	def initialize(matrix_array)
 		#PRE
 		
@@ -89,64 +87,66 @@ class TriDiagonalMatrix < Matrix
 	end
 	
 	def +(other_matrix)
-		#Pre 
-		# matrix is tridiagonal
-		begin 
-			raise "Other object is not tridiagonal" unless TriDiagonalMatrix === other_matrix
-		end 
-		# same dimensions
-		begin 
-			raise "Matricies do not have the same dimentions" unless @middle_diagonal.size == other_matrix.get_middle_diagonal.size
-		end
+		#INVARIANT
 
-		upper = [@upper_diagonal, other_matrix.get_upper_diagonal].transpose.map {|x| x.reduce(:+)}
-		middle = [@middle_diagonal, other_matrix.get_middle_diagonal].transpose.map {|x| x.reduce(:+)}
-		lower = [@lower_diagonal, other_matrix.get_lower_diagonal].transpose.map {|x| x.reduce(:+)}
+		#PRE 
+		check_tridiagonality(other_matrix)
+		check_dimensions(other_matrix)
+
+		addition(other_matrix)
 		
-		#Post
+		#POST
 		# this sparse matrix has had the contents of give matrix added to it
 		#new Tridiagonal???
+		#INVARIANT
 	end
 	
 	def -(other_matrix)
-		#Pre 
-		# matrix is tridiagonal
-		begin 
-			raise "Other object is not tridiagonal" unless TriDiagonalMatrix === other_matrix
-		end 
-		# same dimensions
-		begin 
-			raise "Matricies do not have the same dimentions" 
-				unless @middle_diagonal.size == other_matrix.get_middle_diagonal.size
-		end
+		#INVARIANT
+
+		#PRE
+		check_tridiagonality(other_matrix)
+		check_dimensions(other_matrix)
 		
-		upper = [@upper_diagonal, other_matrix.get_upper_diagonal].transpose.map {|x| x.reduce(:-)}
-		middle = [@middle_diagonal, other_matrix.get_middle_diagonal].transpose.map {|x| x.reduce(:-)}
-		lower = [@lower_diagonal, other_matrix.get_lower_diagonal].transpose.map {|x| x.reduce(:-)}
+		subtraction(other_matrix)
 		
 		#Post
 		# this sparse matrix has had the contents of given matrix subtracted from it
+		#INVARIANT
+
 	end
 	
-	def *(matrix)
-		#Pre 
+	def *(other_matrix)
+		#INVARIANT
+
+		#PRE 
+		check_tridiagonality(other_matrix)
+		check_dimensions(other_matrix)
 		
-		#Post
+		#POST
 		# this sparse matrix has been multiplied by given matrix 
+		#INVARIANT
+
 	end
 	
-	def /(matrix)
-		#Pre 
+	def /(other_matrix)
+		#INVARIANT
+
+		#PRE 
+		check_tridiagonality(other_matrix)
+		check_dimensions(other_matrix)
 		
-		#Post
-		# this sparse matrix has been divided by given matrix
+		#POST
+		# this sparse matrix has been divided by given matrix 
+		#INVARIANT
+		
 	end
 	
-	def /(mat)
-		if mat.respond_to?("inverse")
-			self * mat.inverse
+	def /(other_matrix)
+		if other_matrix.respond_to?("inverse")
+			self * other_matrix.inverse
 		else 
-			map {|x| x/mat}	
+			map {|x| x/other_matrix}	
 		end
 	end
 		
@@ -161,9 +161,19 @@ class TriDiagonalMatrix < Matrix
 # 		self
 # 	end
 
-# 	def transpose
-# 		self.class.send(:new, @lower_diagonal, @middle_diagonal, @upper_diagonal)
-# 	end
+	def transpose
+		#INVARIANT
+
+		#PRE - none as it is guaranteed to be square tridiagonal at this point
+
+		upper = @upper_diagonal.copy
+		@upper_diagonal = @lower_diagonal.copy
+		@lower_diagonal = upper
+
+		#POST
+
+		#INVARIANT
+	end 
 	
 	def square?
 		true
@@ -177,9 +187,9 @@ class TriDiagonalMatrix < Matrix
 # 		@upper_diagonal.reduce(true) { |a, e| a && e == @upper_diagonal[0] }
 # 	end
 
-	def upper_triangular?
-		false
-	end
+	# def upper_triangular?
+	# 	false
+	# end
 
 	def orthogonal?
 		transpose == inverse
@@ -197,4 +207,30 @@ class TriDiagonalMatrix < Matrix
 		raise "The diagonal arrays are of improper size" unless 
 			@middle_diagonal.size == @top_diagonal.size+2 and @middle_diagonal.size == @bottom_diagonal.size+2
 	end
+
+	def check_tridiagonality(other_matrix)
+		begin 
+			raise "Other object is not tridiagonal" unless TriDiagonalMatrix === other_matrix
+		end
+	end
+
+	def check_dimensions(other_matrix)
+		begin 
+			raise "Matricies do not have the same dimentions" unless @middle_diagonal.size == other_matrix.get_middle_diagonal.size
+		end
+
+	end
+
+	def addition(other_matrix)
+		upper = [@upper_diagonal, other_matrix.get_upper_diagonal].transpose.map {|x| x.reduce(:+)}
+		middle = [@middle_diagonal, other_matrix.get_middle_diagonal].transpose.map {|x| x.reduce(:+)}
+		lower = [@lower_diagonal, other_matrix.get_lower_diagonal].transpose.map {|x| x.reduce(:+)}
+	end
+
+	def subtraction(other_matrix)
+		upper = [@upper_diagonal, other_matrix.get_upper_diagonal].transpose.map {|x| x.reduce(:-)}
+		middle = [@middle_diagonal, other_matrix.get_middle_diagonal].transpose.map {|x| x.reduce(:-)}
+		lower = [@lower_diagonal, other_matrix.get_lower_diagonal].transpose.map {|x| x.reduce(:-)}
+	end 
+
 end
