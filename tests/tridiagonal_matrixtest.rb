@@ -2,7 +2,7 @@ require 'test/unit'
 require_relative '../TriDiagonalMatrixpackage/tridiagonal_matrix.rb'
 
 class TridiagonalMatrixTest < Test::Unit::TestCase
-    def setup
+	def setup
 		@matrix1 = TriDiagonalMatrix.new([[1,2,0,0,0],
 										  [3,1,2,0,0],
 										  [0,3,1,2,0],
@@ -13,7 +13,7 @@ class TridiagonalMatrixTest < Test::Unit::TestCase
 										  [0,10,7,2,0],
 										  [0,0,3,3,11],
 										  [0,0,0,8,9]])
-    end 
+	end 
 	
 	def test_create
 		tridiagonal = TriDiagonalMatrix.new([[1,2,0,0,0],
@@ -29,7 +29,7 @@ class TridiagonalMatrixTest < Test::Unit::TestCase
 		assert_throws("This matrix is not tridiagonal") {
 		tridiagonal = TriDiagonalMatrix.new([[1,2,0,0,5],
 											 [0,1,2,0,0],
-										 	 [0,3,0,0,0],
+											 [0,3,0,0,0],
 											 [0,0,3,1,2],
 											 [5,0,0,3,1]])
 		}
@@ -37,10 +37,10 @@ class TridiagonalMatrixTest < Test::Unit::TestCase
 	
 	def test_add
 		addedMatrix = TriDiagonalMatrix.new([[6,4,0,0,0], 
-										[6,2,16,0,0],
-										[0,6,2,4,0],
-										[0,0,6,4,13],
-										[0,0,0,11,10]])
+											 [6,2,16,0,0],
+											 [0,6,2,4,0],
+											 [0,0,6,4,13],
+											 [0,0,0,11,10]])
 		assert_equal(addedMatrix, @matrix1+@matrix2)
 	end
 	
@@ -48,7 +48,7 @@ class TridiagonalMatrixTest < Test::Unit::TestCase
 		assert_throws("Cannot perform operation, deminsions do not match."){
 			@matrix1+5
 		}
-		matrix3 = SparseMatrix.new([[12, 15], [1, 4], [9, 0]])
+		matrix3 = TriDiagonalMatrix.new([[12, 15], [1, 4], [9, 0]])
 		assert_throws("Cannot perform operation, deminsions do not match."){
 			@matrix1+matrix3
 		}
@@ -67,11 +67,12 @@ class TridiagonalMatrixTest < Test::Unit::TestCase
 		assert_throws("Cannot perform operation, deminsions do not match."){
 			@matrix1-5
 		}
-		matrix3 = SparseMatrix.new([[12, 15], [1, 4], [9, 0]])
+		matrix3 = TriDiagonalMatrix.new([[12, 15], [1, 4], [9, 0]])
 		assert_throws("Cannot perform operation, deminsions do not match."){
 			@matrix1-matrix3
 		}
 	end
+	
 	
 	def test_multiply
 		# this is not a triagonal matrix, what to do here?
@@ -89,6 +90,12 @@ class TridiagonalMatrixTest < Test::Unit::TestCase
 		assert_equal(multipliedMatrix2, @matrix1*2)
 	end
 	
+	# NOT DONE PAST THIS POINT
+	#
+	#
+	#
+	#
+	#
 	def test_divide
 		dividedMatrix = TriDiagonalMatrix.new([[2, 2], [0, 0]])
 		assert_equal(dividedMatrix, @matrix1/@matrix2)

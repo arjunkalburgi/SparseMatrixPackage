@@ -13,7 +13,7 @@ class SparseMatrix
 
 		@matrix_table = Hash.new(0)
 		matrixarray.each_index do |i|
-			raise "Not all columns are the same size." unless matrixarray[i].size != @num_columns 
+			raise "Not all columns are the same size." unless matrixarray[i].size == @num_columns 
 			matrixarray[i].each_index do |j|
 				if matrixarray[i][j] != 0
 					@matrix_table[{row: i, col: j}] = matrixarray[i][j] 
@@ -32,7 +32,7 @@ class SparseMatrix
 	
 	def +(othermatrix)
 		begin
-			raise "Cannot perform operation, deminsions do not match." unless @num_rows == other_object.num_rows && @num_columns == other_object.num_columns
+			raise "Cannot perform operation, deminsions do not match." unless @num_rows == othermatrix.num_rows && @num_columns == othermatrix.num_columns
 		end
 
 
@@ -50,9 +50,9 @@ class SparseMatrix
 		end
 	end
 	
-	def -(matrix)
+	def -(othermatrix)
 		begin
-			raise "Cannot perform operation, deminsions do not match." unless @num_rows == other_object.num_rows && @num_columns == other_object.num_columns
+			raise "Cannot perform operation, deminsions do not match." unless @num_rows == othermatrix.num_rows && @num_columns == othermatrix.num_columns
 		end
 		
 
@@ -69,11 +69,11 @@ class SparseMatrix
 		end
 	end
 	
-	def *(matrix)
+	def *(othermatrix)
 		begin
-			raise "Cannot perform operation, deminsions are not compatible." unless @num_columns == other_object.num_rows
+			raise "Cannot perform operation, deminsions are not compatible." unless @num_columns == othermatrix.num_rows
 			original_rows = @num_rows
-			orignal2_columns = other_object.num_columns
+			orignal2_columns = othermatrix.num_columns
 		end
 		
 
@@ -82,7 +82,7 @@ class SparseMatrix
 		end
 	end
 	
-	def /(matrix)
+	def /(othermatrix)
 		begin
 			raise "Cannot perform operation, deminsions are not compatible." unless @num_columns == matrix.getInverse().num_rows
 			original_rows = @num_rows
@@ -119,22 +119,22 @@ class SparseMatrix
 	
 	def getTranspose()
 		begin
-			raise "Cannot perform operation, deminsions are not compatible." unless @num_columns == other_object.num_rows
-			original_rows = @num_rows
+			# raise "Cannot perform operation, dimensions are not compatible." unless @num_columns == @num_rows
+			original2_rows = @num_rows
 			orignal2_columns = @num_columns
 		end
 		
 		begin
-			raise "Incorrect matrix dimensions." unless @original_rows == @num_columns && @num_rows == @orignal2_columns
+			raise "Incorrect matrix dimensions." unless @original2_rows == @num_columns && @num_rows == @orignal2_columns
 		end
 	end
 	
-	def ==(other_object)
+	def ==(othermatrix)
 		begin
-			raise "Cannot perform operation, deminsions do not match." unless @num_rows == other_object.num_rows && @num_columns == other_object.num_columns	
+			raise "Cannot perform operation, deminsions do not match." unless @num_rows == othermatrix.num_rows && @num_columns == othermatrix.num_columns	
 		end
 		
-		@matrix_table == other_object.matrix_table
+		@matrix_table == othermatrix.matrix_table
 		
 		begin
 		end
