@@ -2,9 +2,12 @@ require 'test/unit'
 require_relative '../sparsematrixpackage/sparse_matrix.rb'
 
 class SparseMatrixTest < Test::Unit::TestCase
-    #def setup
-    #    pass 
-    #end 
+    def setup
+		@matrix1 = SparseMatrix.new([[8, 10],
+									[0, 0]])
+		@matrix2 = SparseMatrix.new([[4, 5], 
+									[1, 4]])
+    end 
 
     #def teardown
     #    pass
@@ -15,47 +18,76 @@ class SparseMatrixTest < Test::Unit::TestCase
     #end
 	
 	def test_add
-		matrix1 = SparseMatrix.new([0, 0, 1, 0])
-		matrix2 = SparseMatrix.new([1, 0, 0, 0])
-		addedMatrix = SparseMatrix.new([1, 0, 1, 0])
-		assert_equal(addedMatrix, matrix1+matrix2)
+		addedMatrix = SparseMatrix.new([[12, 15], [1, 4]])
+		assert_equal(addedMatrix, @matrix1+@matrix2)
+	end
+	
+	def test_invalid_add
+		assert_throws("Cannot perform operation, deminsions do not match."){
+			@matrix1+5
+		}
+		matrix3 = SparseMatrix.new([[12, 15], [1, 4], [9, 0]])
+		assert_throws("Cannot perform operation, deminsions do not match."){
+			@matrix1+matrix3
+		}
 	end
 	
 	def test_subtract
-		matrix1 = SparseMatrix.new([1, 1, 1, 4])
-		matrix2 = SparseMatrix.new([1, 1, 0, 4])
-		subtractedMatrix = SparseMatrix.new([0, 0, 1, 0])
-		assert_equal(subtractedMatrix, matrix1-matrix2)
+		subtractedMatrix = SparseMatrix.new([[4, 5], [-1, -4]])
+		assert_equal(subtractedMatrix, @matrix1-@matrix2)
+	end
+	
+	def test_invalid_subtract
+		assert_throws("Cannot perform operation, deminsions do not match."){
+			@matrix1-5
+		}
+		matrix3 = SparseMatrix.new([[12, 15], [1, 4], [9, 0]])
+		assert_throws("Cannot perform operation, deminsions do not match."){
+			@matrix1-matrix3
+		}
 	end
 	
 	def test_multiply
-		matrix1 = SparseMatrix.new([2, 3, 1, 4])
-		matrix2 = SparseMatrix.new([4, 5, 0, 4])
-		multipliedMatrix = SparseMatrix.new([8, 15, 0, 16])
-		assert_equal(multipliedMatrix, matrix1*matrix2)
+		multipliedMatrix = SparseMatrix.new([[32, 80], [0, 0]])
+		assert_equal(multipliedMatrix, @matrix1*@matrix2)
+		multipliedMatrix2 = SparseMatrix.new([[16, 20], [0, 0]])
+		assert_equal(multipliedMatrix2, @matrix1*2)
 	end
 	
 	def test_divide
-		matrix1 = SparseMatrix.new([8, 10, 0, 0])
-		matrix2 = SparseMatrix.new([4, 5, 1, 4])
-		dividedMatrix = SparseMatrix.new([2, 2, 0, 0])
-		assert_equal(dividedMatrix, matrix1/matrix2)
+		dividedMatrix = SparseMatrix.new([[2, 2], [0, 0]])
+		assert_equal(dividedMatrix, @matrix1/@matrix2)
+		dividedMatrix2 = SparseMatrix.new([[4, 5], [0, 0]])
+		assert_equal(dividedMatrix2, matrix1/2)
 	end
 	
-	def test_exponent
-		# how does this work though
+	def test_equals
+		assert(@matrix1==@matrix1)
+		assert(!@matrix1==@matrix2)
+		matrix3 = SparseMatrix.new([[8, 10], [0, 0]])
+		assert(@matrix1==matrix3)
 	end
 	
 	def test_determinant
-	
+		@matrix1 = SparseMatrix.new([[3, 8],
+									[4, 6]])
+		determinant = -14 #calculated by hand
+		assert_equal(determinant, @matrix1.getDeterminant)
 	end
 	
 	def test_inverse
-	
+		@matrix1 = SparseMatrix.new([[4,7],
+									[2,6]])
+		inverseMatrix = [[0.6,-0.7],
+						[-0.2,0.4]] #calculated by hand
+		assert_equal(@matrix1, inverseMatrix)
 	end
 	
-	def test_transpose
 	
+	def test_transpose
+		matrix1_transpose = [[8,0],
+							[10,0]]
+		assert_equal(@matrix1.getTranspose(), matrix1_transpose)
 	end
 	
 end
