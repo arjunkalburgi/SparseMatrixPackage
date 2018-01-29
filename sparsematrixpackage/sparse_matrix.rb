@@ -13,7 +13,7 @@ class SparseMatrix
 
 		@matrix_table = Hash.new(0)
 		matrixarray.each_index do |i|
-			# raise "Not all columns are the same size." unless matrixarray[i].size != @num_columns 
+			raise "Not all columns are the same size." unless matrixarray[i].size == @num_columns 
 			matrixarray[i].each_index do |j|
 				if matrixarray[i][j] != 0
 					@matrix_table[{row: i, col: j}] = matrixarray[i][j] 
@@ -119,7 +119,7 @@ class SparseMatrix
 	
 	def getTranspose()
 		begin
-			# raise "Cannot perform operation, deminsions are not compatible." unless @num_columns == @num_rows
+			# raise "Cannot perform operation, dimensions are not compatible." unless @num_columns == @num_rows
 			original2_rows = @num_rows
 			orignal2_columns = @num_columns
 		end
