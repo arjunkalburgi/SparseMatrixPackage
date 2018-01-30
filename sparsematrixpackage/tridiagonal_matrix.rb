@@ -8,6 +8,8 @@ class TriDiagonalMatrix < Matrix
 	
 	include Enumerable
 
+	attr_reader :upper_diagonal, :middle_diagonal, :lower_diagonal
+
 	def self.rows(rows, copy = true)
 		
 		rows = convert_to_array(rows, true) 
@@ -23,7 +25,7 @@ class TriDiagonalMatrix < Matrix
 		
 		#PRE
 		#raise methods for preconditions included within initialization
-		#to minimize looping
+		#to minimize loops ran
 		#ensures there are 3 diagonals of proper sizes
 	
 		for i in 0..rows.size do 
@@ -50,6 +52,7 @@ class TriDiagonalMatrix < Matrix
 		#POST
 		diagonal_array_sizes()
 		
+		#INVARIANT
 		new upper_diagonal, middle_diag, lower_diag
 	end
 
@@ -66,10 +69,15 @@ class TriDiagonalMatrix < Matrix
 	end
 
 	def self.scalar(n, value)
-		upper_diagonal = Array.new(n-1) { 0 }
-		middle_diag = Array.new(n) { value }
-		lower_diag = Array.new(n-1) { 0 }
-		new upper_diag, middle_diag, lower_diag
+		#INVARIANT
+		
+		#PRE
+		size_constraint(n)
+
+		new Array.new(n-1) { 0 }, Array.new(n) { value }, Array.new(n-1) { 0 }
+		
+		#POST
+		#INVARIANT
 	end 
 	
 	def initialize(upper_diag, middle_diag, lower_diag)
@@ -214,16 +222,21 @@ class TriDiagonalMatrix < Matrix
 		Array.new(row_count) { |i|	row(i).to_a }
 	end
 
+	def row(i)
+		return self unless i < row_count
+		row = Array.new(row_count) { |j| self[i, j] }
+		row.each(&Proc.new) if block_given?
+		Vector.elements(row, false)
+	end
+
 	def map
-		return to_enum :map unless block_given?
-		block = Proc.new
-		TridiagonalMatrix.send(:new, @upper_diagonal.map(&block), @middle_diagonal.map(&block), @lower_diagonal.map(&block))
+		# return to_enum :map unless block_given?
+		# block = Proc.new
+		# TridiagonalMatrix.send(:new, @upper_diagonal.map(&block), @middle_diagonal.map(&block), @lower_diagonal.map(&block))
 	end
 	
 	
-	def square?
-		true
-	end
+	
 
 # 	def diagonal?
 # 		@upper_diagonal.all? { |x| x == 0 } && @lower_diagonal.all? { |x| x == 0 }
@@ -237,6 +250,10 @@ class TriDiagonalMatrix < Matrix
 	# 	false
 	# end
 
+	def square?
+		true
+	end
+
 	def orthogonal?
 		transpose == inverse
 	end
@@ -248,6 +265,10 @@ class TriDiagonalMatrix < Matrix
 	# all private methods
 	
 	private 
+
+	def size_constraint()
+		raise "Improper matrix size given" unless n > 0
+	end 
 
 	def diagonal_array_sizes()
 		raise "The diagonal arrays are of improper size" unless 
@@ -275,11 +296,23 @@ class TriDiagonalMatrix < Matrix
 	end 
 
 	def division(other_matrix)
-		if other_matrix.respond_to?("inverse")
-			self * other_matrix.inverse
-		else 
-			map {|x| x/other_matrix}	
-		end
+		# if other_matrix.respond_to?("inverse")
+		# 	self * other_matrix.inverse
+		# else 
+		# 	map {|x| x/other_matrix}	
+		# end
+	end
+
+	def multiplication(other_matrix)
+		# return Matrix.send(:new, Array.new(row_count) do |i|
+		# 	Array.new(other.column_count) do |j|
+		# 		e0 = (i == 0 ? 0 : self[i, i - 1] * other[i - 1, j])
+		# 		e1 = self[i, i] * other[i, j]
+		# 		e2 = (i == row_count - 1 || i == other.column_count - 1 ? 0 : self[i, i + 1] * other[i + 1, j])
+		# 		e0 + e1 + e2
+		# 	end
+		# end) if other.respond_to?(:each)
+		# map { |x| x * other }
 	end
 	
 	def check_correct_dimensions_after_multiplication(othermatrix, result)
