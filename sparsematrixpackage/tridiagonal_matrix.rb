@@ -1,94 +1,35 @@
 
 require 'matrix'
 
-# inherits from Matrix for utilization of 
-class TriDiagonalMatrix < Matrix
+class TriDiagonalMatrix
 	
 	include Enumerable
 	
-	# let matrix handle these functions
 	# extend Forwardable
-	# delegate [:**, :hermitian?, :normal?, :permutation?] => to_m
-
-	attr_reader :num_columns, :num_rows
-
-	def self.rows(rows, copy = true)
-		
-		rows = convert_to_array(rows, true) 
-		rows.map! { |row| convert_to_array(row, copy) }
-
-		# basing column size on first row
-		@num_columns = (rows[0] || []).size
-		@num_rows = rows.size 
-		
-		upper_diag = []
-		middle_diag = []
-		lower_diag = []
-		
-		#PRE
-		#raise methods for preconditions included within initialization
-		#to minimize loops ran
-		#ensures there are 3 diagonals of proper sizes
 	
-		for i in 0..rows.size-1 do 
-			# ensures that the input is correct
-			raise "Matrix not tridiagonal: rows of various sizes" unless 
-					@num_columns == rows[i].size
-			# ensures that matrix is nxn
-			raise "Matrix not tridiagonal: matrix not square" unless 
-					@num_rows == rows[i].size
-			for j in 0..rows[i].size-1 do 
-				case i
-					when j - 1
-						upper_diag << rows[i][j]
-					when j
-						middle_diag << rows[i][j]
-					when j + 1
-						lower_diag << rows[i][j]
-					else 
-						raise "Matrix not tridiagonal: does not obey upper and lower Hessenberg matrix properties" unless rows[i][j] == 0
-				end		
-			end
-		end 
-		
-		new upper_diag, middle_diag, lower_diag
-	end
-
-	# def self.build(*row_count)
-	# 	return :to_enum unless block_given?
-	# 	upper = Array.new(row_count[0] - 1) { |x| yield x, x + 1 }
-	# 	middle = Array.new(row_count[0]) { |x| yield x, x }
-	# 	lower = Array.new(row_count[0] - 1) { |x| yield x + 1, x }
-	# 	new upper, middle, lower
-	# end
-
-	def self.identity(size)
-		scalar(size, 1)
-	end
-
-	def self.scalar(n, value)
-		
-		new Array.new(n-1) { 0 }, Array.new(n) { value }, Array.new(n-1) { 0 }
-	end 
+	attr_reader :num_columns, :num_rows, :upper_diagonal, :middle_diagonal, :lower_diagonal
 	
-	def initialize(upper_diag, middle_diag, lower_diag)
+	def initialize(input)
 		# invariant()
 		#PRE
 		begin
 			raise "Improper matrix size given" unless middle_diag.size > 0
 		end 
 
-		@upper_diagonal = upper_diag
-		@middle_diagonal = middle_diag
-		@lower_diagonal = lower_diag
+		case input
+			when Array
+				rows(input)
+			when Matrix
+				rows(input.to_a())
+			else 
+				raise "Must input Array or Matrix"
+		end
 
 		#POST
 		diagonal_array_sizes()
 		# invariant()
-		self
 	end
 
-	# overwrite methods by matrix
 	def ==(other_object) 
 		return false unless TriDiagonalMatrix === other_object && 
 			other_object.respond_to?(:upper_diagonal) && 
@@ -294,23 +235,57 @@ class TriDiagonalMatrix < Matrix
 		self == transpose
 	end
 	
-	# all private methods
-
-	def upper_diagonal
-		Vector.elements(@upper_diagonal)
-	end
-
-	def middle_diagonal
-		Vector.elements(@middle_diagonal)
-	end
-
-	def lower_diagonal
-		Vector.elements(@lower_diagonal)
-	end
-	
 	private 
 
-	attr_writer :upper_diagonal, :middle_diagonal, :lower_diagonal
+	def rows(rows, copy = true)
+		
+		# rows = convert_to_array(rows, true) 
+		# rows.map! { |row| convert_to_array(row, copy) }
+
+		# basing column size on first row
+		@num_columns = (rows[0] || []).size
+		@num_rows = rows.size 
+		
+		@upper_diagonal = []
+		@middle_diagonal = []
+		@lower_diagonal = []
+		
+		#PRE
+		#raise methods for preconditions included within initialization
+		#to minimize loops ran
+		#ensures there are 3 diagonals of proper sizes
+	
+		for i in 0..rows.size-1 do 
+			# ensures that the input is correct
+			raise "Matrix not tridiagonal: rows of various sizes" unless 
+					@num_columns == rows[i].size
+			# ensures that matrix is nxn
+			raise "Matrix not tridiagonal: matrix not square" unless 
+					@num_rows == rows[i].size
+			for j in 0..rows[i].size-1 do 
+				case i
+					when j - 1
+						@upper_diagonal << rows[i][j]
+					when j
+						@middle_diagonal << rows[i][j]
+					when j + 1
+						@lower_diagonal << rows[i][j]
+					else 
+						raise "Matrix not tridiagonal: does not obey upper and lower Hessenberg matrix properties" unless rows[i][j] == 0
+				end		
+			end
+		end 
+	end
+
+	def identity(size)
+		scalar(size, 1)
+	end
+
+	def scalar(n, value)
+		@upper_diagonal = Array.new(n-1) { 0 }
+		@middle_diagonal = Array.new(n) { value }
+		@lower_diagonal = Array.new(n-1) { 0 }
+	end 
 
 	def invariant()
 		# identitymatrix = TriDiagonalMatrix.identity(@num_rows)
