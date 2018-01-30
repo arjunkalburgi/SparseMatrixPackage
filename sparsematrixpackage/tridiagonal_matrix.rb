@@ -72,8 +72,8 @@ class TriDiagonalMatrix < Matrix
 	
 	def initialize(upper_diag, middle_diag, lower_diag)
 		# invariant()
-		#PRE
-		size_constraint()
+		# #PRE
+		# size_constraint()
 
 		@upper_diagonal = upper_diag
 		@middle_diagonal = middle_diag
@@ -298,9 +298,9 @@ class TriDiagonalMatrix < Matrix
 		raise "Matrix must satisfy that itself is not null" unless !(@upper_diagonal.any?{|val| val.nil? } && @middle_diagonal.any?{|val| val.nil? } && @lower_diagonal.any?{|val| val.nil? })
 	end
 
-	def size_constraint()
-		raise "Improper matrix size given" unless @num_rows > 0
-	end 
+	# def size_constraint()
+	# 	raise "Improper matrix size given" unless @num_rows > 0
+	# end 
 
 	def diagonal_array_sizes()
 		raise "The diagonal arrays are of improper size" unless @middle_diagonal.size == @upper_diagonal.size+1 && @middle_diagonal.size == @lower_diagonal.size+1
