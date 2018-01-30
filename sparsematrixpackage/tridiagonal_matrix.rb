@@ -12,10 +12,7 @@ class TriDiagonalMatrix
 	def initialize(input)
 		# invariant()
 		#PRE
-		begin
-			raise "Improper matrix size given" unless middle_diag.size > 0
-		end 
-
+		
 		case input
 			when Array
 				rows(input)
@@ -275,6 +272,10 @@ class TriDiagonalMatrix
 				end		
 			end
 		end 
+
+		begin
+			raise "Improper matrix size given" unless @middle_diagonal.size > 0
+		end 
 	end
 
 	def identity(size)
@@ -351,8 +352,5 @@ class TriDiagonalMatrix
 	alias_method :column_count, :row_count
 	alias_method :det, :determinant
 	alias_method :t, :transpose
-	# alias_method :inspect, :to_s
-	# alias_method :collect, :map
-	# alias_method :tr, :trace
 
 end
