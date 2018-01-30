@@ -318,15 +318,15 @@ class TriDiagonalMatrix
 	end
 
 	def invariant()
-		identitymatrix = self.identity(@num_rows)
+		identitymatrix = TriDiagonalMatrix.identity(@num_rows)
 		raise "Matrix does not satisfy A * A.getInverse() = I invariant" unless multiplication(getInverse()) == identitymatrix
 
 		raise "Matrix does not satisfy A.getDeterminant() == 0 when I.getInverse() == null invariant" unless getMatrixDeterminant() == 0 && getInverse() == nil
 
-		raise "Matrix does not satisfy A*I = A invariant" unless multiplication(self.identity(@num_columns)) == self
+		raise "Matrix does not satisfy A*I = A invariant" unless multiplication(TriDiagonalMatrix.identity(@num_columns)) == self
 
 		raise "Matrix does not satisfy A+A = 2A" unless addition(self) == multiplication(2)
-		raise "Matrix does not satisfy A-A = 0" unless subtraction(self) == self.scalar(@num_rows, 0)
+		raise "Matrix does not satisfy A-A = 0" unless subtraction(self) == TriDiagonalMatrix.scalar(@num_rows, 0)
 
 		raise "Matrix must satisfy that itself is not null" unless !(@upper_diagonal.any?{|val| val.nil? } && @middle_diagonal.any?{|val| val.nil? } && @lower_diagonal.any?{|val| val.nil? })
 	end
