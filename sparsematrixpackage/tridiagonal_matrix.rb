@@ -1,6 +1,4 @@
 
-require 'matrix'
-
 class TriDiagonalMatrix
 	
 	include Enumerable
@@ -264,6 +262,16 @@ class TriDiagonalMatrix
 	end 
 
 	def invariant()
+		# identitymatrix = TriDiagonalMatrix.identity(@num_rows)
+		# raise "Matrix does not satisfy A * A.inverse() = I invariant" unless multiplication(self.inverse_method()) == identitymatrix
+
+	def scalar(n, value)
+		@upper_diagonal = Array.new(n-1) { 0 }
+		@middle_diagonal = Array.new(n) { value }
+		@lower_diagonal = Array.new(n-1) { 0 }
+	end 
+
+	def invariant()
 		identitymatrix = self.new([[1]]).identity(@num_rows)
 		raise "Matrix does not satisfy A * A.getInverse() = I invariant" unless multiplication(getInverse()) == identitymatrix
 
@@ -283,11 +291,6 @@ class TriDiagonalMatrix
 		
 		# identitymatrixCol = TriDiagonalMatrix.identity(@num_columns)
 		# raise "Matrix does not satisfy A*I = A invariant" unless multiplication(identitymatrixCol) == self
-
-		# raise "Matrix does not satisfy A+A = 2A" unless addition(self) == multiplication(2)
-
-		# subMatrix = subtraction(self)
-		# raise "Matrix does not satisfy A-A = 0" unless subMatrix.upper_diagonal.all? {|val| val == 0 } && subMatrix.middle_diagonal.all? {|val| val == 0 } && subMatrix.lower_diagonal.all? {|val| val == 0 }
 
 		# raise "Matrix must satisfy that itself is not null" unless !(@upper_diagonal.any?{|val| val.nil? } && @middle_diagonal.any?{|val| val.nil? } && @lower_diagonal.any?{|val| val.nil? })
 

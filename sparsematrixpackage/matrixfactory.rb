@@ -1,4 +1,4 @@
-require_relative './tridagonal_matrix'
+require_relative './tridiagonal_matrix'
 require_relative './sparse_matrix'
 
 module MatrixFactory 
