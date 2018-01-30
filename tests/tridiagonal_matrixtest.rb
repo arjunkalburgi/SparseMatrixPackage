@@ -90,7 +90,7 @@ class TridiagonalMatrixTest < Test::Unit::TestCase
 		assert_equal(multipliedMatrix2, @matrix1*2)
 	end
 	
-	#not done
+	
 	def test_divide
 		dividedMatrix = Matrix.new([[10945/43181,-3848/43181,6832/43181,2016/43181,-2464/43181], 
 											   [21960/43181,6581/43181,-732/43181,-216/43181,264/43181],
