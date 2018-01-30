@@ -1,11 +1,7 @@
 
-require 'matrix'
-
 class TriDiagonalMatrix
 	
 	include Enumerable
-	
-	# extend Forwardable
 	
 	attr_reader :num_columns, :num_rows, :upper_diagonal, :middle_diagonal, :lower_diagonal
 	
@@ -234,121 +230,121 @@ class TriDiagonalMatrix
 	
 	private 
 
-	def rows(rows, copy = true)
-		
-		# rows = convert_to_array(rows, true) 
-		# rows.map! { |row| convert_to_array(row, copy) }
+		def rows(rows, copy = true)
+			
+			# rows = convert_to_array(rows, true) 
+			# rows.map! { |row| convert_to_array(row, copy) }
 
-		# basing column size on first row
-		@num_columns = (rows[0] || []).size
-		@num_rows = rows.size 
+			# basing column size on first row
+			@num_columns = (rows[0] || []).size
+			@num_rows = rows.size 
+			
+			@upper_diagonal = []
+			@middle_diagonal = []
+			@lower_diagonal = []
+			
+			#PRE
+			#raise methods for preconditions included within initialization
+			#to minimize loops ran
+			#ensures there are 3 diagonals of proper sizes
 		
-		@upper_diagonal = []
-		@middle_diagonal = []
-		@lower_diagonal = []
-		
-		#PRE
-		#raise methods for preconditions included within initialization
-		#to minimize loops ran
-		#ensures there are 3 diagonals of proper sizes
-	
-		for i in 0..rows.size-1 do 
-			# ensures that the input is correct
-			raise "Matrix not tridiagonal: rows of various sizes" unless 
-					@num_columns == rows[i].size
-			# ensures that matrix is nxn
-			raise "Matrix not tridiagonal: matrix not square" unless 
-					@num_rows == rows[i].size
-			for j in 0..rows[i].size-1 do 
-				case i
-					when j - 1
-						@upper_diagonal << rows[i][j]
-					when j
-						@middle_diagonal << rows[i][j]
-					when j + 1
-						@lower_diagonal << rows[i][j]
-					else 
-						raise "Matrix not tridiagonal: does not obey upper and lower Hessenberg matrix properties" unless rows[i][j] == 0
-				end		
-			end
+			for i in 0..rows.size-1 do 
+				# ensures that the input is correct
+				raise "Matrix not tridiagonal: rows of various sizes" unless 
+						@num_columns == rows[i].size
+				# ensures that matrix is nxn
+				raise "Matrix not tridiagonal: matrix not square" unless 
+						@num_rows == rows[i].size
+				for j in 0..rows[i].size-1 do 
+					case i
+						when j - 1
+							@upper_diagonal << rows[i][j]
+						when j
+							@middle_diagonal << rows[i][j]
+						when j + 1
+							@lower_diagonal << rows[i][j]
+						else 
+							raise "Matrix not tridiagonal: does not obey upper and lower Hessenberg matrix properties" unless rows[i][j] == 0
+					end		
+				end
+			end 
+
+			#POST
+			begin
+				raise "Improper matrix size given" unless @middle_diagonal.size > 0
+			end 
+		end
+
+		def identity(size)
+			scalar(size, 1)
+		end
+
+		def scalar(n, value)
+			@upper_diagonal = Array.new(n-1) { 0 }
+			@middle_diagonal = Array.new(n) { value }
+			@lower_diagonal = Array.new(n-1) { 0 }
 		end 
 
-		#POST
-		begin
-			raise "Improper matrix size given" unless @middle_diagonal.size > 0
+		def invariant()
+			# identitymatrix = TriDiagonalMatrix.identity(@num_rows)
+			# raise "Matrix does not satisfy A * A.inverse() = I invariant" unless multiplication(self.inverse_method()) == identitymatrix
+
+			# raise "Matrix does not satisfy A.determinant() == 0 when I.inverse() == null invariant" unless self.determinant_method() == 0 && self.inverse_method() == nil
+			
+			# identitymatrixCol = TriDiagonalMatrix.identity(@num_columns)
+			# raise "Matrix does not satisfy A*I = A invariant" unless multiplication(identitymatrixCol) == self
+
+			# raise "Matrix does not satisfy A+A = 2A" unless addition(self) == multiplication(2)
+
+			# subMatrix = subtraction(self)
+			# raise "Matrix does not satisfy A-A = 0" unless subMatrix.upper_diagonal.all? {|val| val == 0 } && subMatrix.middle_diagonal.all? {|val| val == 0 } && subMatrix.lower_diagonal.all? {|val| val == 0 }
+
+			# raise "Matrix must satisfy that itself is not null" unless !(@upper_diagonal.any?{|val| val.nil? } && @middle_diagonal.any?{|val| val.nil? } && @lower_diagonal.any?{|val| val.nil? })
+		end
+
+		def diagonal_array_sizes()
+			raise "The diagonal arrays are of improper size" unless @middle_diagonal.size == @upper_diagonal.size+1 && @middle_diagonal.size == @lower_diagonal.size+1
+		end
+
+		def check_tridiagonality(other_matrix)
+			raise "Other object is not tridiagonal" unless TriDiagonalMatrix === other_matrix
+		end
+
+		def check_dimensions(other_matrix)
+			raise "Matricies do not have the same dimensions" unless @num_rows == other_matrix.num_rows
+		end
+
+		def check_correct_dimensions_after_multiplication(othermatrix, result)
+			raise "Multiplication dimensions are incorrect." unless @num_rows == result.num_rows && @num_columns == result.num_columns
+		end
+
+		def addition(other_matrix)
+			
+		end
+
+		def subtraction(other_matrix)
+			
 		end 
-	end
 
-	def identity(size)
-		scalar(size, 1)
-	end
+		def division(other_matrix)
+			
+		end
 
-	def scalar(n, value)
-		@upper_diagonal = Array.new(n-1) { 0 }
-		@middle_diagonal = Array.new(n) { value }
-		@lower_diagonal = Array.new(n-1) { 0 }
-	end 
+		def multiplication(other_matrix)
+			
+		end
 
-	def invariant()
-		# identitymatrix = TriDiagonalMatrix.identity(@num_rows)
-		# raise "Matrix does not satisfy A * A.inverse() = I invariant" unless multiplication(self.inverse_method()) == identitymatrix
+		def determinant_method()
 
-		# raise "Matrix does not satisfy A.determinant() == 0 when I.inverse() == null invariant" unless self.determinant_method() == 0 && self.inverse_method() == nil
-		
-		# identitymatrixCol = TriDiagonalMatrix.identity(@num_columns)
-		# raise "Matrix does not satisfy A*I = A invariant" unless multiplication(identitymatrixCol) == self
+		end
 
-		# raise "Matrix does not satisfy A+A = 2A" unless addition(self) == multiplication(2)
+		def transpose_method()
+			
+		end 
 
-		# subMatrix = subtraction(self)
-		# raise "Matrix does not satisfy A-A = 0" unless subMatrix.upper_diagonal.all? {|val| val == 0 } && subMatrix.middle_diagonal.all? {|val| val == 0 } && subMatrix.lower_diagonal.all? {|val| val == 0 }
+		def inverse_method()
 
-		# raise "Matrix must satisfy that itself is not null" unless !(@upper_diagonal.any?{|val| val.nil? } && @middle_diagonal.any?{|val| val.nil? } && @lower_diagonal.any?{|val| val.nil? })
-	end
-
-	def diagonal_array_sizes()
-		raise "The diagonal arrays are of improper size" unless @middle_diagonal.size == @upper_diagonal.size+1 && @middle_diagonal.size == @lower_diagonal.size+1
-	end
-
-	def check_tridiagonality(other_matrix)
-		raise "Other object is not tridiagonal" unless TriDiagonalMatrix === other_matrix
-	end
-
-	def check_dimensions(other_matrix)
-		raise "Matricies do not have the same dimensions" unless @num_rows == other_matrix.num_rows
-	end
-
-	def check_correct_dimensions_after_multiplication(othermatrix, result)
-		raise "Multiplication dimensions are incorrect." unless @num_rows == result.num_rows && @num_columns == result.num_columns
-	end
-
-	def addition(other_matrix)
-		
-	end
-
-	def subtraction(other_matrix)
-		
-	end 
-
-	def division(other_matrix)
-		
-	end
-
-	def multiplication(other_matrix)
-		
-	end
-
-	def determinant_method()
-
-	end
-
-	def transpose_method()
-		
-	end 
-
-	def inverse_method()
-
-	end
+		end
 
 	alias_method :column_count, :row_count
 	alias_method :det, :determinant
