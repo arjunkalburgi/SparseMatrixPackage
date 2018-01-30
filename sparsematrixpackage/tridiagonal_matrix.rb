@@ -3,10 +3,12 @@ require 'matrix'
 
 # inherits from Matrix for utilization of 
 class TriDiagonalMatrix < Matrix
-	# let matrix handle these functions
-	delegate [:**, :hermitian?, :normal?, :permutation?] => :Matrix.send(:new, to_a)
 	
 	include Enumerable
+	
+	# let matrix handle these functions
+	# extend Forwardable
+	# delegate [:**, :hermitian?, :normal?, :permutation?] => to_m
 
 	attr_reader :upper_diagonal, :middle_diagonal, :lower_diagonal
 
@@ -182,11 +184,6 @@ class TriDiagonalMatrix < Matrix
 		# 	c << x[0] * c.last - x[1] * x[2] * c[-2]
 		# end.last
 	end
-		
-# 	def transpose!
-# 		@upper_diagonal, @lower_diagonal = @lower_diagonal, @upper_diagonal
-# 		self
-# 	end
 
 	def transpose
 		#INVARIANT
@@ -219,19 +216,23 @@ class TriDiagonalMatrix < Matrix
 		@middle_diagonal.size
 	end
 
-	def to_s
-		"#{self.class.name}#{to_a}"
-	end
-
 	def to_a
 		Array.new(row_count) { |i|	row(i).to_a }
 	end
 
+	def to_s
+		"#{self.class.name}#{to_a}"
+	end
+	
+	def to_m
+		:Matrix.send(:new, to_a)
+	end
+
 	def row(i)
-		return self unless i < row_count
-		row = Array.new(row_count) { |j| self[i, j] }
-		row.each(&Proc.new) if block_given?
-		Vector.elements(row, false)
+		# return self unless i < row_count
+		# row = Array.new(row_count) { |j| self[i, j] }
+		# row.each(&Proc.new) if block_given?
+		# Vector.elements(row, false)
 	end
 
 	def map
@@ -240,8 +241,10 @@ class TriDiagonalMatrix < Matrix
 		# TridiagonalMatrix.send(:new, @upper_diagonal.map(&block), @middle_diagonal.map(&block), @lower_diagonal.map(&block))
 	end
 	
-	
-	
+# 	def transpose!
+# 		@upper_diagonal, @lower_diagonal = @lower_diagonal, @upper_diagonal
+# 		self
+# 	end
 
 # 	def diagonal?
 # 		@upper_diagonal.all? { |x| x == 0 } && @lower_diagonal.all? { |x| x == 0 }
@@ -327,7 +330,6 @@ class TriDiagonalMatrix < Matrix
 	alias_method :column_count, :row_count
 	alias_method :det, :determinant
 	# alias_method :inspect, :to_s
-	# alias_method :[], :get_value
 	# alias_method :collect, :map
 	# alias_method :lower_triangular?, :upper_triangular?
 	# alias_method :tr, :trace
