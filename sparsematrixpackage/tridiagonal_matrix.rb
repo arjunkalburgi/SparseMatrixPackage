@@ -119,8 +119,8 @@ class TriDiagonalMatrix < Matrix
 		addition(other_matrix)
 		
 		#POST
-		# this sparse matrix has had the contents of give matrix added to it
-		#new Tridiagonal???
+		# ensure that the dimensions of the matrix are the same
+		# check_dimensions(return_matrix)
 		#INVARIANT
 	end
 	
@@ -134,7 +134,8 @@ class TriDiagonalMatrix < Matrix
 		subtraction(other_matrix)
 		
 		#Post
-		# this sparse matrix has had the contents of given matrix subtracted from it
+		# ensure that the dimensions of the matrix are the same
+		# check_dimensions(return_matrix)
 		#INVARIANT
 
 	end
@@ -148,7 +149,8 @@ class TriDiagonalMatrix < Matrix
 		
 		multiplication(other_matrix)
 		#POST
-		# this sparse matrix has been multiplied by given matrix 
+		# ensure that the dimensions of the matrix are the same
+		# check_correct_dimensions_after_multiplication(other_matrix, return_matrix)
 		#INVARIANT
 
 	end
@@ -163,7 +165,8 @@ class TriDiagonalMatrix < Matrix
 		division(other_matrix)
 		
 		#POST
-		# this sparse matrix has been divided by given matrix 
+		# ensure that the dimensions of the matrix are the same
+		# check_correct_dimensions_after_multiplication(other_matrix, return_matrix)
 		#INVARIANT
 		
 	end
@@ -310,6 +313,12 @@ class TriDiagonalMatrix < Matrix
 		# 	end
 		# end) if other.respond_to?(:each)
 		# map { |x| x * other }
+	end
+	
+	def check_correct_dimensions_after_multiplication(othermatrix, result)
+		begin
+			raise "Multiplication dimensions are incorrect." unless @num_rows == result.num_rows && @num_columns == result.num_columns
+		end
 	end
 
 	alias_method :column_count, :row_count
