@@ -294,20 +294,20 @@ class TriDiagonalMatrix < Matrix
 	private 
 
 	def invariant()
-		# identitymatrix = TriDiagonalMatrix.identity(@num_rows)
-		# raise "Matrix does not satisfy A * A.inverse() = I invariant" unless multiplication(self.inverse_method()) == identitymatrix
+		identitymatrix = TriDiagonalMatrix.identity(@num_rows)
+		raise "Matrix does not satisfy A * A.inverse() = I invariant" unless multiplication(self.inverse_method()) == identitymatrix
 
-		# raise "Matrix does not satisfy A.determinant() == 0 when I.inverse() == null invariant" unless self.determinant_method() == 0 && self.inverse_method() == nil
+		raise "Matrix does not satisfy A.determinant() == 0 when I.inverse() == null invariant" unless self.determinant_method() == 0 && self.inverse_method() == nil
 		
-		# identitymatrixCol = TriDiagonalMatrix.identity(@num_columns)
-		# raise "Matrix does not satisfy A*I = A invariant" unless multiplication(identitymatrixCol) == self
+		identitymatrixCol = TriDiagonalMatrix.identity(@num_columns)
+		raise "Matrix does not satisfy A*I = A invariant" unless multiplication(identitymatrixCol) == self
 
-		# raise "Matrix does not satisfy A+A = 2A" unless addition(self) == multiplication(2)
+		raise "Matrix does not satisfy A+A = 2A" unless addition(self) == multiplication(2)
 
-		# subMatrix = subtraction(self)
-		# raise "Matrix does not satisfy A-A = 0" unless subMatrix.upper_diagonal.all? {|val| val == 0 } && subMatrix.middle_diagonal.all? {|val| val == 0 } && subMatrix.lower_diagonal.all? {|val| val == 0 }
+		subMatrix = subtraction(self)
+		raise "Matrix does not satisfy A-A = 0" unless subMatrix.upper_diagonal.all? {|val| val == 0 } && subMatrix.middle_diagonal.all? {|val| val == 0 } && subMatrix.lower_diagonal.all? {|val| val == 0 }
 
-		# raise "Matrix must satisfy that itself is not null" unless !(@upper_diagonal.any?{|val| val.nil? } && @middle_diagonal.any?{|val| val.nil? } && @lower_diagonal.any?{|val| val.nil? })
+		raise "Matrix must satisfy that itself is not null" unless !(@upper_diagonal.any?{|val| val.nil? } && @middle_diagonal.any?{|val| val.nil? } && @lower_diagonal.any?{|val| val.nil? })
 	end
 
 	# def size_constraint()
@@ -323,7 +323,7 @@ class TriDiagonalMatrix < Matrix
 	end
 
 	def check_dimensions(other_matrix)
-		raise "Matricies do not have the same dimentions" unless row_count == other_matrix.row_count
+		raise "Matricies do not have the same dimentions" unless row_count() == other_matrix.row_count()
 	end
 
 	def check_correct_dimensions_after_multiplication(othermatrix, result)
@@ -331,47 +331,27 @@ class TriDiagonalMatrix < Matrix
 	end
 
 	def addition(other_matrix)
-		# upper = [@upper_diagonal, other_matrix.upper_diagonal].transpose.map {|x| x.reduce(:+)}
-		# middle = [@middle_diagonal, other_matrix.middle_diagonal].transpose.map {|x| x.reduce(:+)}
-		# lower = [@lower_diagonal, other_matrix.lower_diagonal].transpose.map {|x| x.reduce(:+)}
+		
 	end
 
 	def subtraction(other_matrix)
-		# upper = [@upper_diagonal, other_matrix.upper_diagonal].transpose.map {|x| x.reduce(:-)}
-		# middle = [@middle_diagonal, other_matrix.middle_diagonal].transpose.map {|x| x.reduce(:-)}
-		# lower = [@lower_diagonal, other_matrix.lower_diagonal].transpose.map {|x| x.reduce(:-)}
+		
 	end 
 
 	def division(other_matrix)
-		# if other_matrix.respond_to?("inverse")
-		# 	self * other_matrix.inverse
-		# else 
-		# 	map {|x| x/other_matrix}	
-		# end
+		
 	end
 
 	def multiplication(other_matrix)
-		# return Matrix.send(:new, Array.new(row_count) do |i|
-		# 	Array.new(other.column_count) do |j|
-		# 		e0 = (i == 0 ? 0 : self[i, i - 1] * other[i - 1, j])
-		# 		e1 = self[i, i] * other[i, j]
-		# 		e2 = (i == row_count - 1 || i == other.column_count - 1 ? 0 : self[i, i + 1] * other[i + 1, j])
-		# 		e0 + e1 + e2
-		# 	end
-		# end) if other.respond_to?(:each)
-		# map { |x| x * other }
+		
 	end
 
 	def determinant_method()
-		# @middle_diagonal[1..-1].zip(@upper_diagonal, @lower_diagonal).reduce([1, @middle_diagonal[0]]) do |c, x|
-		# 	c << x[0] * c.last - x[1] * x[2] * c[-2]
-		# end.last
+
 	end
 
 	def transpose_method()
-		upper = @upper_diagonal.copy
-		@upper_diagonal = @lower_diagonal.copy
-		@lower_diagonal = upper
+		
 	end 
 
 	def inverse_method()
