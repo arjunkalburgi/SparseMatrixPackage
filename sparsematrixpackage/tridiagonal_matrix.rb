@@ -2,7 +2,7 @@
 require 'matrix'
 
 # inherits from Matrix for utilization of 
-class TriDiagonalMatrix
+class TriDiagonalMatrix < Matrix
 	
 	include Enumerable
 	
@@ -14,8 +14,8 @@ class TriDiagonalMatrix
 
 	def self.rows(rows, copy = true)
 		
-		# rows = convert_to_array(rows, true) 
-		# rows.map! { |row| convert_to_array(row, copy) }
+		rows = convert_to_array(rows, true) 
+		rows.map! { |row| convert_to_array(row, copy) }
 
 		# basing column size on first row
 		@num_columns = (rows[0] || []).size
@@ -360,23 +360,6 @@ class TriDiagonalMatrix
 
 	end
 
-	# def convert_to_array(obj, copy = false) # :nodoc:
- #      case obj
- #      when Array
- #        copy ? obj.dup : obj
- #      when Vector
- #        obj.to_a
- #      else
- #        begin
- #          converted = obj.to_ary
- #        rescue Exception => e
- #          raise TypeError, "can't convert #{obj.class} into an Array (#{e.message})"
- #        end
- #        raise TypeError, "#{obj.class}#to_ary should return an Array" unless converted.is_a? Array
- #        converted
- #      end
- #    end
-	
 	alias_method :column_count, :row_count
 	alias_method :det, :determinant
 	# alias_method :inspect, :to_s
