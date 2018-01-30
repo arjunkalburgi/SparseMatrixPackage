@@ -13,9 +13,6 @@ class TriDiagonalMatrix
 	end 
 
 	def initialize(input)
-		invariant()
-		#PRE
-		
 		case input
 			when Array
 				rows(input)
