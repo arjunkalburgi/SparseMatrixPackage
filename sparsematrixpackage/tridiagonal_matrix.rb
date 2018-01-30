@@ -329,7 +329,7 @@ class TriDiagonalMatrix
 	end
 
 	def invariant()
-		raise "TriDiagonalMatrix does not satisfy that it should be square" unless @num_rows = @num_columns
+		raise "TriDiagonalMatrix does not satisfy that it should be square" unless @num_rows == @num_columns
 
 		raise "Matrix does not satisfy A * A.getInverse() = I invariant" unless multiplication(getInverse()) == TriDiagonalMatrix.identity(@num_rows)
 
