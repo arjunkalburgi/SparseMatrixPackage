@@ -23,7 +23,7 @@ class TriDiagonalMatrix
 		end
 
 		#POST
-		# check_diagonal_array_sizes()
+		check_diagonal_array_sizes()
 	end
 
 	def ==(other_object) 
