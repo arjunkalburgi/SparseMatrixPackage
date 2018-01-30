@@ -306,8 +306,7 @@ class TriDiagonalMatrix < Matrix
 	end 
 
 	def diagonal_array_sizes()
-		raise "The diagonal arrays are of improper size" unless 
-			@middle_diagonal.size == @upper_diagonal.size+1 && @middle_diagonal.size == @lower_diagonal.size+1
+		raise "The diagonal arrays are of improper size" unless @middle_diagonal.size == @upper_diagonal.size+1 && @middle_diagonal.size == @lower_diagonal.size+1
 	end
 
 	def check_tridiagonality(other_matrix)
