@@ -54,14 +54,14 @@ class TriDiagonalMatrix
 		check_tridiagonality(other_matrix)
 		check_dimensions(other_matrix)
 
-		return_matrix = addition(other_matrix)
+		return_result_matrix = addition(other_matrix)
 		
 		#POST
-		check_dimensions(return_matrix)
+		check_dimensions(return_result_matrix)
 		
 		invariant()
 
-		return_matrix
+		return_result_matrix
 	end
 	
 	def -(other_matrix)
@@ -71,14 +71,14 @@ class TriDiagonalMatrix
 		check_tridiagonality(other_matrix)
 		check_dimensions(other_matrix)
 		
-		return_matrix = subtraction(other_matrix)
+		return_result_matrix = subtraction(other_matrix)
 		
 		#Post
-		check_dimensions(return_matrix)
+		check_dimensions(return_result_matrix)
 		
 		invariant()
 
-		return_matrix
+		return_result_matrix
 	end
 	
 	def *(other_matrix)
@@ -88,13 +88,13 @@ class TriDiagonalMatrix
 		check_tridiagonality(other_matrix)
 		check_dimensions(other_matrix)
 		
-		return_matrix = multiplication(other_matrix)
+		return_result_matrix = multiplication(other_matrix)
 		#POST
-		check_correct_dimensions_after_multiplication(other_matrix, return_matrix)
+		check_correct_dimensions_after_multiplication(other_matrix, return_result_matrix)
 		
 		invariant()
 
-		return_matrix
+		return_result_matrix
 	end
 	
 	def /(other_matrix)
@@ -104,14 +104,14 @@ class TriDiagonalMatrix
 		check_tridiagonality(other_matrix)
 		check_dimensions(other_matrix)
 
-		return_matrix = division(other_matrix)
+		return_result_matrix = division(other_matrix)
 		
 		#POST
-		check_correct_dimensions_after_multiplication(other_matrix, return_matrix)
+		check_correct_dimensions_after_multiplication(other_matrix, return_result_matrix)
 		
 		invariant()
 
-		return_matrix
+		return_result_matrix
 	end
 
 
@@ -134,13 +134,13 @@ class TriDiagonalMatrix
 
 		#PRE - none as it is guaranteed to be square tridiagonal at this point
 
-		return_transpose = transpose_method()
+		return_result_matrix = transpose_method()
 
 		#POST
 
 		invariant()
 
-		return_transpose
+		return_result_matrix
 	end 
 
 	def inverse
@@ -148,13 +148,13 @@ class TriDiagonalMatrix
 
 		#PRE
 
-		return_inverse = inverse_method()
+		return_result_matrix = inverse_method()
 
 		#POST
 
 		invariant()
 
-		return_inverse
+		return_result_matrix
 	end
 
 	def [](i, j)
@@ -273,6 +273,7 @@ class TriDiagonalMatrix
 			end
 		end 
 
+		#POST
 		begin
 			raise "Improper matrix size given" unless @middle_diagonal.size > 0
 		end 
