@@ -321,9 +321,7 @@ class TriDiagonalMatrix < Matrix
 	end
 	
 	def check_correct_dimensions_after_multiplication(othermatrix, result)
-		begin
-			raise "Multiplication dimensions are incorrect." unless @num_rows == result.num_rows && @num_columns == result.num_columns
-		end
+		raise "Multiplication dimensions are incorrect." unless @num_rows == result.num_rows && @num_columns == result.num_columns
 	end
 
 	alias_method :column_count, :row_count
