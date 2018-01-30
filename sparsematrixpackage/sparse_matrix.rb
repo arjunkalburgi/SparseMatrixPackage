@@ -8,23 +8,6 @@ class SparseMatrix
 
 	attr_reader :matrix_table, :num_rows, :num_columns
 
-	def self.rows(matrixarray)
-
-		@num_rows = matrixarray.size
-		@num_columns = matrixarray[0].size
-
-		@matrix_table = Hash.new(0)
-		matrixarray.each_index do |i|
-			raise "Not all columns are the same size." unless matrixarray[i].size == @num_columns 
-			matrixarray[i].each_index do |j|
-				if matrixarray[i][j] != 0
-					@matrix_table[{row: i, column: j}] = matrixarray[i][j]
-				end
-			end
-		end
-
-	end
-
 	def self.identity(size)
 		new_sparse = {num_columns: size, num_rows: size, matrix_table: {}}
 		(0..size).each do |i|
@@ -41,15 +24,16 @@ class SparseMatrix
 	def initialize(input)
 		case input 
 			when Array 
-				self.rows(input)
+				rows(input)
 			when Matrix
-				self.rows(inputs.to_a())
+				rows(input.to_a())
 			when Hash
 				@matrix_table = input
 				# assume the maximum row and col given gives the dimensions (to be changed in proper implementation)
 				@num_rows = input.keys.map{|key| key[:row]}.max
 				@num_columns = input.keys.map{|key| key[:column]}.max
 			else 
+				raise "Input must be of type Array (array of arrays), Matrix or Hash."
 		end
 	end
 	
@@ -194,6 +178,22 @@ class SparseMatrix
 	private
 
 		# FUNCTIONALITY
+			def rows(matrixarray)
+
+				@num_rows = matrixarray.size
+				@num_columns = matrixarray[0].size
+
+				@matrix_table = Hash.new(0)
+				matrixarray.each_index do |i|
+					raise "Not all columns are the same size." unless matrixarray[i].size == @num_columns 
+					matrixarray[i].each_index do |j|
+						if matrixarray[i][j] != 0
+							@matrix_table[{row: i, column: j}] = matrixarray[i][j]
+						end
+					end
+				end
+
+			end
 
 			def addition(othermatrix)
 				puts "add"
@@ -220,7 +220,6 @@ class SparseMatrix
 			end
 		
 		# TESTS
-
 			def invariant()
 				if square?
 					identitymatrix = SparseMatrix.identity(@num_rows)
