@@ -3,10 +3,12 @@ require 'matrix'
 
 # inherits from Matrix for utilization of 
 class TriDiagonalMatrix < Matrix
-	# let matrix handle these functions
-	delegate [:**, :hermitian?, :normal?, :permutation?] => :Matrix.send(:new, to_a)
 	
 	include Enumerable
+	
+	# let matrix handle these functions
+	# extend Forwardable
+	# delegate [:**, :hermitian?, :normal?, :permutation?] => to_m
 
 	attr_reader :upper_diagonal, :middle_diagonal, :lower_diagonal
 
@@ -19,7 +21,7 @@ class TriDiagonalMatrix < Matrix
 		@num_columns = (rows[0] || []).size
 		@num_rows = rows.size 
 		
-		upper_diagonal = []
+		upper_diag = []
 		middle_diag = []
 		lower_diag = []
 		
@@ -38,7 +40,7 @@ class TriDiagonalMatrix < Matrix
 			for j in 0..rows[i].size do 
 				case i
 					when j - 1
-						upper_diagonal << rows[i][j]
+						upper_diag << rows[i][j]
 					when j
 						middle_diag << rows[i][j]
 					when j + 1
@@ -53,7 +55,7 @@ class TriDiagonalMatrix < Matrix
 		diagonal_array_sizes()
 		
 		#INVARIANT
-		new upper_diagonal, middle_diag, lower_diag
+		new upper_diag, middle_diag, lower_diag
 	end
 
 	# def self.build(*row_count)
@@ -75,7 +77,7 @@ class TriDiagonalMatrix < Matrix
 		size_constraint(n)
 
 		new Array.new(n-1) { 0 }, Array.new(n) { value }, Array.new(n-1) { 0 }
-		
+
 		#POST
 		#INVARIANT
 	end 
@@ -110,92 +112,100 @@ class TriDiagonalMatrix < Matrix
 	end
 	
 	def +(other_matrix)
-		#INVARIANT
+		invariant()
 
 		#PRE 
 		check_tridiagonality(other_matrix)
 		check_dimensions(other_matrix)
 
-		addition(other_matrix)
+		return_matrix = addition(other_matrix)
 		
 		#POST
-		# ensure that the dimensions of the matrix are the same
-		# check_dimensions(return_matrix)
-		#INVARIANT
+		check_dimensions(return_matrix)
+		
+		invariant()
 	end
 	
 	def -(other_matrix)
-		#INVARIANT
+		invariant()
 
 		#PRE
 		check_tridiagonality(other_matrix)
 		check_dimensions(other_matrix)
 		
-		subtraction(other_matrix)
+		return_matrix = subtraction(other_matrix)
 		
 		#Post
-		# ensure that the dimensions of the matrix are the same
-		# check_dimensions(return_matrix)
-		#INVARIANT
-
+		check_dimensions(return_matrix)
+		
+		invariant()
 	end
 	
 	def *(other_matrix)
-		#INVARIANT
+		invariant()
 
 		#PRE 
 		check_tridiagonality(other_matrix)
 		check_dimensions(other_matrix)
 		
-		multiplication(other_matrix)
+		return_matrix = multiplication(other_matrix)
 		#POST
-		# ensure that the dimensions of the matrix are the same
-		# check_correct_dimensions_after_multiplication(other_matrix, return_matrix)
-		#INVARIANT
-
+		check_correct_dimensions_after_multiplication(other_matrix, return_matrix)
+		
+		invariant()
 	end
 	
 	def /(other_matrix)
-		#INVARIANT
+		invariant()
 
 		#PRE 
 		check_tridiagonality(other_matrix)
 		check_dimensions(other_matrix)
 
-		division(other_matrix)
+		return_matrix = division(other_matrix)
 		
 		#POST
-		# ensure that the dimensions of the matrix are the same
-		# check_correct_dimensions_after_multiplication(other_matrix, return_matrix)
-		#INVARIANT
+		check_correct_dimensions_after_multiplication(other_matrix, return_matrix)
 		
+		invariant()
 	end
 
 
 	def determinant
-		# @middle_diagonal[1..-1].zip(@upper_diagonal, @lower_diagonal).reduce([1, @middle_diagonal[0]]) do |c, x|
-		# 	c << x[0] * c.last - x[1] * x[2] * c[-2]
-		# end.last
-	end
+		invariant()
+
+		#PRE - not necessary to check if square, since tridiagonal matrices are square
+
+		determinant_method()
+
+		#POST
 		
-# 	def transpose!
-# 		@upper_diagonal, @lower_diagonal = @lower_diagonal, @upper_diagonal
-# 		self
-# 	end
+		invariant()
+	end
 
 	def transpose
-		#INVARIANT
+		invariant()
 
 		#PRE - none as it is guaranteed to be square tridiagonal at this point
 
-		upper = @upper_diagonal.copy
-		@upper_diagonal = @lower_diagonal.copy
-		@lower_diagonal = upper
+		transpose_method()
 
 		#POST
 
-		#INVARIANT
+		invariant()
 	end 
+
+	def inverse
+		invariant()
+
+		#PRE
+
+		inverse_method()
+
+		#POST
+
+		invariant()
+	end
 
 	def [](i, j)
 		case i
@@ -214,19 +224,23 @@ class TriDiagonalMatrix < Matrix
 		@middle_diagonal.size
 	end
 
-	def to_s
-		"#{self.class.name}#{to_a}"
-	end
-
 	def to_a
 		Array.new(row_count) { |i|	row(i).to_a }
 	end
 
+	def to_s
+		"#{self.class.name}#{to_a}"
+	end
+	
+	def to_m
+		:Matrix.send(:new, to_a)
+	end
+
 	def row(i)
-		return self unless i < row_count
-		row = Array.new(row_count) { |j| self[i, j] }
-		row.each(&Proc.new) if block_given?
-		Vector.elements(row, false)
+		# return self unless i < row_count
+		# row = Array.new(row_count) { |j| self[i, j] }
+		# row.each(&Proc.new) if block_given?
+		# Vector.elements(row, false)
 	end
 
 	def map
@@ -235,8 +249,10 @@ class TriDiagonalMatrix < Matrix
 		# TridiagonalMatrix.send(:new, @upper_diagonal.map(&block), @middle_diagonal.map(&block), @lower_diagonal.map(&block))
 	end
 	
-	
-	
+# 	def transpose!
+# 		@upper_diagonal, @lower_diagonal = @lower_diagonal, @upper_diagonal
+# 		self
+# 	end
 
 # 	def diagonal?
 # 		@upper_diagonal.all? { |x| x == 0 } && @lower_diagonal.all? { |x| x == 0 }
@@ -246,9 +262,15 @@ class TriDiagonalMatrix < Matrix
 # 		@upper_diagonal.reduce(true) { |a, e| a && e == @upper_diagonal[0] }
 # 	end
 
-	# def upper_triangular?
-	# 	false
-	# end
+	def upper_triangular?
+		return false unless @upper_diagonal.any? {|val| val > 0} && @middle_diagonal.any? {|val| val > 0}
+			&& @lower_diagonal.all? {|val| val == 0}
+	end
+
+	def lower_triangular?
+		return false unless @lower_diagonal.any? {|val| val > 0} && @middle_diagonal.any? {|val| val > 0}
+			&& @upper_diagonal.all? {|val| val == 0}
+	end
 
 	def square?
 		true
@@ -266,13 +288,28 @@ class TriDiagonalMatrix < Matrix
 	
 	private 
 
+	def invariant()
+		identitymatrix = SparseMatrix.identity(@num_rows)
+		raise "Matrix does not satisfy A * A.getInverse() = I invariant" unless multiplication(self.getInverse()) == identitymatrix
+
+		raise "Matrix does not satisfy A.getDeterminant() == 0 when I.getInverse() == null invariant" unless self.getDeterminant() == 0 && self.getInverse() == nil
+		
+		raise "Matrix does not satisfy A*I = A invariant" unless multiplication(SparseMatrix.identity(@num_columns)) == self
+
+		raise "Matrix does not satisfy A+A = 2A" unless addition(self) == multiplication(2)
+		raise "Matrix does not satisfy A-A = 0" unless 
+
+		raise "Matrix must satisfy that itself is not null" unless !(@upper_diagonal.any?{|val| val.nil? } &&
+						@middle_diagonal.any?{|val| val.nil? } && @lower_diagonal.any?{|val| val.nil? })
+	end
+
 	def size_constraint()
 		raise "Improper matrix size given" unless n > 0
 	end 
 
 	def diagonal_array_sizes()
 		raise "The diagonal arrays are of improper size" unless 
-			@middle_diagonal.size == @upper_diagonal.size+2 and @middle_diagonal.size == @lower_diagonal.size+2
+			@middle_diagonal.size == @upper_diagonal.size+1 && @middle_diagonal.size == @lower_diagonal.size+1
 	end
 
 	def check_tridiagonality(other_matrix)
@@ -280,7 +317,11 @@ class TriDiagonalMatrix < Matrix
 	end
 
 	def check_dimensions(other_matrix)
-		raise "Matricies do not have the same dimentions" unless @middle_diagonal.size == other_matrix.get_middle_diagonal.size
+		raise "Matricies do not have the same dimentions" unless @middle_diagonal.size == other_matrix.middle_diagonal.size
+	end
+
+	def check_correct_dimensions_after_multiplication(othermatrix, result)
+		raise "Multiplication dimensions are incorrect." unless @num_rows == result.num_rows && @num_columns == result.num_columns
 	end
 
 	def addition(other_matrix)
@@ -314,19 +355,27 @@ class TriDiagonalMatrix < Matrix
 		# end) if other.respond_to?(:each)
 		# map { |x| x * other }
 	end
-	
-	def check_correct_dimensions_after_multiplication(othermatrix, result)
-		begin
-			raise "Multiplication dimensions are incorrect." unless @num_rows == result.num_rows && @num_columns == result.num_columns
-		end
+
+	def determinant_method()
+		# @middle_diagonal[1..-1].zip(@upper_diagonal, @lower_diagonal).reduce([1, @middle_diagonal[0]]) do |c, x|
+		# 	c << x[0] * c.last - x[1] * x[2] * c[-2]
+		# end.last
 	end
 
+	def transpose_method()
+		upper = @upper_diagonal.copy
+		@upper_diagonal = @lower_diagonal.copy
+		@lower_diagonal = upper
+	end 
+
+	def inverse_method()
+
+	end
+	
 	alias_method :column_count, :row_count
 	alias_method :det, :determinant
 	# alias_method :inspect, :to_s
-	# alias_method :[], :get_value
 	# alias_method :collect, :map
-	# alias_method :lower_triangular?, :upper_triangular?
 	# alias_method :tr, :trace
 	alias_method :t, :transpose
 
