@@ -89,7 +89,7 @@ class TriDiagonalMatrix
 				#POST
 				check_correct_dimensions_after_multiplication(return_result_matrix)
 			else
-				return_result_matrix = self * new other
+				return_result_matrix = self *(new other)
 		end
 
 		invariant()
