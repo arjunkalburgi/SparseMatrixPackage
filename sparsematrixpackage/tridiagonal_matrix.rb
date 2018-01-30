@@ -75,7 +75,7 @@ class TriDiagonalMatrix < Matrix
 		# invariant()
 		#PRE
 		begin
-			raise "Improper matrix size given" unless @middle_diag.size > 0
+			raise "Improper matrix size given" unless middle_diag.size > 0
 		end 
 
 		@upper_diagonal = upper_diag
