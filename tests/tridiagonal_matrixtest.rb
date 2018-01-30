@@ -42,7 +42,7 @@ class TridiagonalMatrixTest < Test::Unit::TestCase
 											 [0,6,2,4,0],
 											 [0,0,6,4,13],
 											 [0,0,0,11,10]])
-		assert_equal(addedMatrix, @matrix1+@matrix2)
+		assert_equal(addedMatrix, @matrix1 + @matrix2)
 	end
 	
 	def test_invalid_add
@@ -138,6 +138,6 @@ class TridiagonalMatrixTest < Test::Unit::TestCase
 												    [0,2,1,3,0],
 												    [0,0,2,1,3],
 												    [0,0,0,2,1]])
-		assert_equal(@matrix1.getTranspose(), matrix1_transpose)
+		assert_equal(@matrix1.transpose, matrix1_transpose)
 	end
 end
