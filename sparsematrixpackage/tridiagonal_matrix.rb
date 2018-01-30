@@ -287,16 +287,16 @@ class TriDiagonalMatrix < Matrix
 	private 
 
 	def invariant()
-		identitymatrix = TridiagonalMatrix.rows(@num_rows, 1)
+		identitymatrix = self.rows(@num_rows, 1)
 		raise "Matrix does not satisfy A * A.inverse() = I invariant" unless multiplication(self.inverse_method()) == identitymatrix
 
 		raise "Matrix does not satisfy A.determinant() == 0 when I.inverse() == null invariant" unless self.determinant_method() == 0 && self.inverse_method() == nil
 		
-		identitymatrixCol = TridiagonalMatrix.rows(@num_columns, 1)
+		identitymatrixCol = self.rows(@num_columns, 1)
 		raise "Matrix does not satisfy A*I = A invariant" unless multiplication(identitymatrixCol) == self
 
 		raise "Matrix does not satisfy A+A = 2A" unless addition(self) == multiplication(2)
-		
+
 		subMatrix = subtraction(self)
 		raise "Matrix does not satisfy A-A = 0" unless subMatrix.upper_diagonal.all? {|val| val == 0 } && subMatrix.middle_diagonal.all? {|val| val == 0 } && subMatrix.lower_diagonal.all? {|val| val == 0 }
 
