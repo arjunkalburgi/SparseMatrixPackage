@@ -5,8 +5,6 @@ class TriDiagonalMatrix
 	
 	include Enumerable
 	
-	# extend Forwardable
-	
 	attr_reader :num_columns, :num_rows, :upper_diagonal, :middle_diagonal, :lower_diagonal
 	
 	def initialize(input)
@@ -266,17 +264,15 @@ class TriDiagonalMatrix
 	end 
 
 	def invariant()
-		if square?
-			identitymatrix = SparseMatrix.identity(@num_rows)
-			raise "Matrix does not satisfy A * A.getInverse() = I invariant" unless multiplication(inverse()) == identitymatrix
+		identitymatrix = self.new([[1]]).identity(@num_rows)
+		raise "Matrix does not satisfy A * A.getInverse() = I invariant" unless multiplication(getInverse()) == identitymatrix
 
-			raise "Matrix does not satisfy A.getDeterminant() == 0 when I.getInverse() == null invariant" unless getMatrixDeterminant() == 0 && inverse() == nil
-		end
+		raise "Matrix does not satisfy A.getDeterminant() == 0 when I.getInverse() == null invariant" unless getMatrixDeterminant() == 0 && inverse() == nil
 
-		raise "Matrix does not satisfy A*I = A invariant" unless multiplication(SparseMatrix.identity(@num_columns)) == self
+		raise "Matrix does not satisfy A*I = A invariant" unless multiplication(identity(@num_columns)) == self
 
 		raise "Matrix does not satisfy A+A = 2A" unless addition(self) == multiplication(2)
-		raise "Matrix does not satisfy A-A = 0" unless subtraction(self) == SparseMatrix.new(Hash.new(0))
+		raise "Matrix does not satisfy A-A = 0" unless subtraction(self) == self.new(Hash.new(0))
 
 		raise "Matrix must satisfy that itself is not null" unless !(@matrix_table.nil? && @matrix_table.values.any?{|val| val.nil? })
 	end
