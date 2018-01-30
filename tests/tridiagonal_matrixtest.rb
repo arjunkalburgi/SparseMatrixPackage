@@ -1,5 +1,6 @@
 require 'test/unit'
-require_relative '../TriDiagonalMatrixpackage/tridiagonal_matrix.rb'
+require 'matrix'
+require_relative '../sparsematrixpackage/tridiagonal_matrix.rb'
 
 class TridiagonalMatrixTest < Test::Unit::TestCase
 	def setup
@@ -75,27 +76,21 @@ class TridiagonalMatrixTest < Test::Unit::TestCase
 	
 	
 	def test_multiply
-		# this is not a triagonal matrix, what to do here?
-		multipliedMatrix = TriDiagonalMatrix.new([[11,4,28,0,0], 
-												  [18,27,28,4,0],
-												  [9,13,55,8,22],
-												  [0,30,24,25,29],
-												  [0,0,9,17,42]])
+		multipliedMatrix = Matrix.new([[11,4,28,0,0], 
+									   [18,27,28,4,0],
+									   [9,13,55,8,22],
+									   [0,30,24,25,29],
+									   [0,0,9,17,42]])
 		assert_equal(multipliedMatrix, @matrix1*@matrix2)
-		multipliedMatrix2 = TriDiagonalMatrix.new([[2,4,0,0,0],
-												   [6,2,4,0,0],
-												   [0,6,2,4,0],
-												   [0,0,6,2,4],
-												   [0,0,0,6,2]])
+		multipliedMatrix2 = Matrix.new([[2,4,0,0,0],
+										[6,2,4,0,0],
+										[0,6,2,4,0],
+										[0,0,6,2,4],
+										[0,0,0,6,2]])
 		assert_equal(multipliedMatrix2, @matrix1*2)
 	end
 	
-	# NOT DONE PAST THIS POINT
-	#
-	#
-	#
-	#
-	#
+	#not done
 	def test_divide
 		dividedMatrix = TriDiagonalMatrix.new([[2, 2], [0, 0]])
 		assert_equal(dividedMatrix, @matrix1/@matrix2)
@@ -106,27 +101,35 @@ class TridiagonalMatrixTest < Test::Unit::TestCase
 	def test_equals
 		assert(@matrix1==@matrix1)
 		assert(!@matrix1==@matrix2)
-		matrix3 = TriDiagonalMatrix.new([[8, 10], [0, 0]])
+		matrix3 = TriDiagonalMatrix.new([[1,2,0,0,0],
+										 [3,1,2,0,0],
+										 [0,3,1,2,0],
+										 [0,0,3,1,2],
+										 [0,0,0,3,1]])
 		assert(@matrix1==matrix3)
 	end
 	
 	def test_determinant
 		determinant = 85 #calculated by hand
-		assert_equal(determinant, @matrix1.getDeterminant)
+		assert_equal(determinant, @matrix1.getDeterminant())
 	end
 	
 	def test_inverse
-		@matrix1 = TriDiagonalMatrix.new([[4,7],
-									[2,6]])
-		inverseMatrix = [[0.6,-0.7],
-						[-0.2,0.4]] #calculated by hand
-		assert_equal(@matrix1, inverseMatrix)
+		inverseMatrix = TriDiagonalMatrix.new([[19/85,22/85,-4/17,-8/85,16/85],
+											   [33/85,-11/85,2/17,4/85,-8/85],
+											   [-9/17,3/17,5/17,2/17,-4/17],
+											   [-27/85,9/85,3/17,-11/85,22/85],
+											   [81/85,-27/85,-9/17,33/85,19/85]]) #calculated by hand
+		assert_equal(@matrix1.getInverse(), inverseMatrix)
 	end
 	
 	
 	def test_transpose
-		matrix1_transpose = [[8,0],
-							[10,0]]
+		matrix1_transpose = TriDiagonalMatrix.new([[1,3,0,0,0],
+												   [2,1,3,0,0],
+												   [0,2,1,3,0],
+												   [0,0,2,1,3],
+												   [0,0,0,2,1]])
 		assert_equal(@matrix1.getTranspose(), matrix1_transpose)
 	end
 end
