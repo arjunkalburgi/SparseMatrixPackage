@@ -30,14 +30,14 @@ class TriDiagonalMatrix < Matrix
 		#to minimize loops ran
 		#ensures there are 3 diagonals of proper sizes
 	
-		for i in 0..rows.size do 
+		for i in 0..rows.size-1 do 
 			# ensures that the input is correct
 			raise "Matrix not tridiagonal: rows of various sizes" unless 
 					@num_columns == rows[i].size
 			# ensures that matrix is nxn
 			raise "Matrix not tridiagonal: matrix not square" unless 
 					@num_rows == rows[i].size
-			for j in 0..rows[i].size do 
+			for j in 0..rows[i].size-1 do 
 				case i
 					when j - 1
 						upper_diag << rows[i][j]
