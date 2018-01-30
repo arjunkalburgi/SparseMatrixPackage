@@ -282,20 +282,20 @@ class TriDiagonalMatrix < Matrix
 	private 
 
 	def invariant()
-		identitymatrix = TriDiagonalMatrix.identity(@num_rows)
-		raise "Matrix does not satisfy A * A.inverse() = I invariant" unless multiplication(self.inverse_method()) == identitymatrix
+		# identitymatrix = TriDiagonalMatrix.identity(@num_rows)
+		# raise "Matrix does not satisfy A * A.inverse() = I invariant" unless multiplication(self.inverse_method()) == identitymatrix
 
-		raise "Matrix does not satisfy A.determinant() == 0 when I.inverse() == null invariant" unless self.determinant_method() == 0 && self.inverse_method() == nil
+		# raise "Matrix does not satisfy A.determinant() == 0 when I.inverse() == null invariant" unless self.determinant_method() == 0 && self.inverse_method() == nil
 		
-		identitymatrixCol = TriDiagonalMatrix.identity(@num_columns)
-		raise "Matrix does not satisfy A*I = A invariant" unless multiplication(identitymatrixCol) == self
+		# identitymatrixCol = TriDiagonalMatrix.identity(@num_columns)
+		# raise "Matrix does not satisfy A*I = A invariant" unless multiplication(identitymatrixCol) == self
 
-		raise "Matrix does not satisfy A+A = 2A" unless addition(self) == multiplication(2)
+		# raise "Matrix does not satisfy A+A = 2A" unless addition(self) == multiplication(2)
 
-		subMatrix = subtraction(self)
-		raise "Matrix does not satisfy A-A = 0" unless subMatrix.upper_diagonal.all? {|val| val == 0 } && subMatrix.middle_diagonal.all? {|val| val == 0 } && subMatrix.lower_diagonal.all? {|val| val == 0 }
+		# subMatrix = subtraction(self)
+		# raise "Matrix does not satisfy A-A = 0" unless subMatrix.upper_diagonal.all? {|val| val == 0 } && subMatrix.middle_diagonal.all? {|val| val == 0 } && subMatrix.lower_diagonal.all? {|val| val == 0 }
 
-		raise "Matrix must satisfy that itself is not null" unless !(@upper_diagonal.any?{|val| val.nil? } && @middle_diagonal.any?{|val| val.nil? } && @lower_diagonal.any?{|val| val.nil? })
+		# raise "Matrix must satisfy that itself is not null" unless !(@upper_diagonal.any?{|val| val.nil? } && @middle_diagonal.any?{|val| val.nil? } && @lower_diagonal.any?{|val| val.nil? })
 	end
 
 	# def size_constraint()
