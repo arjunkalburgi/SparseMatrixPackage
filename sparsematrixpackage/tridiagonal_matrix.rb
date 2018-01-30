@@ -10,7 +10,7 @@ class TriDiagonalMatrix < Matrix
 	# extend Forwardable
 	# delegate [:**, :hermitian?, :normal?, :permutation?] => to_m
 
-	attr_reader :upper_diagonal, :middle_diagonal, :lower_diagonal
+	attr_reader :upper_diagonal, :middle_diagonal, :lower_diagonal, :num_columns, :num_rows
 
 	def self.rows(rows, copy = true)
 		
@@ -67,19 +67,14 @@ class TriDiagonalMatrix < Matrix
 	end
 
 	def self.scalar(n, value)
-		#INVARIANT
-		
-		#PRE
-		size_constraint(n)
-
 		new Array.new(n-1) { 0 }, Array.new(n) { value }, Array.new(n-1) { 0 }
-
-		#POST
-		#INVARIANT
 	end 
 	
 	def initialize(upper_diag, middle_diag, lower_diag)
-		#PRE/INVARIANT covered by self methods above
+		# invariant()
+		#PRE
+		size_constraint()
+
 		@upper_diagonal = upper_diag
 		@middle_diagonal = middle_diag
 		@lower_diagonal = lower_diag
@@ -304,7 +299,7 @@ class TriDiagonalMatrix < Matrix
 	end
 
 	def size_constraint()
-		raise "Improper matrix size given" unless n > 0
+		raise "Improper matrix size given" unless @num_rows > 0
 	end 
 
 	def diagonal_array_sizes()
