@@ -151,26 +151,86 @@ class TriDiagonalMatrix
 
 	def real
 		invariant()
-		return_result_matrix = 
+		
+		return_result_matrix = self
+		return_result_matrix.upper_diagonal.map {|val| 
+			raise "Must be of type Numeric to test real/imaginary" unless val.respond_to?(:real) 
+			val.real
+		}
+		return_result_matrix.middle_diagonal.map {|val| 
+			raise "Must be of type Numeric to test real/imaginary" unless val.respond_to?(:real) 
+			val.real
+		}
+		return_result_matrix.lower_diagonal.map {|val| 
+			raise "Must be of type Numeric to test real/imaginary" unless val.respond_to?(:real) 
+			val.real
+		}
+
 		check_dimensions(return_result_matrix)
 		invariant()
 	end
 
 	def real?
 		invariant()
+
+		@upper_diagonal.map {|val| 
+			raise "Must be of type Numeric to test real/imaginary" unless val.respond_to?(:real?) 
+			return false unless val.real?
+		}
+		@middle_diagonal.map {|val| 
+			raise "Must be of type Numeric to test real/imaginary" unless val.respond_to?(:real?) 
+			return false unless val.real?
+		}
+		@lower_diagonal.map {|val| 
+			raise "Must be of type Numeric to test real/imaginary" unless val.respond_to?(:real?) 
+			return false unless val.real?
+		}
+
 		invariant()
+
+		true
 	end
 
 	def imaginary
 		invariant()
-		return_result_matrix = 
+		
+		return_result_matrix = self
+		return_result_matrix.upper_diagonal.map {|val| 
+			raise "Must be of type Numeric to test real/imaginary" unless val.respond_to?(:imaginary) 
+			val.imaginary
+		}
+		return_result_matrix.middle_diagonal.map {|val| 
+			raise "Must be of type Numeric to test real/imaginary" unless val.respond_to?(:imaginary) 
+			val.imaginary
+		}
+		return_result_matrix.lower_diagonal.map {|val| 
+			raise "Must be of type Numeric to test real/imaginary" unless val.respond_to?(:imaginary) 
+			val.imaginary
+		}
+
 		check_dimensions(return_result_matrix)
 		invariant()
 	end
 
 	def imaginary?
 		invariant()
+		
+		@upper_diagonal.map {|val| 
+			raise "Must be of type Numeric to test real/imaginary" unless val.respond_to?(:real?) 
+			return false unless !(val.real?)
+		}
+		@middle_diagonal.map {|val| 
+			raise "Must be of type Numeric to test real/imaginary" unless val.respond_to?(:real?) 
+			return false unless !(val.real?)
+		}
+		@lower_diagonal.map {|val| 
+			raise "Must be of type Numeric to test real/imaginary" unless val.respond_to?(:real?) 
+			return false unless !(val.real?)
+		}
+
 		invariant()
+
+		true
 	end
 
 	def [](i, j)
