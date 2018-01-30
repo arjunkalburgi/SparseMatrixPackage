@@ -265,10 +265,10 @@ class TriDiagonalMatrix
 
 		raise "Matrix does not satisfy A.getDeterminant() == 0 when I.getInverse() == null invariant" unless getMatrixDeterminant() == 0 && inverse() == nil
 
-		raise "Matrix does not satisfy A*I = A invariant" unless multiplication(identity(@num_columns)) == self
+		raise "Matrix does not satisfy A*I = A invariant" unless multiplication(self.identity(@num_columns)) == self
 
 		raise "Matrix does not satisfy A+A = 2A" unless addition(self) == multiplication(2)
-		raise "Matrix does not satisfy A-A = 0" unless subtraction(self) == self.new(Hash.new(0))
+		raise "Matrix does not satisfy A-A = 0" unless subtraction(self) == self.scalar(@num_rows, 0)
 
 		raise "Matrix must satisfy that itself is not null" unless !(@matrix_table.nil? && @matrix_table.values.any?{|val| val.nil? })
 	end
