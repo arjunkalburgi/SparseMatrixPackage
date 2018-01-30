@@ -55,10 +55,10 @@ class SparseMatrixTest < Test::Unit::TestCase
 	end
 	
 	def test_divide
-		dividedMatrix = SparseMatrix.new([[2, 2], [0, 0]])
+		dividedMatrix = SparseMatrix.new([[2, 0], [0, 0]])
 		assert_equal(dividedMatrix, @matrix1/@matrix2)
 		dividedMatrix2 = SparseMatrix.new([[4, 5], [0, 0]])
-		assert_equal(dividedMatrix2, matrix1/2)
+		assert_equal(dividedMatrix2, @matrix1/2)
 	end
 	
 	def test_equals
