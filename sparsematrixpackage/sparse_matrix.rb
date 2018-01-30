@@ -18,7 +18,7 @@ class SparseMatrix
 			raise "Not all columns are the same size." unless matrixarray[i].size == @num_columns 
 			matrixarray[i].each_index do |j|
 				if matrixarray[i][j] != 0
-					@matrix_table[{row: i, col: j}] = matrixarray[i][j]
+					@matrix_table[{row: i, column: j}] = matrixarray[i][j]
 				end
 			end
 		end
@@ -45,6 +45,9 @@ class SparseMatrix
 				self.rows(inputs.to_a())
 			when Hash
 				@matrix_table = input
+				# assume the maximum row and col given gives the dimensions (to be changed in proper implementation)
+				@num_rows = input.keys.map{|key| key[:row]}.max
+				@num_columns = input.keys.map{|key| key[:column]}.max
 			else 
 		end
 	end
@@ -128,7 +131,7 @@ class SparseMatrix
 
 		resultmatrix = transpose()
 		
-		check_correct_dimensions_after_transpose(resultmatrix, {rows: @num_rows, columns: @num_columns})
+		check_correct_dimensions_after_transpose(resultmatrix, {row: @num_rows, column: @num_columns})
 		invariant()
 	end
 	
@@ -248,7 +251,7 @@ class SparseMatrix
 
 		def check_correct_dimensions_after_transpose(result, current_dimensions) 
 			begin
-				raise "Incorrect matrix dimensions." unless current_dimensions[:rows] == @num_columns && @num_rows == current_dimensions[:columns]
+				raise "Incorrect matrix dimensions." unless current_dimensions[:row] == @num_columns && @num_rows == current_dimensions[:column]
 			end
 		end 
 end
