@@ -138,7 +138,7 @@ class TriDiagonalMatrix < Matrix
 		check_tridiagonality(other_matrix)
 		check_dimensions(other_matrix)
 		
-		multiplication()
+		multiplication(other_matrix)
 		#POST
 		# this sparse matrix has been multiplied by given matrix 
 		#INVARIANT
@@ -151,19 +151,13 @@ class TriDiagonalMatrix < Matrix
 		#PRE 
 		check_tridiagonality(other_matrix)
 		check_dimensions(other_matrix)
+
+		division(other_matrix)
 		
 		#POST
 		# this sparse matrix has been divided by given matrix 
 		#INVARIANT
 		
-	end
-	
-	def /(other_matrix)
-		if other_matrix.respond_to?("inverse")
-			self * other_matrix.inverse
-		else 
-			map {|x| x/other_matrix}	
-		end
 	end
 
 
@@ -276,6 +270,14 @@ class TriDiagonalMatrix < Matrix
 		middle = [@middle_diagonal, other_matrix.get_middle_diagonal].transpose.map {|x| x.reduce(:-)}
 		lower = [@lower_diagonal, other_matrix.get_lower_diagonal].transpose.map {|x| x.reduce(:-)}
 	end 
+
+	def division(other_matrix)
+		if other_matrix.respond_to?("inverse")
+			self * other_matrix.inverse
+		else 
+			map {|x| x/other_matrix}	
+		end
+	end
 
 	alias_method :column_count, :row_count
 	alias_method :det, :determinant
