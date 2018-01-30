@@ -25,11 +25,11 @@ class MatrixFactoryTest < Test::Unit::TestCase
     end
     
     def test_bad_create
-		assert_throws("Matrix input must be an array of arrays"){
+		assert_raise("Matrix input must be an array of arrays") do
 			MatrixFactory.create(SparseMatrix, 123)
-		}
-		assert_throws("Matrix input must be an array of arrays"){
+		end
+		assert_raise("Matrix input must be an array of arrays") do
 			MatrixFactory.create(TriDiagonalMatrix, "lol")
-		}
+		end
     end
 end

@@ -27,13 +27,13 @@ class TridiagonalMatrixTest < Test::Unit::TestCase
 	end
 	
 	def test_bad_create
-		assert_throws("Matrix not tridiagonal: does not obey upper and lower Hessenberg matrix properties") {
+		assert_raise("Matrix not tridiagonal: does not obey upper and lower Hessenberg matrix properties") do
 		tridiagonal = TriDiagonalMatrix.rows([[1,2,0,0,5],
 											 [0,1,2,0,0],
 											 [0,3,0,0,0],
 											 [0,0,3,1,2],
 											 [5,0,0,3,1]])
-		}
+		end
 	end
 	
 	def test_add
