@@ -5,7 +5,9 @@ require 'matrix'
 class TriDiagonalMatrix < Matrix
 	# let matrix handle these functions
 	# delegate [:+, :**, :-, :hermitian?, :normal?, :permutation?] => :Matrix.send(:new, to_a)
-		 
+
+	public 
+	
 	def initialize(matrix_array)
 		#PRE
 		
@@ -151,9 +153,9 @@ class TriDiagonalMatrix < Matrix
 	end
 		
 	def determinant
-# 		@middle_diagonal[1..-1].zip(@upper_diagonal, @lower_diagonal).reduce([1, @middle_diagonal[0]]) do |c, x|
-# 			c << x[0] * c.last - x[1] * x[2] * c[-2]
-# 		end.last
+		# @middle_diagonal[1..-1].zip(@upper_diagonal, @lower_diagonal).reduce([1, @middle_diagonal[0]]) do |c, x|
+		# 	c << x[0] * c.last - x[1] * x[2] * c[-2]
+		# end.last
 	end
 		
 # 	def transpose!
@@ -232,5 +234,14 @@ class TriDiagonalMatrix < Matrix
 		middle = [@middle_diagonal, other_matrix.get_middle_diagonal].transpose.map {|x| x.reduce(:-)}
 		lower = [@lower_diagonal, other_matrix.get_lower_diagonal].transpose.map {|x| x.reduce(:-)}
 	end 
+
+	alias_method :column_count, :row_count
+	alias_method :det, :determinant
+	alias_method :inspect, :to_s
+	alias_method :[], :get_value
+	alias_method :collect, :map
+	alias_method :lower_triangular?, :upper_triangular?
+	alias_method :tr, :trace
+	alias_method :t, :transpose
 
 end
