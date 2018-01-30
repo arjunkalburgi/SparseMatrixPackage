@@ -4,17 +4,16 @@ class SparseMatrix
 	attr_reader :matrix_table, :num_rows, :num_columns
 
 	def self.identity(size)
-		new_sparse = {num_columns: size, num_rows: size, matrix_table: {}}
-		(0..size).each do |i|
-			new_sparse[:matrix_table][{row: i, column: i}] = 1
-		end
+		scalar(size, 0)
 	end
 
 	def self.scalar(n, value)
+		new_sparse = {num_columns: n, num_rows: n, matrix_table: {}}
 		(0..n).each do |i|
-			@matrix_table[{row: i, column: i}] = value
+			new_sparse[:matrix_table][{row: i, column: i}] = value
 		end
-	end 
+		new_sparse
+	end
 	
 	def initialize(input)
 		case input 
@@ -30,6 +29,17 @@ class SparseMatrix
 			else 
 				raise "Input must be of type Array (array of arrays), Matrix or Hash."
 		end
+	end
+	
+	def ==(other_matrix)
+		invariant()
+		check_matching_dimensions(other_matrix)
+		
+		result = (@matrix_table == other_matrix.matrix_table)
+		
+		invariant()
+
+		result
 	end
 	
 	def +(other_matrix)
@@ -80,11 +90,11 @@ class SparseMatrix
 		result_matrix
 	end
 	
-	def getDeterminant()
+	def determinant
 		invariant()
 		check_square_matrix()
 		
-		result = getMatrixDeterminant()
+		result = getDeterminant()
 
 		check_result_is_number(result)
 		invariant()
@@ -92,22 +102,10 @@ class SparseMatrix
 		result
 	end
 	
-	def getInverse()
-		invariant()
-		check_square_matrix()
-		
-		result_matrix = inverse()
-
-		check_square_matrix()
+	def transpose
 		invariant()
 
-		result_matrix
-	end
-	
-	def getTranspose()
-		invariant()
-
-		result_matrix = transpose()
+		result_matrix = getTranspose()
 		
 		check_correct_dimensions_after_transpose(result_matrix, {row: @num_rows, column: @num_columns})
 		invariant()
@@ -115,18 +113,19 @@ class SparseMatrix
 		result_matrix
 	end
 	
-	def ==(other_matrix)
+	def inverse
 		invariant()
-		check_matching_dimensions(other_matrix)
+		check_square_matrix()
 		
-		result = (@matrix_table == other_matrix.matrix_table)
-		
+		result_matrix = getInverse()
+
+		check_square_matrix()
 		invariant()
 
-		result
+		result_matrix
 	end
 
-	def real() 
+	def real 
 		invariant()
 
 		result_matrix = self
@@ -141,7 +140,7 @@ class SparseMatrix
 		result_matrix
 	end
 
-	def real?()
+	def real?
 		invariant()
 
 		@matrix_table.keys.each do |key|
@@ -154,7 +153,7 @@ class SparseMatrix
 		true
 	end
 	
-	def imaginary() 
+	def imaginary 
 		invariant()
 
 		result_matrix = self
@@ -169,7 +168,7 @@ class SparseMatrix
 		result_matrix
 	end
 
-	def imaginary?()
+	def imaginary?
 		invariant()
 
 		@matrix_table.keys.each do |key|
@@ -180,6 +179,22 @@ class SparseMatrix
 		invariant()
 
 		true 
+	end
+
+	def square? 
+		@num_rows == @num_columns
+	end
+
+	def [](row, column)
+		@matrix_table[{row: row, column: column}]
+	end
+
+	def to_a
+		array = Array.new(@num_rows){Array.new(@num_columns,0)}
+		@matrix_table.keys.each do |key|
+			array[key[:row]][key[:column]] = @matrix_table[key]
+		end
+		array
 	end
 
 
@@ -215,25 +230,25 @@ class SparseMatrix
 				puts "multiply"
 			end
 
-			def getMatrixDeterminant()
+			def getDeterminant
 				puts "determinant"
 			end
 
-			def inverse()
+			def getInverse
 				puts "invert"
 			end
 
-			def transpose()
+			def getTranspose
 				puts "transpose"
 			end
 		
 		# TESTS
-			def invariant()
+			def invariant
 				if square?
 					identitymatrix = SparseMatrix.identity(@num_rows)
-					raise "Matrix does not satisfy A * A.getInverse() = I invariant" unless multiplication(inverse()) == identitymatrix
+					raise "Matrix does not satisfy A * A.inverse() = I invariant" unless multiplication(getInverse()) == identitymatrix
 
-					raise "Matrix does not satisfy A.getDeterminant() == 0 when I.getInverse() == null invariant" unless getMatrixDeterminant() == 0 && inverse() == nil
+					raise "Matrix does not satisfy A.getDeterminant() == 0 when I.inverse() == null invariant" unless getDeterminant() == 0 && getInverse() == nil
 				end
 
 				raise "Matrix does not satisfy A*I = A invariant" unless multiplication(SparseMatrix.identity(@num_columns)) == self
@@ -242,10 +257,6 @@ class SparseMatrix
 				raise "Matrix does not satisfy A-A = 0" unless subtraction(self) == SparseMatrix.new(Hash.new(0))
 
 				raise "Matrix must satisfy that itself is not null" unless !(@matrix_table.nil? && @matrix_table.values.any?{|val| val.nil? })
-			end
-
-			def square? 
-				@num_rows == @num_columns
 			end
 
 			def check_matching_dimensions(other_matrix)
@@ -274,7 +285,7 @@ class SparseMatrix
 				end
 			end
 
-			def check_square_matrix()
+			def check_square_matrix
 				begin
 					raise "Cannot perform operation, matrix not square." unless @num_columns == @num_rows
 				end
@@ -290,6 +301,12 @@ class SparseMatrix
 				begin
 					raise "Incorrect matrix dimensions." unless current_dimensions[:row] == @num_columns && @num_rows == current_dimensions[:column]
 				end
-			end 
+			end
+
+	alias_method :det, :determinant
+	alias_method :getDeterminant, :determinant
+	alias_method :getTranspose, :transpose
+	alias_method :t, :transpose
+	alias_method :eql?,  :==
 end
 
