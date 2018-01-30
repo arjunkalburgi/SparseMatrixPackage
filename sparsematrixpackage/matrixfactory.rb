@@ -8,7 +8,7 @@ module MatrixFactory
             raise "Matrix input must be an array of arrays" unless matrixarray.is_a? Array
         end
 
-        classname.new(matrixarray)
+        classname.rows(matrixarray)
     end
     
 end
