@@ -23,13 +23,13 @@ class SparseMatrixTest < Test::Unit::TestCase
 	end
 	
 	def test_invalid_add
-		assert_throws("Cannot perform operation, deminsions do not match."){
+		assert_raise("Cannot perform operation, deminsions do not match.") do
 			@matrix1+5
-		}
+		end
 		matrix3 = SparseMatrix.new([[12, 15], [1, 4], [9, 0]])
-		assert_throws("Cannot perform operation, deminsions do not match."){
+		assert_raise("Cannot perform operation, deminsions do not match.") do
 			@matrix1+matrix3
-		}
+		end
 	end
 	
 	def test_subtract
@@ -38,13 +38,13 @@ class SparseMatrixTest < Test::Unit::TestCase
 	end
 	
 	def test_invalid_subtract
-		assert_throws("Cannot perform operation, deminsions do not match."){
+		assert_raise("Cannot perform operation, deminsions do not match.") do
 			@matrix1-5
-		}
+		end
 		matrix3 = SparseMatrix.new([[12, 15], [1, 4], [9, 0]])
-		assert_throws("Cannot perform operation, deminsions do not match."){
+		assert_raise("Cannot perform operation, deminsions do not match.") do
 			@matrix1-matrix3
-		}
+		end
 	end
 	
 	def test_multiply
@@ -72,7 +72,7 @@ class SparseMatrixTest < Test::Unit::TestCase
 		@matrix1 = SparseMatrix.new([[3, 8],
 									[4, 6]])
 		determinant = -14 #calculated by hand
-		assert_equal(determinant, @matrix1.getDeterminant)
+		assert_equal(determinant, @matrix1.determinant)
 	end
 	
 	def test_inverse
@@ -80,14 +80,14 @@ class SparseMatrixTest < Test::Unit::TestCase
 									[2,6]])
 		inverseMatrix = [[0.6,-0.7],
 						[-0.2,0.4]] #calculated by hand
-		assert_equal(@matrix1, inverseMatrix)
+		assert_equal(@matrix1.inverse, inverseMatrix)
 	end
 	
 	
 	def test_transpose
 		matrix1_transpose = [[8,0],
 							[10,0]]
-		assert_equal(@matrix1.getTranspose(), matrix1_transpose)
+		assert_equal(@matrix1.transpose, matrix1_transpose)
 	end
 	
 end
