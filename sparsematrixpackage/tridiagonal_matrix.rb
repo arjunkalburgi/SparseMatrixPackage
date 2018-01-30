@@ -323,7 +323,7 @@ class TriDiagonalMatrix < Matrix
 	end
 
 	def check_dimensions(other_matrix)
-		raise "Matricies do not have the same dimentions" unless @middle_diagonal.size == other_matrix.middle_diagonal.size
+		raise "Matricies do not have the same dimentions" unless row_count == other_matrix.row_count
 	end
 
 	def check_correct_dimensions_after_multiplication(othermatrix, result)
