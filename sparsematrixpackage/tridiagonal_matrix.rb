@@ -10,7 +10,7 @@ class TriDiagonalMatrix
 	# extend Forwardable
 	# delegate [:**, :hermitian?, :normal?, :permutation?] => to_m
 
-	attr_reader :upper_diagonal, :middle_diagonal, :lower_diagonal, :num_columns, :num_rows
+	attr_reader :num_columns, :num_rows
 
 	def self.rows(rows, copy = true)
 		
@@ -292,6 +292,8 @@ class TriDiagonalMatrix
 	end
 	
 	private 
+
+	attr_writer :upper_diagonal, :middle_diagonal, :lower_diagonal
 
 	def invariant()
 		# identitymatrix = TriDiagonalMatrix.identity(@num_rows)
