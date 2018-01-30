@@ -5,6 +5,14 @@ class TriDiagonalMatrix
 	
 	attr_reader :num_columns, :num_rows, :upper_diagonal, :middle_diagonal, :lower_diagonal
 	
+	def self.identity(size)
+		scalar(size, 1)
+	end
+
+	def self.scalar(n, value)
+		new Array.new(n-1) { 0 }, Array.new(n) { value }, Array.new(n-1) { 0 }
+	end 
+
 	def initialize(input)
 		# invariant()
 		#PRE
@@ -251,28 +259,8 @@ class TriDiagonalMatrix
 		end 
 	end
 
-	def identity(size)
-		scalar(size, 1)
-	end
-
-	def scalar(n, value)
-		@upper_diagonal = Array.new(n-1) { 0 }
-		@middle_diagonal = Array.new(n) { value }
-		@lower_diagonal = Array.new(n-1) { 0 }
-	end 
-
 	def invariant()
-		# identitymatrix = TriDiagonalMatrix.identity(@num_rows)
-		# raise "Matrix does not satisfy A * A.inverse() = I invariant" unless multiplication(self.inverse_method()) == identitymatrix
-
-	def scalar(n, value)
-		@upper_diagonal = Array.new(n-1) { 0 }
-		@middle_diagonal = Array.new(n) { value }
-		@lower_diagonal = Array.new(n-1) { 0 }
-	end 
-
-	def invariant()
-		identitymatrix = self.new([[1]]).identity(@num_rows)
+		identitymatrix = self.identity(@num_rows)
 		raise "Matrix does not satisfy A * A.getInverse() = I invariant" unless multiplication(getInverse()) == identitymatrix
 
 		raise "Matrix does not satisfy A.getDeterminant() == 0 when I.getInverse() == null invariant" unless getMatrixDeterminant() == 0 && inverse() == nil
