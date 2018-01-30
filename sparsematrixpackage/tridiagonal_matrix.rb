@@ -70,13 +70,14 @@ class TriDiagonalMatrix < Matrix
 
 	def self.scalar(n, value)
 		#INVARIANT
-		#PRE - not necessary as the square matrix will be set by n
-		upper_diag = Array.new(n-1) { 0 }
-		middle_diag = Array.new(n) { value }
-		lower_diag = Array.new(n-1) { 0 }
+		
+		#PRE
+		size_constraint(n)
+
+		new Array.new(n-1) { 0 }, Array.new(n) { value }, Array.new(n-1) { 0 }
+		
 		#POST
 		#INVARIANT
-		new upper_diag, middle_diag, lower_diag
 	end 
 	
 	def initialize(upper_diag, middle_diag, lower_diag)
@@ -218,6 +219,13 @@ class TriDiagonalMatrix < Matrix
 		Array.new(row_count) { |i|	row(i).to_a }
 	end
 
+	def row(i)
+		return self unless i < row_count
+		row = Array.new(row_count) { |j| self[i, j] }
+		row.each(&Proc.new) if block_given?
+		Vector.elements(row, false)
+	end
+
 	def map
 		# return to_enum :map unless block_given?
 		# block = Proc.new
@@ -254,6 +262,10 @@ class TriDiagonalMatrix < Matrix
 	# all private methods
 	
 	private 
+
+	def size_constraint()
+		raise "Improper matrix size given" unless n > 0
+	end 
 
 	def diagonal_array_sizes()
 		raise "The diagonal arrays are of improper size" unless 
