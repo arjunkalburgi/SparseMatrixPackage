@@ -263,13 +263,11 @@ class TriDiagonalMatrix < Matrix
 # 	end
 
 	def upper_triangular?
-		return false unless @upper_diagonal.any? {|val| val > 0} && @middle_diagonal.any? {|val| val > 0}
-			&& @lower_diagonal.all? {|val| val == 0}
+		return false unless @upper_diagonal.any? {|val| val > 0} && @middle_diagonal.any? {|val| val > 0} && @lower_diagonal.all? {|val| val == 0}
 	end
 
 	def lower_triangular?
-		return false unless @lower_diagonal.any? {|val| val > 0} && @middle_diagonal.any? {|val| val > 0}
-			&& @upper_diagonal.all? {|val| val == 0}
+		return false unless @lower_diagonal.any? {|val| val > 0} && @middle_diagonal.any? {|val| val > 0} && @upper_diagonal.all? {|val| val == 0}
 	end
 
 	def square?
