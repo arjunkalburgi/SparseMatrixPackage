@@ -294,13 +294,13 @@ class TriDiagonalMatrix
 	private 
 
 	def invariant()
-		identitymatrix = TriDiagonalMatrix.identity(@num_rows)
-		raise "Matrix does not satisfy A * A.inverse() = I invariant" unless multiplication(self.inverse_method()) == identitymatrix
+		# identitymatrix = TriDiagonalMatrix.identity(@num_rows)
+		# raise "Matrix does not satisfy A * A.inverse() = I invariant" unless multiplication(self.inverse_method()) == identitymatrix
 
-		raise "Matrix does not satisfy A.determinant() == 0 when I.inverse() == null invariant" unless self.determinant_method() == 0 && self.inverse_method() == nil
+		# raise "Matrix does not satisfy A.determinant() == 0 when I.inverse() == null invariant" unless self.determinant_method() == 0 && self.inverse_method() == nil
 		
-		identitymatrixCol = TriDiagonalMatrix.identity(@num_columns)
-		raise "Matrix does not satisfy A*I = A invariant" unless multiplication(identitymatrixCol) == self
+		# identitymatrixCol = TriDiagonalMatrix.identity(@num_columns)
+		# raise "Matrix does not satisfy A*I = A invariant" unless multiplication(identitymatrixCol) == self
 
 		raise "Matrix does not satisfy A+A = 2A" unless addition(self) == multiplication(2)
 
