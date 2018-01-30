@@ -235,13 +235,13 @@ class TriDiagonalMatrix < Matrix
 		lower = [@lower_diagonal, other_matrix.get_lower_diagonal].transpose.map {|x| x.reduce(:-)}
 	end 
 
-	alias_method :column_count, :row_count
+	# alias_method :column_count, :row_count
 	alias_method :det, :determinant
-	alias_method :inspect, :to_s
-	alias_method :[], :get_value
-	alias_method :collect, :map
-	alias_method :lower_triangular?, :upper_triangular?
-	alias_method :tr, :trace
+	# alias_method :inspect, :to_s
+	# alias_method :[], :get_value
+	# alias_method :collect, :map
+	# alias_method :lower_triangular?, :upper_triangular?
+	# alias_method :tr, :trace
 	alias_method :t, :transpose
 
 end
