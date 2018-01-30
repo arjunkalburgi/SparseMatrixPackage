@@ -1,3 +1,4 @@
+require 'matrix'
 
 class TriDiagonalMatrix
 	
@@ -8,7 +9,7 @@ class TriDiagonalMatrix
 	end
 
 	def self.scalar(n, value)
-		new Array.new(n-1) { 0 }, Array.new(n) { value }, Array.new(n-1) { 0 }
+		new Matrix.scalar(n, value)
 	end 
 
 	def initialize(input)
