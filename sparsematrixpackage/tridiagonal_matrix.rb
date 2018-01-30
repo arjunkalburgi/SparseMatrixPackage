@@ -50,9 +50,6 @@ class TriDiagonalMatrix < Matrix
 				end		
 			end
 		end 
-
-		#POST
-		diagonal_array_sizes()
 		
 		#INVARIANT
 		new upper_diag, middle_diag, lower_diag
@@ -87,6 +84,10 @@ class TriDiagonalMatrix < Matrix
 		@upper_diagonal = upper_diag
 		@middle_diagonal = middle_diag
 		@lower_diagonal = lower_diag
+
+		#POST
+		diagonal_array_sizes()
+		
 		self
 	end
 
