@@ -19,7 +19,7 @@ class TriDiagonalMatrix < Matrix
 		@num_columns = (rows[0] || []).size
 		@num_rows = rows.size 
 		
-		upper_diagonal = []
+		upper_diag = []
 		middle_diag = []
 		lower_diag = []
 		
@@ -38,7 +38,7 @@ class TriDiagonalMatrix < Matrix
 			for j in 0..rows[i].size do 
 				case i
 					when j - 1
-						upper_diagonal << rows[i][j]
+						upper_diag << rows[i][j]
 					when j
 						middle_diag << rows[i][j]
 					when j + 1
@@ -53,7 +53,7 @@ class TriDiagonalMatrix < Matrix
 		diagonal_array_sizes()
 		
 		#INVARIANT
-		new upper_diagonal, middle_diag, lower_diag
+		new upper_diag, middle_diag, lower_diag
 	end
 
 	# def self.build(*row_count)
@@ -75,7 +75,7 @@ class TriDiagonalMatrix < Matrix
 		size_constraint(n)
 
 		new Array.new(n-1) { 0 }, Array.new(n) { value }, Array.new(n-1) { 0 }
-		
+
 		#POST
 		#INVARIANT
 	end 
@@ -170,6 +170,11 @@ class TriDiagonalMatrix < Matrix
 
 
 	def determinant
+		#INVARIANT
+		#PRE - not necessary to check if square, since tridiagonal matrices are square
+		#POST
+		#INVARIANT
+
 		# @middle_diagonal[1..-1].zip(@upper_diagonal, @lower_diagonal).reduce([1, @middle_diagonal[0]]) do |c, x|
 		# 	c << x[0] * c.last - x[1] * x[2] * c[-2]
 		# end.last
