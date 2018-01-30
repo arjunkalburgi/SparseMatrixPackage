@@ -2,10 +2,11 @@
 require 'matrix'
 
 # inherits from Matrix for utilization of 
-class TriDiagonalMatrix < Matrix
+class TriDiagonalMatrix
 	# let matrix handle these functions
-	# delegate [:+, :**, :-, :hermitian?, :normal?, :permutation?] => :Matrix.send(:new, to_a)
-
+	# delegate [:**, :hermitian?, :normal?, :permutation?] => :Matrix.send(:new, to_a)
+	include Matrix
+	
 	public 
 	
 	def initialize(matrix_array)
