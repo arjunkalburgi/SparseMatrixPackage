@@ -1,3 +1,4 @@
+require 'matrix'
 
 class TriDiagonalMatrix
 	
@@ -8,13 +9,10 @@ class TriDiagonalMatrix
 	end
 
 	def self.scalar(n, value)
-		new Array.new(n-1) { 0 }, Array.new(n) { value }, Array.new(n-1) { 0 }
+		new Matrix.scalar(n, value)
 	end 
 
 	def initialize(input)
-		# invariant()
-		#PRE
-		
 		case input
 			when Array
 				rows(input)
@@ -25,8 +23,8 @@ class TriDiagonalMatrix
 		end
 
 		#POST
-		diagonal_array_sizes()
-		# invariant()
+		check_diagonal_array_sizes()
+		invariant()
 	end
 
 	def ==(other_object) 
@@ -46,10 +44,11 @@ class TriDiagonalMatrix
 		check_tridiagonality(other_matrix)
 		check_dimensions(other_matrix)
 
-		return_result_matrix = addition(other_matrix)
+		return_result_matrix = addition(self, other_matrix)
 		
 		#POST
 		check_dimensions(return_result_matrix)
+		check_opposite_order_addition(other_matrix, return_result_matrix)
 		
 		invariant()
 
@@ -73,17 +72,23 @@ class TriDiagonalMatrix
 		return_result_matrix
 	end
 	
-	def *(other_matrix)
+	def *(other)
 		invariant()
 
-		#PRE 
-		check_tridiagonality(other_matrix)
-		check_dimensions(other_matrix)
-		
-		return_result_matrix = multiplication(other_matrix)
-		#POST
-		check_correct_dimensions_after_multiplication(other_matrix, return_result_matrix)
-		
+		return_result_matrix = nil
+		case other
+			when TriDiagonalMatrix
+				#PRE 
+				check_tridiagonality(other)
+				check_dimensions(other)
+				
+				return_result_matrix = multiplication(other)
+				#POST
+				check_correct_dimensions_after_multiplication(return_result_matrix)
+			else
+				return_result_matrix = self *(new other)
+		end
+
 		invariant()
 
 		return_result_matrix
@@ -110,15 +115,16 @@ class TriDiagonalMatrix
 	def determinant
 		invariant()
 
-		#PRE - not necessary to check if square, since tridiagonal matrices are square
+		#PRE - none as it is guaranteed to be square tridiagonal at this point
 
-		return_determinant = determinant_method()
+		result = determinant_method()
 
 		#POST
+		check_result_is_number(result)
 		
 		invariant()
 
-		return_determinant
+		result
 	end
 
 	def transpose
@@ -129,6 +135,7 @@ class TriDiagonalMatrix
 		return_result_matrix = transpose_method()
 
 		#POST
+		check_dimensions(return_result_matrix)
 
 		invariant()
 
@@ -138,11 +145,12 @@ class TriDiagonalMatrix
 	def inverse
 		invariant()
 
-		#PRE
+		#PRE - none as it is guaranteed to be square tridiagonal at this point
 
 		return_result_matrix = inverse_method()
 
 		#POST
+		check_dimensions(return_result_matrix)
 
 		invariant()
 
@@ -318,20 +326,23 @@ class TriDiagonalMatrix
 	end
 
 	def invariant()
-		identitymatrix = TriDiagonalMatrix.identity(@num_rows)
-		raise "Matrix does not satisfy A * A.getInverse() = I invariant" unless multiplication(getInverse()) == identitymatrix
+		raise "TriDiagonalMatrix does not satisfy that it should be square" unless @num_rows == @num_columns
+
+		raise "Matrix does not satisfy A * A.getInverse() = I invariant" unless multiplication(getInverse()) == TriDiagonalMatrix.identity(@num_rows)
 
 		raise "Matrix does not satisfy A.getDeterminant() == 0 when I.getInverse() == null invariant" unless getMatrixDeterminant() == 0 && getInverse() == nil
 
 		raise "Matrix does not satisfy A*I = A invariant" unless multiplication(TriDiagonalMatrix.identity(@num_columns)) == self
+		raise "Matrix does not satisfy A*(0 matrix) = 0 matrix" unless multiplication(TriDiagonalMatrix.scalar(@num_columns, 0)) == TriDiagonalMatrix.scalar(@num_columns, 0)
 
-		raise "Matrix does not satisfy A+A = 2A" unless addition(self) == multiplication(2)
+		raise "Matrix does not satisfy A+A = 2A" unless addition(self, self) == multiplication(2)
 		raise "Matrix does not satisfy A-A = 0" unless subtraction(self) == TriDiagonalMatrix.scalar(@num_rows, 0)
+		raise "Matrix does not satisfy A+0 = A" unless addition(self, TriDiagonalMatrix.scalar(@num_rows, 0)) == self
 
 		raise "Matrix must satisfy that itself is not null" unless !(@upper_diagonal.any?{|val| val.nil? } && @middle_diagonal.any?{|val| val.nil? } && @lower_diagonal.any?{|val| val.nil? })
 	end
 
-	def diagonal_array_sizes()
+	def check_diagonal_array_sizes()
 		raise "The diagonal arrays are of improper size" unless @middle_diagonal.size == @upper_diagonal.size+1 && @middle_diagonal.size == @lower_diagonal.size+1
 	end
 
@@ -343,11 +354,19 @@ class TriDiagonalMatrix
 		raise "Matricies do not have the same dimensions" unless @num_rows == other_matrix.num_rows
 	end
 
-	def check_correct_dimensions_after_multiplication(othermatrix, result)
+	def check_correct_dimensions_after_multiplication(result)
 		raise "Multiplication dimensions are incorrect." unless @num_rows == result.num_rows && @num_columns == result.num_columns
 	end
 
-	def addition(other_matrix)
+	def check_opposite_order_addition(other_matrix, return_result_matrix)
+		raise "Order should have been maintained." unless addition(other_matrix, self) == return_result_matrix
+	end
+
+	def check_result_is_number(result) 
+		raise "Result is a number" unless result.is_a? Numeric
+	end
+
+	def addition(this_matrix, other_matrix)
 		puts "add"
 	end
 
