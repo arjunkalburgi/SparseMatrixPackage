@@ -72,8 +72,8 @@ class TriDiagonalMatrix < Matrix
 	
 	def initialize(upper_diag, middle_diag, lower_diag)
 		# invariant()
-		# #PRE
-		# size_constraint()
+		#PRE
+		size_constraint()
 
 		@upper_diagonal = upper_diag
 		@middle_diagonal = middle_diag
@@ -119,6 +119,8 @@ class TriDiagonalMatrix < Matrix
 		check_dimensions(return_matrix)
 		
 		invariant()
+
+		return_matrix
 	end
 	
 	def -(other_matrix)
@@ -134,6 +136,8 @@ class TriDiagonalMatrix < Matrix
 		check_dimensions(return_matrix)
 		
 		invariant()
+
+		return_matrix
 	end
 	
 	def *(other_matrix)
@@ -148,6 +152,8 @@ class TriDiagonalMatrix < Matrix
 		check_correct_dimensions_after_multiplication(other_matrix, return_matrix)
 		
 		invariant()
+
+		return_matrix
 	end
 	
 	def /(other_matrix)
@@ -163,6 +169,8 @@ class TriDiagonalMatrix < Matrix
 		check_correct_dimensions_after_multiplication(other_matrix, return_matrix)
 		
 		invariant()
+
+		return_matrix
 	end
 
 
@@ -171,11 +179,13 @@ class TriDiagonalMatrix < Matrix
 
 		#PRE - not necessary to check if square, since tridiagonal matrices are square
 
-		determinant_method()
+		return_determinant = determinant_method()
 
 		#POST
 		
 		invariant()
+
+		return_determinant
 	end
 
 	def transpose
@@ -183,11 +193,13 @@ class TriDiagonalMatrix < Matrix
 
 		#PRE - none as it is guaranteed to be square tridiagonal at this point
 
-		transpose_method()
+		return_transpose = transpose_method()
 
 		#POST
 
 		invariant()
+
+		return_transpose
 	end 
 
 	def inverse
@@ -195,11 +207,13 @@ class TriDiagonalMatrix < Matrix
 
 		#PRE
 
-		inverse_method()
+		return_inverse = inverse_method()
 
 		#POST
 
 		invariant()
+
+		return_inverse
 	end
 
 	def [](i, j)
@@ -216,7 +230,7 @@ class TriDiagonalMatrix < Matrix
 	end
 
 	def row_count
-		@middle_diagonal.size
+		@num_rows
 	end
 
 	def to_a
@@ -325,7 +339,7 @@ class TriDiagonalMatrix < Matrix
 	end
 
 	def check_dimensions(other_matrix)
-		raise "Matricies do not have the same dimentions" unless row_count() == other_matrix.row_count()
+		raise "Matricies do not have the same dimensions" unless @num_rows == other_matrix.num_rows
 	end
 
 	def check_correct_dimensions_after_multiplication(othermatrix, result)
@@ -362,9 +376,9 @@ class TriDiagonalMatrix < Matrix
 
 	alias_method :column_count, :row_count
 	alias_method :det, :determinant
+	alias_method :t, :transpose
 	# alias_method :inspect, :to_s
 	# alias_method :collect, :map
 	# alias_method :tr, :trace
-	alias_method :t, :transpose
 
 end
