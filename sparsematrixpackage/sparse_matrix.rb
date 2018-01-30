@@ -1,3 +1,4 @@
+require 'matrix'
 
 class SparseMatrix
 
@@ -8,11 +9,7 @@ class SparseMatrix
 	end
 
 	def self.scalar(n, value)
-		new_sparse = {num_columns: n, num_rows: n, matrix_table: {}}
-		(0..n).each do |i|
-			new_sparse[:matrix_table][{row: i, column: i}] = value
-		end
-		new_sparse
+		new Matrix.scalar(n, value)
 	end
 	
 	def initialize(input)
@@ -46,9 +43,10 @@ class SparseMatrix
 		invariant()
 		check_matching_dimensions(other_matrix)
 		
-		result_matrix = addition(other_matrix)
+		result_matrix = addition(self, other_matrix)
 
 		check_dimensions_are_the_same(result_matrix)
+		check_opposite_order_addition(other_matrix, result_matrix)
 		invariant()
 
 		result_matrix
@@ -66,13 +64,22 @@ class SparseMatrix
 		result_matrix
 	end
 	
-	def *(other_matrix)
+	def *(other)
 		invariant()
-		check_compatible_dimensions_for_multiplication(other_matrix)
-		
-		result_matrix = multiplication(other_matrix)
 
-		check_correct_dimensions_after_multiplication(other_matrix, result_matrix)
+		result_matrix = nil
+		case other
+			when SparseMatrix
+				check_compatible_dimensions_for_multiplication(other)
+				
+				result_matrix = multiplication(other)
+
+				check_correct_dimensions_after_multiplication(other, result_matrix)
+				
+			else 
+				result_matrix = self * (new other)
+		end
+
 		invariant()
 
 		result_matrix
@@ -218,7 +225,7 @@ class SparseMatrix
 
 			end
 
-			def addition(other_matrix)
+			def addition(this_matrix, other_matrix)
 				puts "add"
 			end
 
@@ -253,54 +260,45 @@ class SparseMatrix
 
 				raise "Matrix does not satisfy A*I = A invariant" unless multiplication(SparseMatrix.identity(@num_columns)) == self
 
-				raise "Matrix does not satisfy A+A = 2A" unless addition(self) == multiplication(2)
+				raise "Matrix does not satisfy A+A = 2A" unless addition(self, self) == multiplication(2)
 				raise "Matrix does not satisfy A-A = 0" unless subtraction(self) == SparseMatrix.new(Hash.new(0))
+				raise "Matrix does not satisfy A+0 = A" unless addition(self, SparseMatrix.new(Hash.new(0))) == self
+				raise "Matrix does not satisfy A*0 = 0" unless multiplication(SparseMatrix.new(Hash.new(0))) == SparseMatrix.new(Hash.new(0))
 
 				raise "Matrix must satisfy that itself is not null" unless !(@matrix_table.nil? && @matrix_table.values.any?{|val| val.nil? })
 			end
 
 			def check_matching_dimensions(other_matrix)
-				begin
-					raise "Cannot perform operation, deminsions do not match." unless @num_rows == other_matrix.num_rows && @num_columns == other_matrix.num_columns
-				end
+				raise "Cannot perform operation, deminsions do not match." unless @num_rows == other_matrix.num_rows && @num_columns == other_matrix.num_columns
 			end
 
 			def check_dimensions_are_the_same(result)
-				puts result
-				begin
-					raise "Matrix dimensions must remain the same." unless @num_rows == result.num_rows && @num_columns == result.num_columns
-				end
+				raise "Matrix dimensions must remain the same." unless @num_rows == result.num_rows && @num_columns == result.num_columns
 			end
 
 			def check_compatible_dimensions_for_multiplication(other_matrix) 
-				begin
-					raise "Cannot perform operation, deminsions are not compatible." unless @num_columns == other_matrix.num_rows
-				end
+				raise "Cannot perform operation, deminsions are not compatible." unless @num_columns == other_matrix.num_rows
 				# {row: @num_rows, column: other_matrix.num_columns}
 			end
 
 			def check_correct_dimensions_after_multiplication(other_matrix, result)
-				begin
-					raise "Multiplication dimensions are incorrect." unless @num_rows == result.num_rows && @num_columns == result.num_columns
-				end
+				raise "Multiplication dimensions are incorrect." unless @num_rows == result.num_rows && @num_columns == result.num_columns
 			end
 
 			def check_square_matrix
-				begin
-					raise "Cannot perform operation, matrix not square." unless @num_columns == @num_rows
-				end
+				raise "Cannot perform operation, matrix not square." unless @num_columns == @num_rows
 			end
 
 			def check_result_is_number(result) 
-				begin
-					raise "Result is a number" unless result.is_a? Numeric
-				end
+				raise "Result is a number" unless result.is_a? Numeric
 			end
 
 			def check_correct_dimensions_after_transpose(result, current_dimensions) 
-				begin
-					raise "Incorrect matrix dimensions." unless current_dimensions[:row] == @num_columns && @num_rows == current_dimensions[:column]
-				end
+				raise "Incorrect matrix dimensions." unless current_dimensions[:row] == @num_columns && @num_rows == current_dimensions[:column]
+			end
+
+			def check_opposite_order_addition(other_matrix, result_matrix)
+				raise "Matricies do not support opposite order addition" unless result_matrix == addition(other_matrix, self)
 			end
 
 	alias_method :det, :determinant
