@@ -46,13 +46,13 @@ class TridiagonalMatrixTest < Test::Unit::TestCase
 	end
 	
 	def test_invalid_add
-		assert_throws("Cannot perform operation, deminsions do not match."){
+		assert_raise("Other object is not tridiagonal") do
 			@matrix1+5
-		}
-		matrix3 = TriDiagonalMatrix.new([[12, 15], [1, 4], [9, 0]])
-		assert_throws("Cannot perform operation, deminsions do not match."){
+		end
+		matrix3 = TriDiagonalMatrix.new([[12, 15], [1, 4]])
+		assert_raise("Cannot perform operation, deminsions do not match.") do
 			@matrix1+matrix3
-		}
+		end
 	end
 	
 	def test_subtract
@@ -65,13 +65,13 @@ class TridiagonalMatrixTest < Test::Unit::TestCase
 	end
 	
 	def test_invalid_subtract
-		assert_throws("Cannot perform operation, deminsions do not match."){
+		assert_raise("Other object is not tridiagonal") do
 			@matrix1-5
-		}
+		end
 		matrix3 = TriDiagonalMatrix.new([[12, 15], [1, 4]])
-		assert_throws("Cannot perform operation, deminsions do not match."){
+		assert_raise("Cannot perform operation, deminsions do not match.") do
 			@matrix1-matrix3
-		}
+		end
 	end
 	
 	
@@ -128,7 +128,7 @@ class TridiagonalMatrixTest < Test::Unit::TestCase
 									 [-9/17,3/17,5/17,2/17,-4/17],
 									 [-27/85,9/85,3/17,-11/85,22/85],
 									 [81/85,-27/85,-9/17,33/85,19/85]]) #calculated by hand
-		assert_equal(@matrix1.getInverse(), inverseMatrix)
+		assert_equal(@matrix1.inverse, inverseMatrix)
 	end
 	
 	
