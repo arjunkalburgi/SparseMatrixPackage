@@ -278,6 +278,18 @@ class TriDiagonalMatrix < Matrix
 	end
 	
 	# all private methods
+
+	def upper_diagonal
+		Vector.elements(@upper_diagonal)
+	end
+
+	def middle_diagonal
+		Vector.elements(@middle_diagonal)
+	end
+
+	def lower_diagonal
+		Vector.elements(@lower_diagonal)
+	end
 	
 	private 
 
