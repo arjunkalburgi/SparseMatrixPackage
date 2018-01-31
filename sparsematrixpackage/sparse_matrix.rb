@@ -53,13 +53,13 @@ class SparseMatrix
 	end
 	
 	def -(other_matrix)
-		# invariant()
-		# check_matching_dimensions(other_matrix)
+		invariant()
+		check_matching_dimensions(other_matrix)
 		
 		result_matrix = subtraction(other_matrix)
 
-		# check_dimensions_are_the_same(result_matrix)
-		# invariant()
+		check_dimensions_are_the_same(result_matrix)
+		invariant()
 
 		result_matrix
 	end
