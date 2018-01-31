@@ -226,7 +226,9 @@ class SparseMatrix
 			end
 
 			def addition(this_matrix, other_matrix)
-				puts "add"
+				result_matrix = new Hash.new(0) 
+				result_matrix[:matrix_table] = a.merge(b) {|key,vala,valb| vala+valb}
+				result_matrix
 			end
 
 			def subtraction(other_matrix)
