@@ -1,4 +1,4 @@
-require_relative './tridagonal_matrix'
+require_relative './tridiagonal_matrix'
 require_relative './sparse_matrix'
 
 module MatrixFactory 
@@ -8,7 +8,7 @@ module MatrixFactory
             raise "Matrix input must be an array of arrays" unless matrixarray.is_a? Array
         end
 
-        classname.rows(matrixarray)
+        classname.new(matrixarray)
     end
     
 end
