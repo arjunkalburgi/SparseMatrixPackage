@@ -53,13 +53,13 @@ class SparseMatrix
 	end
 	
 	def -(other_matrix)
-		invariant()
-		check_matching_dimensions(other_matrix)
+		# invariant()
+		# check_matching_dimensions(other_matrix)
 		
 		result_matrix = subtraction(other_matrix)
 
-		check_dimensions_are_the_same(result_matrix)
-		invariant()
+		# check_dimensions_are_the_same(result_matrix)
+		# invariant()
 
 		result_matrix
 	end
@@ -226,13 +226,13 @@ class SparseMatrix
 			end
 
 			def addition(this_matrix, other_matrix)
-				result_matrix = new Hash.new(0) 
-				result_matrix[:matrix_table] = a.merge(b) {|key,vala,valb| vala+valb}
-				result_matrix
+				hash_result = this_matrix.matrix_table.merge(other_matrix.matrix_table) {|key,vala,valb| vala+valb}
+				SparseMatrix.new(hash_result)
 			end
 
 			def subtraction(other_matrix)
-				puts "subtract"
+				hash_result = @matrix_table.merge(other_matrix.matrix_table.each {|k,v| other_matrix.matrix_table[k]=v*-1}) {|key,vala,valb| vala+valb}
+				SparseMatrix.new(hash_result)
 			end
 
 			def multiplication(other_matrix)
