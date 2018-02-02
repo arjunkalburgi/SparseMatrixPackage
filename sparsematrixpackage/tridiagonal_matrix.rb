@@ -12,6 +12,11 @@ class TriDiagonalMatrix
 		new Matrix.scalar(n, value)
 	end 
 
+	def self.tridiagonalCreation(upper, middle, lower)
+
+		new Matrix.
+	end
+
 	def initialize(input)
 		case input
 			when Array
@@ -366,11 +371,17 @@ class TriDiagonalMatrix
 	end
 
 	def addition(this_matrix, other_matrix)
-		puts "add"
+		upper = [@upper_diagonal, other_matrix.upper_diagonal].transpose.map {|x| x.reduce(:+)}
+		middle = [@middle_diagonal, other_matrix.middle_diagonal].transpose.map {|x| x.reduce(:+)}
+		lower = [@lower_diagonal, other_matrix.lower_diagonal].transpose.map {|x| x.reduce(:+)}
+		# new 
 	end
 
 	def subtraction(other_matrix)
-		puts "subtract"
+		upper = [@upper_diagonal, other_matrix.upper_diagonal].transpose.map {|x| x.reduce(:-)}
+		middle = [@middle_diagonal, other_matrix.middle_diagonal].transpose.map {|x| x.reduce(:-)}
+		lower = [@lower_diagonal, other_matrix.lower_diagonal].transpose.map {|x| x.reduce(:-)}
+		# new
 	end 
 
 	def multiplication(other_matrix)
