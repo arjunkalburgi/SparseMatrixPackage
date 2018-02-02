@@ -226,11 +226,13 @@ class SparseMatrix
 			end
 
 			def addition(this_matrix, other_matrix)
-				puts "add"
+				hash_result = this_matrix.matrix_table.merge(other_matrix.matrix_table) {|key,vala,valb| vala+valb}
+				SparseMatrix.new(hash_result)
 			end
 
 			def subtraction(other_matrix)
-				puts "subtract"
+				hash_result = @matrix_table.merge(other_matrix.matrix_table.each {|k,v| other_matrix.matrix_table[k]=v*-1}) {|key,vala,valb| vala+valb}
+				SparseMatrix.new(hash_result)
 			end
 
 			def multiplication(other_matrix)
