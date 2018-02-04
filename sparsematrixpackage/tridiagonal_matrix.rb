@@ -1,5 +1,5 @@
 require 'matrix'
-# require 'SparseMatrix'
+require_relative './sparse_matrix'
 
 class TriDiagonalMatrix
 	
@@ -353,10 +353,10 @@ class TriDiagonalMatrix
 
 		raise "Matrix does not satisfy A * A.getInverse() = I invariant" unless multiplication(getInverse()) == Matrix.identity(@num_rows)
 
-		raise "Matrix does not satisfy A.getDeterminant() == 0 when I.getInverse() == null invariant" unless getMatrixDeterminant() == 0 && getInverse() == nil
+		# raise "Matrix does not satisfy A.getDeterminant() == 0 when I.getInverse() == null invariant" unless getDeterminant() == 0 && getInverse() == nil
 
-		raise "Matrix does not satisfy A*I = A invariant" unless multiplication(TriDiagonalMatrix.identity(@num_columns)) == self
-		raise "Matrix does not satisfy A*(0 matrix) = 0 matrix" unless multiplication(TriDiagonalMatrix.scalar(n: @num_columns, value: 0)) == TriDiagonalMatrix.scalar(n: @num_columns, value: 0)
+		raise "Matrix does not satisfy A*I = A invariant" unless multiplication(TriDiagonalMatrix.identity(@num_columns)) == self.to_m
+		raise "Matrix does not satisfy A*(0 matrix) = 0 matrix" unless multiplication(TriDiagonalMatrix.scalar(n: @num_columns, value: 0)) == Matrix.scalar(@num_columns, 0)
 
 		raise "Matrix does not satisfy A+A = 2A" unless addition(self, self) == multiplication(2)
 		raise "Matrix does not satisfy A-A = 0" unless subtraction(self) == TriDiagonalMatrix.scalar(n: @num_rows, value: 0)
@@ -403,12 +403,23 @@ class TriDiagonalMatrix
 		Matrix.rows(to_a(upper: upper, middle: middle, lower: lower))
 	end 
 
-	def multiplication(other_matrix)
-		Matrix.rows(self.to_a) * Matrix.rows(other_matrix.to_a)
+	def multiplication(other)
+		case other
+			when Numeric
+				Matrix.rows(self.to_a) * other
+			when Matrix
+				Matrix.rows(self.to_a) * other
+			when TriDiagonalMatrix
+				Matrix.rows(self.to_a) * Matrix.rows(other.to_a)
+			when SparseMatrix
+				Matrix.rows(self.to_a) * Matrix.rows(other.to_a)
+			else 
+				raise "Must multiply by scalar, matrix, sparse matrix, or tridiagonal matrix"
+		end
 	end
 
 	def getDeterminant()
-		Matrix.determinant(to_a)
+		Matrix.rows(to_a).determinant
 	end
 
 	def getTranspose()
@@ -416,7 +427,7 @@ class TriDiagonalMatrix
 	end 
 
 	def getInverse()
-		Matrix.inverse(to_a)
+		Matrix.rows(to_a).inverse
 	end
 
 	alias_method :det, :determinant
