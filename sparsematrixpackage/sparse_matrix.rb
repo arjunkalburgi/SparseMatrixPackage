@@ -32,7 +32,7 @@ class SparseMatrix
 		invariant()
 		check_matching_dimensions(other_matrix)
 		
-		result = (@matrix_table == other_matrix.matrix_table)
+		result = equals(self, other_matrix)
 		
 		invariant()
 
@@ -225,6 +225,10 @@ class SparseMatrix
 
 			end
 
+			def equals(this_matrix, other_matrix)
+				(this_matrix.matrix_table == other_matrix.matrix_table)
+			end
+
 			def addition(this_matrix, other_matrix)
 				hash_result = this_matrix.matrix_table.merge(other_matrix.matrix_table) {|key,vala,valb| vala+valb}
 				SparseMatrix.new(hash_result)
@@ -257,17 +261,17 @@ class SparseMatrix
 			def invariant
 				if square?
 					identitymatrix = SparseMatrix.identity(@num_rows)
-					raise "Matrix does not satisfy A * A.inverse() = I invariant" unless multiplication(getInverse()) == identitymatrix
+					raise "Matrix does not satisfy A * A.inverse() = I invariant" unless equals(multiplication(getInverse()), identitymatrix)
 
 					raise "Matrix does not satisfy A.getDeterminant() == 0 when I.inverse() == null invariant" unless getDeterminant() == 0 && getInverse() == nil
 				end
 
-				raise "Matrix does not satisfy A*I = A invariant" unless multiplication(SparseMatrix.identity(@num_columns)) == self
+				raise "Matrix does not satisfy A*I = A invariant" unless equals(multiplication(SparseMatrix.identity(@num_columns)), self)
 
-				raise "Matrix does not satisfy A+A = 2A" unless addition(self, self) == multiplication(2)
-				raise "Matrix does not satisfy A-A = 0" unless subtraction(self) == SparseMatrix.new(Hash.new(0))
-				raise "Matrix does not satisfy A+0 = A" unless addition(self, SparseMatrix.new(Hash.new(0))) == self
-				raise "Matrix does not satisfy A*0 = 0" unless multiplication(SparseMatrix.new(Hash.new(0))) == SparseMatrix.new(Hash.new(0))
+				raise "Matrix does not satisfy A+A = 2A" unless equals(addition(self, self), multiplication(2))
+				raise "Matrix does not satisfy A-A = 0" unless equals(subtraction(self), SparseMatrix.new(Hash.new(0)))
+				raise "Matrix does not satisfy A+0 = A" unless equals(addition(self, SparseMatrix.new(Hash.new(0))), self)
+				raise "Matrix does not satisfy A*0 = 0" unless equals(multiplication(SparseMatrix.new(Hash.new(0))), SparseMatrix.new(Hash.new(0)))
 
 				raise "Matrix must satisfy that itself is not null" unless !(@matrix_table.nil? && @matrix_table.values.any?{|val| val.nil? })
 			end
@@ -302,7 +306,7 @@ class SparseMatrix
 			end
 
 			def check_opposite_order_addition(other_matrix, result_matrix)
-				raise "Matricies do not support opposite order addition" unless result_matrix == addition(other_matrix, self)
+				raise "Matricies do not support opposite order addition" unless equals(result_matrix, addition(other_matrix, self))
 			end
 
 	alias_method :det, :determinant
