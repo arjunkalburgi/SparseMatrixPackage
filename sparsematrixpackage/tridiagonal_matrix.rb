@@ -408,7 +408,7 @@ class TriDiagonalMatrix
 	end
 
 	def getDeterminant()
-		Matrix.determinant(to_a)
+		Matrix[to_a].determinant
 	end
 
 	def getTranspose()
@@ -416,7 +416,7 @@ class TriDiagonalMatrix
 	end 
 
 	def getInverse()
-		Matrix.inverse(to_a)
+		Matrix[to_a].inverse
 	end
 
 	alias_method :det, :determinant
