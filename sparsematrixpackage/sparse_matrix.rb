@@ -249,7 +249,11 @@ class SparseMatrix
 			end
 
 			def getInverse
-				SparseMatrix.new(Matrix.rows(to_a).inverse)
+				begin 
+					SparseMatrix.new(Matrix.rows(to_a).inverse)
+				rescue
+					nil
+				end 
 			end
 
 			def getTranspose
