@@ -1,5 +1,5 @@
 require 'matrix'
-require 'SparseMatrix'
+# require 'SparseMatrix'
 
 class TriDiagonalMatrix
 	
