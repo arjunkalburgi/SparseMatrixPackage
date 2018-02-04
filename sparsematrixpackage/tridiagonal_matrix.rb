@@ -284,9 +284,9 @@ class TriDiagonalMatrix
 			for j in 0..@num_columns do
 				case i
 					when j - 1
-						array[i][j] = upper[j]
+						array[i][j] = upper[i]
 					when j
-						array[i][j] = middle[j]
+						array[i][j] = middle[i]
 					when j + 1
 						array[i][j] = lower[j]
 				end	
