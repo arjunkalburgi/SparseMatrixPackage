@@ -289,6 +289,8 @@ class TriDiagonalMatrix
 						array[i][j] = middle[i]
 					when j + 1
 						array[i][j] = lower[j]
+					else
+						array[i][j] = 0
 				end	
 			end
 		end
