@@ -409,12 +409,12 @@ class TriDiagonalMatrix
 				Matrix.rows(self.to_a) * other
 			when Matrix
 				Matrix.rows(self.to_a) * other
-			when TridiagonalMatrix
+			when TriDiagonalMatrix
 				Matrix.rows(self.to_a) * Matrix.rows(other.to_a)
 			when SparseMatrix
 				Matrix.rows(self.to_a) * Matrix.rows(other.to_a)
 			else 
-				raise "Must multiply by scalar, matrix, or tridiagonal matrix"
+				raise "Must multiply by scalar, matrix, sparse matrix, or tridiagonal matrix"
 		end
 	end
 
