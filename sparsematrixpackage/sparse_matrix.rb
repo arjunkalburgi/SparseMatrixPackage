@@ -324,8 +324,6 @@ class SparseMatrix
 			end
 
 	alias_method :det, :determinant
-	alias_method :getDeterminant, :determinant
-	alias_method :getTranspose, :transpose
 	alias_method :t, :transpose
 	alias_method :eql?,  :==
 end
