@@ -17,7 +17,7 @@ class SparseMatrix
 			when Array 
 				rows(input)
 			when Matrix
-				rows(input.to_a())
+				rows(input.to_a)
 			when Hash
 				@matrix_table = input
 				# assume the maximum row and col given gives the dimensions (to be changed in proper implementation)
@@ -29,43 +29,43 @@ class SparseMatrix
 	end
 	
 	def ==(other_matrix)
-		invariant()
+		invariant
 		check_matching_dimensions(other_matrix)
 		
 		result = equals(self, other_matrix)
 		
-		invariant()
+		invariant
 
 		result
 	end
 	
 	def +(other_matrix)
-		invariant()
+		invariant
 		check_matching_dimensions(other_matrix)
 		
 		result_matrix = addition(self, other_matrix)
 
 		check_dimensions_are_the_same(result_matrix)
 		check_opposite_order_addition(other_matrix, result_matrix)
-		invariant()
+		invariant
 
 		result_matrix
 	end
 	
 	def -(other_matrix)
-		invariant()
+		invariant
 		check_matching_dimensions(other_matrix)
 		
 		result_matrix = subtraction(other_matrix)
 
 		check_dimensions_are_the_same(result_matrix)
-		invariant()
+		invariant
 
 		result_matrix
 	end
 	
 	def *(other)
-		# invariant()
+		invariant
 
 		result_matrix = nil
 		case other
@@ -80,60 +80,60 @@ class SparseMatrix
 				result_matrix = self * (new other)
 		end
 
-		# invariant()
+		invariant
 
 		result_matrix
 	end
 	
 	def /(other_matrix)
-		invariant()
-		check_compatible_dimensions_for_multiplication(other_matrix.getInverse())
+		invariant
+		check_compatible_dimensions_for_multiplication(other_matrix.getInverse)
 
-		result_matrix = multiplication(other_matrix.getInverse())
+		result_matrix = multiplication(other_matrix.getInverse)
 
-		check_correct_dimensions_after_multiplication(other_matrix.getInverse())
-		invariant()
+		check_correct_dimensions_after_multiplication(other_matrix.getInverse)
+		invariant
 
 		result_matrix
 	end
 	
 	def determinant
-		invariant()
-		check_square_matrix()
+		invariant
+		check_square_matrix
 		
-		result = getDeterminant()
+		result = getDeterminant
 
 		check_result_is_number(result)
-		invariant()
+		invariant
 
 		result
 	end
 	
 	def transpose
-		invariant()
+		invariant
 
-		result_matrix = getTranspose()
+		result_matrix = getTranspose
 		
 		check_correct_dimensions_after_transpose(result_matrix, {row: @num_rows, column: @num_columns})
-		invariant()
+		invariant
 
 		result_matrix
 	end
 	
 	def inverse
-		invariant()
-		check_square_matrix()
+		invariant
+		check_square_matrix
 		
-		result_matrix = getInverse()
+		result_matrix = getInverse
 
-		check_square_matrix()
-		invariant()
+		check_square_matrix
+		invariant
 
 		result_matrix
 	end
 
 	def real 
-		invariant()
+		invariant
 
 		result_matrix = self
 		@matrix_table.keys.each do |key|
@@ -142,26 +142,26 @@ class SparseMatrix
 		end
 
 		check_dimensions_are_the_same(result_matrix)
-		invariant()
+		invariant
 
 		result_matrix
 	end
 
 	def real?
-		invariant()
+		invariant
 
 		@matrix_table.keys.each do |key|
 			raise "Must be of type Numeric to test real" unless @matrix_table[key].respond_to?(:real?)
 			return false unless @matrix_table[key].real?
 		end
 
-		invariant()
+		invariant
 
 		true
 	end
 	
 	def imaginary 
-		invariant()
+		invariant
 
 		result_matrix = self
 		@matrix_table.keys.each do |key|
@@ -170,20 +170,20 @@ class SparseMatrix
 		end
 
 		check_dimensions_are_the_same(result_matrix)
-		invariant()
+		invariant
 
 		result_matrix
 	end
 
 	def imaginary?
-		invariant()
+		invariant
 
 		@matrix_table.keys.each do |key|
 			raise "Must be of type Numeric to test real" unless @matrix_table[key].respond_to?(:real?)
 			return false unless !(@matrix_table[key].real?)
 		end
 
-		invariant()
+		invariant
 
 		true 
 	end
@@ -265,9 +265,9 @@ class SparseMatrix
 			def invariant
 				if square?
 					identitymatrix = SparseMatrix.identity(@num_rows)
-					raise "Matrix does not satisfy A * A.inverse() = I invariant" unless equals(multiplication(getInverse()), identitymatrix)
+					raise "Matrix does not satisfy A * A.inverse = I invariant" unless equals(multiplication(getInverse), identitymatrix)
 
-					raise "Matrix does not satisfy A.getDeterminant() == 0 when I.inverse() == null invariant" unless getDeterminant() == 0 && getInverse() == nil
+					raise "Matrix does not satisfy A.getDeterminant == 0 when I.inverse == null invariant" unless getDeterminant == 0 && getInverse == nil
 				end
 
 				raise "Matrix does not satisfy A*I = A invariant" unless equals(multiplication(SparseMatrix.identity(@num_columns)), self)
