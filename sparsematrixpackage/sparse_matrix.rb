@@ -70,11 +70,11 @@ class SparseMatrix
 		result_matrix = nil
 		case other
 			when SparseMatrix
-				# check_compatible_dimensions_for_multiplication(other)
+				check_compatible_dimensions_for_multiplication(other)
 				
 				result_matrix = multiplication(other)
 
-				# check_correct_dimensions_after_multiplication(other, result_matrix)
+				check_correct_dimensions_after_multiplication(other, result_matrix)
 				
 			else 
 				result_matrix = self * (new other)
@@ -241,7 +241,7 @@ class SparseMatrix
 			end
 
 			def getDeterminant
-				SparseMatrix.new(Matrix.determinant(self.to_a))
+				Matrix.determinant(self.to_a)
 			end
 
 			def getInverse
