@@ -12,11 +12,6 @@ class TriDiagonalMatrix
 		new Matrix.scalar(n, value)
 	end 
 
-	def self.tridiagonalCreation(upper, middle, lower)
-
-		new Matrix.
-	end
-
 	def initialize(input)
 		case input
 			when Array
@@ -281,6 +276,29 @@ class TriDiagonalMatrix
 	def symmetric?
 		self == transpose
 	end
+
+	def to_a
+		array = Array.new(@num_rows){Array.new(@num_columns,0)}
+		for i in 0..@num_rows do 
+			for j in 0..@num_columns do
+				case i
+					when j - 1
+						array[i][j] = @upper_diagonal[j]
+					when j
+						array[i][j] = @middle_diagonal[j]
+					when j + 1
+						array[i][j] = @lower_diagonal[j]
+					else 
+						raise "Internal error in tridiagonal matrix"
+				end	
+			end
+		end
+		array
+	end
+
+	def to_m
+		Matrix.rows(to_a)
+	end
 	
 	private 
 
@@ -370,18 +388,37 @@ class TriDiagonalMatrix
 		raise "Result is a number" unless result.is_a? Numeric
 	end
 
+	def create_tridiagonal_matrix(upper, middle, lower)
+		array = Array.new(@num_rows){Array.new(@num_columns,0)}
+		for i in 0..@num_rows do 
+			for j in 0..@num_columns do
+				case i
+					when j - 1
+						array[i][j] = @upper_diagonal[j]
+					when j
+						array[i][j] = @middle_diagonal[j]
+					when j + 1
+						array[i][j] = @lower_diagonal[j]
+					else 
+						raise "Internal error in tridiagonal matrix"
+				end	
+			end
+		end
+		TriDiagonalMatrix.new(Matrix.rows(array))
+	end
+
 	def addition(this_matrix, other_matrix)
 		upper = [@upper_diagonal, other_matrix.upper_diagonal].transpose.map {|x| x.reduce(:+)}
 		middle = [@middle_diagonal, other_matrix.middle_diagonal].transpose.map {|x| x.reduce(:+)}
 		lower = [@lower_diagonal, other_matrix.lower_diagonal].transpose.map {|x| x.reduce(:+)}
-		# new 
+		create_tridiagonal_matrix(upper, middle, lower)
 	end
 
 	def subtraction(other_matrix)
 		upper = [@upper_diagonal, other_matrix.upper_diagonal].transpose.map {|x| x.reduce(:-)}
 		middle = [@middle_diagonal, other_matrix.middle_diagonal].transpose.map {|x| x.reduce(:-)}
 		lower = [@lower_diagonal, other_matrix.lower_diagonal].transpose.map {|x| x.reduce(:-)}
-		# new
+		create_tridiagonal_matrix(upper, middle, lower)
 	end 
 
 	def multiplication(other_matrix)
