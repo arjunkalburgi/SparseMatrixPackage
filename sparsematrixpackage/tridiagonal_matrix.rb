@@ -351,7 +351,7 @@ class TriDiagonalMatrix
 	def invariant()
 		raise "TriDiagonalMatrix does not satisfy that it should be square" unless @num_rows == @num_columns
 
-		raise "Matrix does not satisfy A * A.getInverse() = I invariant" unless multiplication(getInverse()) == TriDiagonalMatrix.identity(@num_rows)
+		raise "Matrix does not satisfy A * A.getInverse() = I invariant" unless multiplication(getInverse()) == Matrix.identity(@num_rows)
 
 		raise "Matrix does not satisfy A.getDeterminant() == 0 when I.getInverse() == null invariant" unless getMatrixDeterminant() == 0 && getInverse() == nil
 
@@ -404,7 +404,7 @@ class TriDiagonalMatrix
 	end 
 
 	def multiplication(other_matrix)
-		SparseMatrix.new(Matrix.rows(self.to_a) * Matrix.rows(other_matrix.to_a))
+		Matrix.rows(self.to_a) * Matrix.rows(other_matrix.to_a)
 	end
 
 	def getDeterminant()
