@@ -390,28 +390,40 @@ class TriDiagonalMatrix
 	end
 
 	def addition(this_matrix, other_matrix)
-		upper = [@upper_diagonal, other_matrix.upper_diagonal].transpose.map {|x| x.reduce(:+)}
-		middle = [@middle_diagonal, other_matrix.middle_diagonal].transpose.map {|x| x.reduce(:+)}
-		lower = [@lower_diagonal, other_matrix.lower_diagonal].transpose.map {|x| x.reduce(:+)}
-		Matrix.rows(to_a(upper: upper, middle: middle, lower: lower))
+		case other_matrix
+			when Matrix
+				other_matrix + this_matrix.to_m
+			when TriDiagonalMatrix
+				upper = [@upper_diagonal, other_matrix.upper_diagonal].transpose.map {|x| x.reduce(:+)}
+				middle = [@middle_diagonal, other_matrix.middle_diagonal].transpose.map {|x| x.reduce(:+)}
+				lower = [@lower_diagonal, other_matrix.lower_diagonal].transpose.map {|x| x.reduce(:+)}
+				TriDiagonalMatrix.new(Matrix.rows(to_a(upper: upper, middle: middle, lower: lower)))
+			else 
+				raise "Addition must be with TriDiagonalMatrix or Matrix"
+		end
 	end
 
 	def subtraction(other_matrix)
-		upper = [@upper_diagonal, other_matrix.upper_diagonal].transpose.map {|x| x.reduce(:-)}
-		middle = [@middle_diagonal, other_matrix.middle_diagonal].transpose.map {|x| x.reduce(:-)}
-		lower = [@lower_diagonal, other_matrix.lower_diagonal].transpose.map {|x| x.reduce(:-)}
-		Matrix.rows(to_a(upper: upper, middle: middle, lower: lower))
+		case other_matrix
+			when Matrix
+				other_matrix - self.to_m
+			when TriDiagonalMatrix
+				upper = [@upper_diagonal, other_matrix.upper_diagonal].transpose.map {|x| x.reduce(:-)}
+				middle = [@middle_diagonal, other_matrix.middle_diagonal].transpose.map {|x| x.reduce(:-)}
+				lower = [@lower_diagonal, other_matrix.lower_diagonal].transpose.map {|x| x.reduce(:-)}
+				TriDiagonalMatrix.new(Matrix.rows(to_a(upper: upper, middle: middle, lower: lower)))
+			else 
+				raise "Subtraction must be with TriDiagonalMatrix or Matrix"
+		end
 	end 
 
 	def multiplication(other)
 		case other
 			when Numeric
-				Matrix.rows(self.to_a) * other
+				TriDiagonalMatrix.new(Matrix.rows(self.to_a) * other)
 			when Matrix
 				Matrix.rows(self.to_a) * other
 			when TriDiagonalMatrix
-				Matrix.rows(self.to_a) * Matrix.rows(other.to_a)
-			when SparseMatrix
 				Matrix.rows(self.to_a) * Matrix.rows(other.to_a)
 			else 
 				raise "Must multiply by scalar, matrix, sparse matrix, or tridiagonal matrix"
@@ -427,7 +439,11 @@ class TriDiagonalMatrix
 	end 
 
 	def getInverse()
-		Matrix.rows(to_a).inverse
+		begin
+			Matrix.rows(to_a).inverse
+		rescue
+			nil
+		end 
 	end
 
 	alias_method :det, :determinant
