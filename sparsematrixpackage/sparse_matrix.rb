@@ -241,7 +241,7 @@ class SparseMatrix
 			end
 
 			def getDeterminant
-				SparseMatrix.new(Matrix.determinant(self.to_a))
+				Matrix.determinant(self.to_a)
 			end
 
 			def getInverse
