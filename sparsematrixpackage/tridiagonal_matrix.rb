@@ -1,5 +1,5 @@
 require 'matrix'
-# require 'SparseMatrix'
+require_relative './sparse_matrix'
 
 class TriDiagonalMatrix
 	
@@ -403,8 +403,19 @@ class TriDiagonalMatrix
 		Matrix.rows(to_a(upper: upper, middle: middle, lower: lower))
 	end 
 
-	def multiplication(other_matrix)
-		Matrix.rows(self.to_a) * Matrix.rows(other_matrix.to_a)
+	def multiplication(other)
+		case other
+			when Numeric
+				Matrix.rows(self.to_a) * other
+			when Matrix
+				Matrix.rows(self.to_a) * other
+			when TridiagonalMatrix
+				Matrix.rows(self.to_a) * Matrix.rows(other.to_a)
+			when SparseMatrix
+				Matrix.rows(self.to_a) * Matrix.rows(other.to_a)
+			else 
+				raise "Must multiply by scalar, matrix, or tridiagonal matrix"
+		end
 	end
 
 	def getDeterminant()
