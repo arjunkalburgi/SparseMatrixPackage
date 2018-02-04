@@ -239,7 +239,7 @@ class SparseMatrix
 				SparseMatrix.new(hash_result)
 			end
 
-			def multiplication(other_matrix)
+			def multiplication(other)
 				case other
 					when Numeric
 						SparseMatrix.new(Matrix.rows(self.to_a) * other)
