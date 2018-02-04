@@ -245,7 +245,7 @@ class SparseMatrix
 			end
 
 			def getInverse
-				SparseMatrix.new(Matrix.inverse(to_a))
+				SparseMatrix.new(Matrix.rows(to_a).inverse)
 			end
 
 			def getTranspose
