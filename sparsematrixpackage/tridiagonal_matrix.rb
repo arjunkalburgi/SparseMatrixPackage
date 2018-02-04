@@ -6,7 +6,7 @@ class TriDiagonalMatrix
 	attr_reader :num_columns, :num_rows, :upper_diagonal, :middle_diagonal, :lower_diagonal
 	
 	def self.identity(size)
-		scalar(size, 1)
+		scalar(n: size, value: 1)
 	end
 
 	def self.scalar(n:, value:)
@@ -289,8 +289,6 @@ class TriDiagonalMatrix
 						array[i][j] = middle[j]
 					when j + 1
 						array[i][j] = lower[j]
-					else 
-						raise "Internal error in tridiagonal matrix"
 				end	
 			end
 		end
@@ -356,11 +354,11 @@ class TriDiagonalMatrix
 		raise "Matrix does not satisfy A.getDeterminant() == 0 when I.getInverse() == null invariant" unless getMatrixDeterminant() == 0 && getInverse() == nil
 
 		raise "Matrix does not satisfy A*I = A invariant" unless multiplication(TriDiagonalMatrix.identity(@num_columns)) == self
-		raise "Matrix does not satisfy A*(0 matrix) = 0 matrix" unless multiplication(TriDiagonalMatrix.scalar(@num_columns, 0)) == TriDiagonalMatrix.scalar(@num_columns, 0)
+		raise "Matrix does not satisfy A*(0 matrix) = 0 matrix" unless multiplication(TriDiagonalMatrix.scalar(n: @num_columns, value: 0)) == TriDiagonalMatrix.scalar(n: @num_columns, value: 0)
 
 		raise "Matrix does not satisfy A+A = 2A" unless addition(self, self) == multiplication(2)
-		raise "Matrix does not satisfy A-A = 0" unless subtraction(self) == TriDiagonalMatrix.scalar(@num_rows, 0)
-		raise "Matrix does not satisfy A+0 = A" unless addition(self, TriDiagonalMatrix.scalar(@num_rows, 0)) == self
+		raise "Matrix does not satisfy A-A = 0" unless subtraction(self) == TriDiagonalMatrix.scalar(n: @num_rows, value: 0)
+		raise "Matrix does not satisfy A+0 = A" unless addition(self, TriDiagonalMatrix.scalar(n: @num_rows, value: 0)) == self
 
 		raise "Matrix must satisfy that itself is not null" unless !(@upper_diagonal.any?{|val| val.nil? } && @middle_diagonal.any?{|val| val.nil? } && @lower_diagonal.any?{|val| val.nil? })
 	end
