@@ -1,4 +1,5 @@
 require 'matrix'
+require 'SparseMatrix'
 
 class TriDiagonalMatrix
 	
@@ -8,7 +9,7 @@ class TriDiagonalMatrix
 		scalar(size, 1)
 	end
 
-	def self.scalar(n, value)
+	def self.scalar(n:, value:)
 		new Matrix.scalar(n, value)
 	end 
 
@@ -277,17 +278,17 @@ class TriDiagonalMatrix
 		self == transpose
 	end
 
-	def to_a
+	def to_a(upper: @upper_diagonal, middle: @middle_diagonal, lower: @lower_diagonal)
 		array = Array.new(@num_rows){Array.new(@num_columns,0)}
 		for i in 0..@num_rows do 
 			for j in 0..@num_columns do
 				case i
 					when j - 1
-						array[i][j] = @upper_diagonal[j]
+						array[i][j] = upper[j]
 					when j
-						array[i][j] = @middle_diagonal[j]
+						array[i][j] = middle[j]
 					when j + 1
-						array[i][j] = @lower_diagonal[j]
+						array[i][j] = lower[j]
 					else 
 						raise "Internal error in tridiagonal matrix"
 				end	
@@ -388,53 +389,34 @@ class TriDiagonalMatrix
 		raise "Result is a number" unless result.is_a? Numeric
 	end
 
-	def create_tridiagonal_matrix(upper, middle, lower)
-		array = Array.new(@num_rows){Array.new(@num_columns,0)}
-		for i in 0..@num_rows do 
-			for j in 0..@num_columns do
-				case i
-					when j - 1
-						array[i][j] = @upper_diagonal[j]
-					when j
-						array[i][j] = @middle_diagonal[j]
-					when j + 1
-						array[i][j] = @lower_diagonal[j]
-					else 
-						raise "Internal error in tridiagonal matrix"
-				end	
-			end
-		end
-		TriDiagonalMatrix.new(Matrix.rows(array))
-	end
-
 	def addition(this_matrix, other_matrix)
 		upper = [@upper_diagonal, other_matrix.upper_diagonal].transpose.map {|x| x.reduce(:+)}
 		middle = [@middle_diagonal, other_matrix.middle_diagonal].transpose.map {|x| x.reduce(:+)}
 		lower = [@lower_diagonal, other_matrix.lower_diagonal].transpose.map {|x| x.reduce(:+)}
-		create_tridiagonal_matrix(upper, middle, lower)
+		Matrix.rows(to_a(upper: upper, middle: middle, lower: lower))
 	end
 
 	def subtraction(other_matrix)
 		upper = [@upper_diagonal, other_matrix.upper_diagonal].transpose.map {|x| x.reduce(:-)}
 		middle = [@middle_diagonal, other_matrix.middle_diagonal].transpose.map {|x| x.reduce(:-)}
 		lower = [@lower_diagonal, other_matrix.lower_diagonal].transpose.map {|x| x.reduce(:-)}
-		create_tridiagonal_matrix(upper, middle, lower)
+		Matrix.rows(to_a(upper: upper, middle: middle, lower: lower))
 	end 
 
 	def multiplication(other_matrix)
-		puts "multiply"
+		SparseMatrix.new(Matrix.rows(self.to_a) * Matrix.rows(other_matrix.to_a))
 	end
 
 	def getDeterminant()
-		puts "determinant"
+		Matrix.determinant(to_a)
 	end
 
 	def getTranspose()
-		puts "transpose"
+		TridiagonalMatrix.new(Matrix.rows(to_a(upper: @lower_diagonal, middle: @middle_diagonal, lower: @upper_diagonal)))
 	end 
 
 	def getInverse()
-		puts "invert"
+		Matrix.inverse(to_a)
 	end
 
 	alias_method :det, :determinant
