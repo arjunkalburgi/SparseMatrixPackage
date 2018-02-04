@@ -280,8 +280,8 @@ class TriDiagonalMatrix
 
 	def to_a(upper: @upper_diagonal, middle: @middle_diagonal, lower: @lower_diagonal)
 		array = Array.new(@num_rows){Array.new(@num_columns,0)}
-		for i in 0..@num_rows do 
-			for j in 0..@num_columns do
+		for i in 0..@num_rows-1 do 
+			for j in 0..@num_columns-1 do
 				case i
 					when j - 1
 						array[i][j] = upper[i]
