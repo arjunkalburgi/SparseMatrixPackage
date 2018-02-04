@@ -240,8 +240,18 @@ class SparseMatrix
 			end
 
 			def multiplication(other_matrix)
-				# there's a faster way to do this
-				SparseMatrix.new(Matrix.rows(to_a) * Matrix.rows(other_matrix.to_a))
+				case other
+					when Numeric
+						SparseMatrix.new(Matrix.rows(self.to_a) * other)
+					when Matrix
+						SparseMatrix.new(Matrix.rows(self.to_a) * other)
+					when TriDiagonalMatrix
+						SparseMatrix.new(Matrix.rows(self.to_a) * Matrix.rows(other.to_a))
+					when SparseMatrix
+						SparseMatrix.new(Matrix.rows(to_a) * Matrix.rows(other_matrix.to_a))
+					else 
+						raise "Must multiply by scalar, matrix, sparse matrix, or tridiagonal matrix"
+				end
 			end
 
 			def getDeterminant
