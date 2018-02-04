@@ -237,19 +237,19 @@ class SparseMatrix
 
 			def multiplication(other_matrix)
 				# there's a faster way to do this
-				SparseMatrix.new(Matrix.rows(self.to_a) * Matrix.rows(other_matrix.to_a))
+				SparseMatrix.new(Matrix.rows(to_a) * Matrix.rows(other_matrix.to_a))
 			end
 
 			def getDeterminant
-				Matrix.determinant(self.to_a)
+				Matrix.determinant(to_a)
 			end
 
 			def getInverse
-				SparseMatrix.new(Matrix.inverse(self.to_a))
+				SparseMatrix.new(Matrix.inverse(to_a))
 			end
 
 			def getTranspose
-				SparseMatrix.new(Matrix.transpose(self.to_a))
+				SparseMatrix.new(Matrix.transpose(to_a))
 			end
 
 		
