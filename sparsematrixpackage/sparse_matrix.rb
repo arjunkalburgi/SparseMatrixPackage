@@ -303,11 +303,11 @@ class SparseMatrix
 					end
 				end
 
-				raise "Matrix does not satisfy A*I = A invariant" unless equals(multiplication(SparseMatrix.identity(@num_columns)), self)
+				raise "Matrix does not satisfy A*I = A invariant" unless equals(multiplication(SparseMatrix.identity(@num_columns)), itself)
 
-				raise "Matrix does not satisfy A+A = 2A" unless equals(addition(self, self), multiplication(2))
-				raise "Matrix does not satisfy A-A = 0" unless equals(subtraction(self), SparseMatrix.new(Hash.new(0)))
-				raise "Matrix does not satisfy A+0 = A" unless equals(addition(self, SparseMatrix.new(Hash.new(0))), self)
+				raise "Matrix does not satisfy A+A = 2A" unless equals(addition(itself, itself), multiplication(2))
+				raise "Matrix does not satisfy A-A = 0" unless equals(subtraction(itself), SparseMatrix.new(Hash.new(0)))
+				raise "Matrix does not satisfy A+0 = A" unless equals(addition(itself, SparseMatrix.new(Hash.new(0))), itself)
 				raise "Matrix does not satisfy A*0 = 0" unless equals(multiplication(SparseMatrix.new(Hash.new(0))), SparseMatrix.new(Hash.new(0)))
 
 				raise "Matrix must satisfy that itself is not null" unless !(@matrix_table.nil? && @matrix_table.values.any?{|val| val.nil? })
