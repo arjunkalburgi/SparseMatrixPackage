@@ -275,9 +275,11 @@ class SparseMatrix
 			def invariant
 				if square?
 					identitymatrix = SparseMatrix.identity(@num_rows)
-					raise "Matrix does not satisfy A * A.inverse = I invariant" unless equals(multiplication(getInverse), identitymatrix)
-
-					raise "Matrix does not satisfy A.getDeterminant == 0 when I.inverse == null invariant" unless getDeterminant == 0 && getInverse == nil
+					if getInverse
+						raise "Matrix does not satisfy A * A.inverse = I invariant" unless equals(multiplication(getInverse), identitymatrix)
+					else
+						raise "Matrix does not satisfy A.getDeterminant == 0 when I.inverse == null invariant" unless getDeterminant == 0 && getInverse == nil
+					end
 				end
 
 				raise "Matrix does not satisfy A*I = A invariant" unless equals(multiplication(SparseMatrix.identity(@num_columns)), self)
