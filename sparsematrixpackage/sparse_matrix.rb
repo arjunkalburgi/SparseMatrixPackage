@@ -248,7 +248,8 @@ class SparseMatrix
 			end
  
 			def subtraction(other_matrix)
-				hash_result = @matrix_table.merge(other_matrix.matrix_table.each {|k,v| other_matrix.matrix_table[k]=v*-1}) {|key,vala,valb| vala+valb}
+				temp = other_matrix.matrix_table.clone
+				hash_result = @matrix_table.merge(temp.each {|k,v| temp[k]=v*-1}) {|key,vala,valb| vala+valb}
 				SparseMatrix.new(hash_result)
 			end
 
