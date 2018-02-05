@@ -48,7 +48,7 @@ class SparseMatrixTest < Test::Unit::TestCase
 	end
 	
 	def test_multiply
-		multipliedMatrix = SparseMatrix.new([[32, 80], [0, 0]])
+		multipliedMatrix = SparseMatrix.new([[42, 80], [0, 0]])
 		assert_equal(multipliedMatrix, @matrix1*@matrix2)
 		multipliedMatrix2 = SparseMatrix.new([[16, 20], [0, 0]])
 		assert_equal(multipliedMatrix2, @matrix1*2)
@@ -63,7 +63,7 @@ class SparseMatrixTest < Test::Unit::TestCase
 	
 	def test_equals
 		assert(@matrix1==@matrix1)
-		assert(!@matrix1==@matrix2)
+		assert(@matrix1!=@matrix2)
 		matrix3 = SparseMatrix.new([[8, 10], [0, 0]])
 		assert(@matrix1==matrix3)
 	end
@@ -80,14 +80,14 @@ class SparseMatrixTest < Test::Unit::TestCase
 									[2,6]])
 		inverseMatrix = [[0.6,-0.7],
 						[-0.2,0.4]] #calculated by hand
-		assert_equal(@matrix1.inverse, inverseMatrix)
+		assert_equal(@matrix1.inverse, SparseMatrix.new(inverseMatrix))
 	end
 	
 	
 	def test_transpose
 		matrix1_transpose = [[8,0],
 							[10,0]]
-		assert_equal(@matrix1.transpose, matrix1_transpose)
+		assert_equal(@matrix1.transpose, SparseMatrix.new(matrix1_transpose))
 	end
 	
 end
