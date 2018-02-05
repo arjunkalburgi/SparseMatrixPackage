@@ -28,7 +28,7 @@ class TriDiagonalMatrix
 	end
 
 	def ==(other_object) 
-		return false unless TriDiagonalMatrix === other_object && 
+		TriDiagonalMatrix === other_object && 
 			other_object.respond_to?(:upper_diagonal) && 
 			other_object.respond_to?(:middle_diagonal) && 
 			other_object.respond_to?(:lower_diagonal) && 
