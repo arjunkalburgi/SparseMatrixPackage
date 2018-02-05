@@ -85,7 +85,7 @@ class SparseMatrix
 				check_correct_dimensions_after_multiplication(other, result_matrix)
 				
 			else 
-				result_matrix = self * (new other)
+				result_matrix = multiplication(other)
 		end
 
 		invariant
@@ -93,13 +93,20 @@ class SparseMatrix
 		result_matrix
 	end
 	
-	def /(other_matrix)
+	def /(other)
 		invariant
-		check_compatible_dimensions_for_multiplication(other_matrix.getInverse)
 
-		result_matrix = multiplication(other_matrix.getInverse)
+		case other
+			when SparseMatrix
+				check_compatible_dimensions_for_multiplication(other.getInverse)
 
-		check_correct_dimensions_after_multiplication(other_matrix.getInverse, result_matrix)
+				result_matrix = multiplication(other.getInverse)
+
+				check_correct_dimensions_after_multiplication(other.getInverse, result_matrix)
+			else 
+				result_matrix = multiplication(1.0/other)
+		end
+
 		invariant
 
 		result_matrix
@@ -256,11 +263,12 @@ class SparseMatrix
 			def multiplication(other)
 				case other
 					when Numeric
-						SparseMatrix.new(Matrix.rows(self.to_a) * other)
+						temp = @matrix_table.clone 
+						SparseMatrix.new(temp.each {|k,v| temp[k]=v*other})
 					when Matrix
-						SparseMatrix.new(Matrix.rows(self.to_a) * other)
+						SparseMatrix.new(Matrix.rows(to_a) * other)
 					when TriDiagonalMatrix
-						SparseMatrix.new(Matrix.rows(self.to_a) * Matrix.rows(other.to_a))
+						SparseMatrix.new(Matrix.rows(to_a) * Matrix.rows(other.to_a))
 					when SparseMatrix
 						if other.zero? or zero?
 							return SparseMatrix.new(Hash.new(0))
