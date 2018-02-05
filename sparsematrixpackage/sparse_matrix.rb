@@ -99,7 +99,7 @@ class SparseMatrix
 
 		result_matrix = multiplication(other_matrix.getInverse)
 
-		check_correct_dimensions_after_multiplication(other_matrix.getInverse)
+		check_correct_dimensions_after_multiplication(other_matrix.getInverse, result_matrix)
 		invariant
 
 		result_matrix
