@@ -1,4 +1,5 @@
 require 'matrix'
+require_relative './tridiagonal_matrix'
 
 class SparseMatrix
 
@@ -248,7 +249,7 @@ class SparseMatrix
 					when TriDiagonalMatrix
 						SparseMatrix.new(Matrix.rows(self.to_a) * Matrix.rows(other.to_a))
 					when SparseMatrix
-						SparseMatrix.new(Matrix.rows(to_a) * Matrix.rows(other_matrix.to_a))
+						SparseMatrix.new(Matrix.rows(to_a) * Matrix.rows(other.to_a))
 					else 
 						raise "Must multiply by scalar, matrix, sparse matrix, or tridiagonal matrix"
 				end
