@@ -286,6 +286,10 @@ class SparseMatrix
 				SparseMatrix.new(Matrix.rows(to_a).transpose)
 			end
 
+			def removeZeroElements 
+				@matrix_table.delete_if {|k,v| v==0}
+			end 
+
 		
 		# TESTS
 			def invariant
