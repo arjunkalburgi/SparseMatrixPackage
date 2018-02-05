@@ -5,7 +5,7 @@ class SparseMatrix
 	attr_reader :matrix_table, :num_rows, :num_columns
 
 	def self.identity(size)
-		scalar(size, 0)
+		scalar(size, 1)
 	end
 
 	def self.scalar(n, value)
