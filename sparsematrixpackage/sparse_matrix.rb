@@ -13,7 +13,7 @@ class SparseMatrix
 		new Matrix.scalar(n, value)
 	end
 	
-	def initialize(input)
+	def initialize(input, rows=nil, columns=nil)
 		case input 
 			when Array 
 				rows(input)
@@ -21,14 +21,15 @@ class SparseMatrix
 				rows(input.to_a)
 			when Hash
 				@matrix_table = input
-				# assume the maximum row and col given gives the dimensions in zero index, +1 to 1 index
-				if input.keys.size > 0
+				if input.keys.size > 0 && rows==nil && columns==nil
+					# assume the maximum row and col given gives the dimensions in zero index, +1 to 1 index
 					@num_rows = input.keys.map{|key| key[:row]}.max + 1
 					@num_columns = input.keys.map{|key| key[:column]}.max + 1
+				elsif rows==nil && columns==nil
+					raise "Must either define dimensions via input or explicitly passing arguments."
 				else 
-					# zero matrix
-					@num_rows = 0 
-					@num_columns = 0
+					@num_rows = rows
+					@num_columns = columns
 				end
 				removeZeroElements
 			else 
@@ -257,21 +258,21 @@ class SparseMatrix
 			def subtraction(other_matrix)
 				temp = other_matrix.matrix_table.clone
 				hash_result = @matrix_table.merge(temp.each {|k,v| temp[k]=v*-1}) {|key,vala,valb| vala+valb}
-				SparseMatrix.new(hash_result)
+				SparseMatrix.new(hash_result, @num_rows, @num_columns)
 			end
 
 			def multiplication(other)
 				case other
 					when Numeric
 						temp = @matrix_table.clone 
-						SparseMatrix.new(temp.each {|k,v| temp[k]=v*other})
+						SparseMatrix.new(temp.each {|k,v| temp[k]=v*other}, @num_rows, @num_columns)
 					when Matrix
 						SparseMatrix.new(Matrix.rows(to_a) * other)
 					when TriDiagonalMatrix
 						SparseMatrix.new(Matrix.rows(to_a) * Matrix.rows(other.to_a))
 					when SparseMatrix
 						if other.zero? or zero?
-							return SparseMatrix.new(Hash.new(0))
+							return SparseMatrix.new(Hash.new(0), @num_rows, other.num_columns)
 						end
 						SparseMatrix.new(Matrix.rows(to_a) * Matrix.rows(other.to_a))
 					else 
@@ -314,9 +315,9 @@ class SparseMatrix
 				raise "Matrix does not satisfy A*I = A invariant" unless equals(multiplication(SparseMatrix.identity(@num_columns)), itself)
 
 				raise "Matrix does not satisfy A+A = 2A" unless equals(addition(itself, itself), multiplication(2))
-				raise "Matrix does not satisfy A-A = 0" unless equals(subtraction(itself), SparseMatrix.new(Hash.new(0)))
-				raise "Matrix does not satisfy A+0 = A" unless equals(addition(itself, SparseMatrix.new(Hash.new(0))), itself)
-				raise "Matrix does not satisfy A*0 = 0" unless equals(multiplication(SparseMatrix.new(Hash.new(0))), SparseMatrix.new(Hash.new(0)))
+				raise "Matrix does not satisfy A-A = 0" unless equals(subtraction(itself), SparseMatrix.new(Hash.new(0), @num_rows, @num_columns))
+				raise "Matrix does not satisfy A+0 = A" unless equals(addition(itself, SparseMatrix.new(Hash.new(0), @num_rows, @num_columns)), itself)
+				raise "Matrix does not satisfy A*0 = 0" unless equals(multiplication(SparseMatrix.new(Hash.new(0), @num_rows, @num_columns)), SparseMatrix.new(Hash.new(0), @num_rows, @num_columns))
 
 				raise "Matrix must satisfy that itself is not null" unless !(@matrix_table.nil? && @matrix_table.values.any?{|val| val.nil? })
 			end
@@ -335,7 +336,7 @@ class SparseMatrix
 			end
 
 			def check_correct_dimensions_after_multiplication(other_matrix, result)
-				raise "Multiplication dimensions are incorrect." unless @num_rows == result.num_rows && @num_columns == result.num_columns
+				raise "Multiplication dimensions are incorrect." unless result.num_rows == @num_rows && result.num_columns == other_matrix.num_columns
 			end
 
 			def check_square_matrix
