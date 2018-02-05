@@ -21,9 +21,9 @@ class SparseMatrix
 				rows(input.to_a)
 			when Hash
 				@matrix_table = input
-				# assume the maximum row and col given gives the dimensions (to be changed in proper implementation)
-				@num_rows = input.keys.map{|key| key[:row]}.max
-				@num_columns = input.keys.map{|key| key[:column]}.max
+				# assume the maximum row and col given gives the dimensions in zero index, +1 to 1 index
+				@num_rows = input.keys.map{|key| key[:row]}.max + 1
+				@num_columns = input.keys.map{|key| key[:column]}.max + 1
 			else 
 				raise "Input must be of type Array (array of arrays), Matrix or Hash."
 		end
