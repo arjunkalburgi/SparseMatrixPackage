@@ -22,8 +22,15 @@ class SparseMatrix
 			when Hash
 				@matrix_table = input
 				# assume the maximum row and col given gives the dimensions in zero index, +1 to 1 index
-				@num_rows = input.keys.map{|key| key[:row]}.max + 1
-				@num_columns = input.keys.map{|key| key[:column]}.max + 1
+				if input.keys.size > 0
+					@num_rows = input.keys.map{|key| key[:row]}.max + 1
+					@num_columns = input.keys.map{|key| key[:column]}.max + 1
+				else 
+					# zero matrix
+					@num_rows = 0 
+					@num_columns = 0
+				end
+				removeZeroElements
 			else 
 				raise "Input must be of type Array (array of arrays), Matrix or Hash."
 		end
@@ -191,6 +198,11 @@ class SparseMatrix
 
 	def square? 
 		@num_rows == @num_columns
+	end
+
+	def zero? 
+		removeZeroElements
+		@matrix_table.empty? 
 	end
 
 	def [](row, column)
