@@ -261,6 +261,9 @@ class SparseMatrix
 					when TriDiagonalMatrix
 						SparseMatrix.new(Matrix.rows(self.to_a) * Matrix.rows(other.to_a))
 					when SparseMatrix
+						if other.zero? or zero?
+							return SparseMatrix.new(Hash.new(0))
+						end
 						SparseMatrix.new(Matrix.rows(to_a) * Matrix.rows(other.to_a))
 					else 
 						raise "Must multiply by scalar, matrix, sparse matrix, or tridiagonal matrix"
