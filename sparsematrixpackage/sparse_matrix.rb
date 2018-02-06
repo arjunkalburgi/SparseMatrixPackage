@@ -320,7 +320,7 @@ class SparseMatrix
 		arr
 	end
 	
-	def column(i)row_count
+	def column(i)
 		invariant 
 
 		check_valid_coordinates(0, i)
@@ -352,7 +352,7 @@ class SparseMatrix
 
 		end
 
-		def init_default(*args)row_count
+		def init_default(*args)
 			check_input_dimensions(args[0],args[1])
 
 			@matrix_table = Hash.new(0)
