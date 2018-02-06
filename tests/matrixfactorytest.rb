@@ -44,6 +44,10 @@ class MatrixFactoryTest < Test::Unit::TestCase
 		MatrixFactory.create(TriDiagonalMatrix, Matrix.rows([[0,0,0],
 															[0,1,0],
 															[0,0,0]]))
+															
+		MatrixFactory.create(SparseMatrix, Matrix.rows([[0,0,0],
+															[0,1,0],
+															[0,0,0]]))
     end
     
     def test_create_tridiagonal_by_diagonals
