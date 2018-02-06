@@ -76,20 +76,14 @@ class TriDiagonalMatrix
 	
 	def *(other)
 		invariant()
-
-		return_result_matrix = nil
-		case other
-			when TriDiagonalMatrix
-				#PRE 
-				check_tridiagonality(other)
-				check_dimensions(other)
-				
-				return_result_matrix = multiplication(other)
-				#POST
-				check_correct_dimensions_after_multiplication(return_result_matrix)
-			else
-				return_result_matrix = self * TriDiagonalMatrix.new(other)
-		end
+		
+		#PRE 
+		check_tridiagonality(other)
+		check_dimensions(other)
+		
+		return_result_matrix = multiplication(other)
+		#POST
+		check_correct_dimensions_after_multiplication(return_result_matrix)
 
 		invariant()
 
