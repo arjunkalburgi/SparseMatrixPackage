@@ -326,7 +326,7 @@ class SparseMatrix
 		check_valid_coordinates(0, i)
 
 		arr = []
-		(0..@num_rows-1).each do |r|
+		(0..@row_count-1).each do |r|
 			arr.push(@matrix_table[{row: r, column: i}])
 		end
 		arr
@@ -356,7 +356,7 @@ class SparseMatrix
 			check_input_dimensions(args[0],args[1])
 
 			@matrix_table = Hash.new(0)
-			@num_rows = args[0]
+			@row_count = args[0]
 			@column_count = args[1]
 		end
 
@@ -447,9 +447,9 @@ class SparseMatrix
 
 	
 	# TESTS
-		def invariantrow_count
+		def invariant
 			if square?
-				identitymatrix = SparseMatrix.identity(@num_rows)
+				identitymatrix = SparseMatrix.identity(@row_count)
 				if getInverse
 					raise "Matrix does not satisfy A * A.inverse = I invariant" unless equals(multiplication(getInverse), identitymatrix)
 				else
@@ -460,9 +460,9 @@ class SparseMatrix
 			raise "Matrix does not satisfy A*I = A invariant" unless equals(multiplication(SparseMatrix.identity(@column_count)), itself)
 
 			raise "Matrix does not satisfy A+A = 2A" unless equals(addition(itself, itself), multiplication(2))
-			raise "Matrix does not satisfy A-A = 0" unless equals(subtraction(itself), SparseMatrix.new(Hash.new(0), @num_rows, @column_count))
-			raise "Matrix does not satisfy A+0 = A" unless equals(addition(itself, SparseMatrix.new(Hash.new(0), @num_rows, @column_count)), itself)
-			raise "Matrix does not satisfy A*0 = 0" unless equals(multiplication(SparseMatrix.new(Hash.new(0), @num_rows, @column_count)), SparseMatrix.new(Hash.new(0), @num_rows, @column_count))
+			raise "Matrix does not satisfy A-A = 0" unless equals(subtraction(itself), SparseMatrix.new(Hash.new(0), @row_count, @column_count))
+			raise "Matrix does not satisfy A+0 = A" unless equals(addition(itself, SparseMatrix.new(Hash.new(0), @row_count, @column_count)), itself)
+			raise "Matrix does not satisfy A*0 = 0" unless equals(multiplication(SparseMatrix.new(Hash.new(0), @row_count, @column_count)), SparseMatrix.new(Hash.new(0), @row_count, @column_count))
 
 			raise "Matrix must satisfy that itself is not null" unless !(@matrix_table.nil? && @matrix_table.values.any?{|val| val.nil? })
 		end
