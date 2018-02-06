@@ -30,9 +30,9 @@ require_relative './tests/tridiagonal_matrixtest'
 
 
 # Math Operations 
-triDiagonal + sparseMatrix
+sparseMatrix + sparseMatrix
 
-triDiagonal - sparseMatrix
+triDiagonal - triDiagonal
 
 sparseMatrix * 2
 
