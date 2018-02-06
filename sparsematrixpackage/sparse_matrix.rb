@@ -71,7 +71,7 @@ class SparseMatrix
 				check_opposite_order_addition(other_matrix, result_matrix)
 				
 			else 
-				result_matrix = addition(other)
+				result_matrix = addition(self, other_matrix)
 		end
 
 		invariant
@@ -92,7 +92,7 @@ class SparseMatrix
 				check_dimensions_are_the_same(result_matrix)
 				
 			else 
-				result_matrix = subtraction(other)
+				result_matrix = subtraction(other_matrix)
 		end
 		
 		invariant
