@@ -225,6 +225,13 @@ class SparseMatrix
 		array
 	end
 
+	def each 
+	end 
+
+	def to_s 
+		to_a.to_s
+	end 
+
 
 	private
 
