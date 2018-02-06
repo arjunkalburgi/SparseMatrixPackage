@@ -28,6 +28,8 @@ class SparseMatrix
 						@num_rows = args[0].keys.map{|key| key[:row]}.max + 1
 						@num_columns = args[0].keys.map{|key| key[:column]}.max + 1
 					end
+				when TriDiagonalMatrix
+					from_array(args[0].to_a)
 				else 
 					raise "Single input must be of type Array (array of arrays), Matrix or Hash."		
 			end 
@@ -356,7 +358,7 @@ class SparseMatrix
 				when Matrix
 					SparseMatrix.new(Matrix.rows(to_a) + other)
 				when TriDiagonalMatrix
-					SparseMatrix.new(TriDiagonalMatrix.new(to_a) + other))
+					SparseMatrix.new(TriDiagonalMatrix.new(to_a) + other)
 				when SparseMatrix
 					hash_result = this_matrix.matrix_table.merge(other_matrix.matrix_table) {|key,vala,valb| vala+valb}
 					SparseMatrix.new(hash_result, @num_rows, @num_columns)
@@ -370,12 +372,12 @@ class SparseMatrix
 				when Matrix
 					SparseMatrix.new(Matrix.rows(to_a) - other)
 				when TriDiagonalMatrix
-					SparseMatrix.new(TriDiagonalMatrix.new(to_a) - other))
+					SparseMatrix.new(TriDiagonalMatrix.new(to_a) - other)
 				when SparseMatrix
 					temp = other_matrix.matrix_table.clone
 					hash_result = @matrix_table.merge(temp.each {|k,v| temp[k]=v*-1}) {|key,vala,valb| vala+valb}
 					SparseMatrix.new(hash_result, @num_rows, @num_columns)
-				else 
+				else
 					raise "Must subtract by matrix, sparse matrix, or tridiagonal matrix"
 			end
 		end
