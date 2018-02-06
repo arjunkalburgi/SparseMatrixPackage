@@ -81,7 +81,11 @@ class TriDiagonalMatrix
 		#PRE
 		check_dimensions(other) if other.respond_to?(:row_count)
 
-		return_result_matrix = multiplication(other)		
+		if other.respond_to?(:row_count)
+			return_result_matrix = multiplication(other)		
+		else 
+			return_result_matrix = map { |x| x * other }
+		end
 
 		#POST
 		check_correct_dimensions_after_multiplication(return_result_matrix)
@@ -100,7 +104,7 @@ class TriDiagonalMatrix
 		if other.respond_to?(:inverse) 
 			return_result_matrix = multiplication(other.inverse)
 		else 
-			return_result_matrix = multiplication(other**-1)
+			return_result_matrix = map { |x| x / other }
 		end
 		
 		#POST
@@ -341,7 +345,9 @@ class TriDiagonalMatrix
 	end
 
 	def map
-		return to_enum :map 
+		return to_enum(:map) unless block_given?
+		block = Proc.new
+		TriDiagonalMatrix.new(@upper_diagonal.map(&block), @middle_diagonal.map(&block), @lower_diagonal.map(&block))
 	end
 
 	def row(i)
@@ -354,10 +360,17 @@ class TriDiagonalMatrix
 		Array.new(column_count) { |i| self[i, j] }
 	end
 
-	def each(which = :all)
+	def each(which = :all, &block) 
 		return to_enum :each, which unless block_given?
-		each_with_index(which) { |x| yield x }
-		self
+		case which
+			when :non_zero  
+				combine = @upper_diagonal + @middle_diagonal + @lower_diagonal
+				combine.each{|k,v| block.call(v)}
+			when :diagonal
+				@middle_diagonal.each{|k,v| block.call(v)}
+			else 
+				to_m.each(which, &block)
+		end
 	end
 	
 	private 
@@ -434,7 +447,7 @@ class TriDiagonalMatrix
 		raise "Matrix does not satisfy A * A.getInverse() = I invariant" unless multiplication(getInverse()) == Matrix.identity(@row_count)
 
 		# raise "Matrix does not satisfy A.getDeterminant() == 0 when I.getInverse() == null invariant" unless getDeterminant() == 0 && getInverse() == nil
-
+		
 		raise "Matrix does not satisfy A*I = A invariant" unless multiplication(TriDiagonalMatrix.identity(@column_count)) == self.to_m
 		raise "Matrix does not satisfy A*(0 matrix) = 0 matrix" unless multiplication(TriDiagonalMatrix.scalar(n: @column_count, value: 0)) == Matrix.scalar(@column_count, 0)
 
@@ -464,8 +477,8 @@ class TriDiagonalMatrix
 	def check_correct_dimensions_after_multiplication(result)
 		if result.respond_to?(:row_count)
 			raise "Multiplication dimensions are incorrect." unless @row_count == result.row_count && @column_count == result.column_count
-		else 
-			raise "Multiplication dimensions are incorrect. Could not properly check dimensions." 
+		# else 
+		# 	raise "Multiplication dimensions are incorrect. Could not properly check dimensions." 
 		end
 	end
 
@@ -498,7 +511,7 @@ class TriDiagonalMatrix
 	def subtraction(other_matrix)
 		case other_matrix
 			when Matrix
-				other_matrix - self.to_m
+				other_matrix*(-1) + self.to_m
 			when TriDiagonalMatrix
 				upper = [@upper_diagonal, other_matrix.upper_diagonal].transpose.map {|x| x.reduce(:-)}
 				middle = [@middle_diagonal, other_matrix.middle_diagonal].transpose.map {|x| x.reduce(:-)}
