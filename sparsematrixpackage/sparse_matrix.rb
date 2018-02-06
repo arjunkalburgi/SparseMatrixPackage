@@ -106,11 +106,11 @@ class SparseMatrix
 
 		case other
 			when SparseMatrix
-				check_compatible_dimensions_for_multiplication(other.getInverse)
+				check_compatible_dimensions_for_multiplication(other.inverse)
 
-				result_matrix = multiplication(other.getInverse)
+				result_matrix = multiplication(other.inverse)
 
-				check_correct_dimensions_after_multiplication(other.getInverse, result_matrix)
+				check_correct_dimensions_after_multiplication(other.inverse, result_matrix)
 			else 
 				result_matrix = multiplication(1.0/other)
 		end
@@ -233,7 +233,11 @@ class SparseMatrix
 	end
 	
 	def to_s
-		to_a.to_s
+		"#{self.class.name}#{to_a}"
+	end
+
+	def to_m 
+		Matrix.rows(to_a)
 	end
 	
 	def get(r, c)
@@ -298,96 +302,101 @@ class SparseMatrix
 
 	private
 
-		# FUNCTIONALITY			
-			def rows(matrixarray)
+	# FUNCTIONALITY			
+		def rows(matrixarray)
 
-				@num_rows = matrixarray.size
-				@num_columns = matrixarray[0].size
+			@num_rows = matrixarray.size
+			@num_columns = matrixarray[0].size
 
-				@matrix_table = Hash.new(0)
-				matrixarray.each_index do |i|
-					raise "Not all columns are the same size." unless matrixarray[i].size == @num_columns 
-					matrixarray[i].each_index do |j|
-						if matrixarray[i][j] != 0
-							@matrix_table[{row: i, column: j}] = matrixarray[i][j]
-						end
+			@matrix_table = Hash.new(0)
+			matrixarray.each_index do |i|
+				raise "Not all columns are the same size." unless matrixarray[i].size == @num_columns 
+				matrixarray[i].each_index do |j|
+					if matrixarray[i][j] != 0
+						@matrix_table[{row: i, column: j}] = matrixarray[i][j]
 					end
 				end
-
 			end
 
-			def init_default(*args)
-				check_input_dimensions(args[0],args[1])
+		end
 
-				@matrix_table = Hash.new(0)
-				@num_rows = args[0]
-				@num_columns = args[1]
+		def init_default(*args)
+			check_input_dimensions(args[0],args[1])
+
+			@matrix_table = Hash.new(0)
+			@num_rows = args[0]
+			@num_columns = args[1]
+		end
+
+		def from_matrix(matrix)
+			rows(matrix.to_a)
+		end
+
+		def from_array(array)
+			rows(array)
+		end	
+
+		def equals(this_matrix, other_matrix)
+			other_matrix.respond_to?(:matrix_table) && 
+			other_matrix.respond_to?(:num_rows) && 
+			other_matrix.respond_to?(:num_columns) && 
+			this_matrix.matrix_table == (other_matrix.matrix_table) &&
+			this_matrix.num_rows.eql?(other_matrix.num_rows) &&
+			this_matrix.num_columns.eql?(other_matrix.num_columns)
+		end
+
+		def addition(this_matrix, other_matrix)
+			hash_result = this_matrix.matrix_table.merge(other_matrix.matrix_table) {|key,vala,valb| vala+valb}
+			SparseMatrix.new(hash_result, @num_rows, @num_columns)
+		end
+
+		def subtraction(other_matrix)
+			temp = other_matrix.matrix_table.clone
+			hash_result = @matrix_table.merge(temp.each {|k,v| temp[k]=v*-1}) {|key,vala,valb| vala+valb}
+			SparseMatrix.new(hash_result, @num_rows, @num_columns)
+		end
+
+		def multiplication(other)
+			case other
+				when Numeric
+					temp = @matrix_table.clone 
+					SparseMatrix.new(temp.each {|k,v| temp[k]=v*other}, @num_rows, @num_columns)
+				when Matrix
+					SparseMatrix.new(Matrix.rows(to_a) * other)
+				when TriDiagonalMatrix
+					SparseMatrix.new(Matrix.rows(to_a) * Matrix.rows(other.to_a))
+				when SparseMatrix
+					if other.zero? or zero?
+						return SparseMatrix.new(Hash.new(0), @num_rows, other.num_columns)
+					end
+					SparseMatrix.new(Matrix.rows(to_a) * Matrix.rows(other.to_a))
+				else 
+					raise "Must multiply by scalar, matrix, sparse matrix, or tridiagonal matrix"
 			end
+		end
 
-			def from_matrix(matrix)
-				rows(matrix.to_a)
-			end
+		def getDeterminant
+			Matrix.rows(to_a).determinant
+		end
 
-			def from_array(array)
-				rows(array)
-			end	
-
-			def equals(this_matrix, other_matrix)
-				(this_matrix.matrix_table == other_matrix.matrix_table)
-			end
-
-			def addition(this_matrix, other_matrix)
-				hash_result = this_matrix.matrix_table.merge(other_matrix.matrix_table) {|key,vala,valb| vala+valb}
-				SparseMatrix.new(hash_result)
-			end
- 
-			def subtraction(other_matrix)
-				temp = other_matrix.matrix_table.clone
-				hash_result = @matrix_table.merge(temp.each {|k,v| temp[k]=v*-1}) {|key,vala,valb| vala+valb}
-				SparseMatrix.new(hash_result, @num_rows, @num_columns)
-			end
-
-			def multiplication(other)
-				case other
-					when Numeric
-						temp = @matrix_table.clone 
-						SparseMatrix.new(temp.each {|k,v| temp[k]=v*other}, @num_rows, @num_columns)
-					when Matrix
-						SparseMatrix.new(Matrix.rows(to_a) * other)
-					when TriDiagonalMatrix
-						SparseMatrix.new(Matrix.rows(to_a) * Matrix.rows(other.to_a))
-					when SparseMatrix
-						if other.zero? or zero?
-							return SparseMatrix.new(Hash.new(0), @num_rows, other.num_columns)
-						end
-						SparseMatrix.new(Matrix.rows(to_a) * Matrix.rows(other.to_a))
-					else 
-						raise "Must multiply by scalar, matrix, sparse matrix, or tridiagonal matrix"
-				end
-			end
-
-			def getDeterminant
-				Matrix.rows(to_a).determinant
-			end
-
-			def getInverse
-				begin 
-					SparseMatrix.new(Matrix.rows(to_a).inverse)
-				rescue
-					nil
-				end 
-			end
-
-			def getTranspose
-				SparseMatrix.new(Matrix.rows(to_a).transpose)
-			end
-
-			def removeZeroElements 
-				@matrix_table.delete_if {|k,v| v==0}
+		def getInverse
+			begin 
+				SparseMatrix.new(Matrix.rows(to_a).inverse)
+			rescue
+				nil
 			end 
+		end
 
-		
-		# TESTS
+		def getTranspose
+			SparseMatrix.new(Matrix.rows(to_a).transpose)
+		end
+
+		def removeZeroElements 
+			@matrix_table.delete_if {|k,v| v==0}
+		end 
+
+	
+	# TESTS
 			def invariant
 				if square?
 					identitymatrix = SparseMatrix.identity(@num_rows)
