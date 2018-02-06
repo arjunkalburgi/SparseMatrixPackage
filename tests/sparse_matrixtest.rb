@@ -90,4 +90,49 @@ class SparseMatrixTest < Test::Unit::TestCase
 		assert_equal(@matrix1.transpose, SparseMatrix.new(matrix1_transpose))
 	end
 	
+	def test_get
+		assert_equal(@matrix1.get(0,0), 8)
+	end
+	
+	def test_invalid_get
+	
+	end
+	
+	def test_set
+		@matrix1.set(0,0,19)
+		assert_equal(@matrix1.get(0,0), 19)
+	end
+	
+	def test_to_s
+	
+	end
+	
+	def test_invalid_set
+	
+	end
+	
+	def test_dimensions
+	
+	end
+	
+	def test_map
+	
+	end
+	
+	def test_row
+		assert_equal(@matrix1.row(0),[8,10])
+	end
+	
+	def test_invalid_row
+	
+	end
+	
+	def test_column
+		assert_equal(@matrix1.column(0),[8,0])
+	end
+	
+	def test_invalid_column
+	
+	end
+	
 end
