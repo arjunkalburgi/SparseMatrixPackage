@@ -496,7 +496,7 @@ class TriDiagonalMatrix
 	end
 
 	def getDeterminant
-		Matrix.rows(self.to_a).determinant
+		self.to_m.determinant
 	end
 
 	def getTranspose
@@ -505,7 +505,10 @@ class TriDiagonalMatrix
 
 	def getInverse
 		begin
-			Matrix.rows(self.to_a).inverse
+			puts self.to_m
+			m = self.to_m.inverse
+			puts 'm'
+			puts m
 		rescue
 			nil
 		end 
