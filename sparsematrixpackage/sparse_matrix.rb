@@ -61,7 +61,7 @@ class SparseMatrix
 		invariant
 
 		result_matrix = nil
-		case other
+		case other_matrix
 			when SparseMatrix
 				check_matching_dimensions(other_matrix)
 				
@@ -83,7 +83,7 @@ class SparseMatrix
 		invariant
 
 		result_matrix = nil
-		case other
+		case other_matrix
 			when SparseMatrix
 				check_matching_dimensions(other_matrix)
 		
@@ -354,11 +354,11 @@ class SparseMatrix
 		end
 
 		def addition(this_matrix, other_matrix)
-			case other
+			case other_matrix
 				when Matrix
-					SparseMatrix.new(Matrix.rows(to_a) + other)
+					SparseMatrix.new(Matrix.rows(to_a) + other_matrix)
 				when TriDiagonalMatrix
-					SparseMatrix.new(TriDiagonalMatrix.new(to_a) + other)
+					SparseMatrix.new(TriDiagonalMatrix.new(to_a) + other_matrix)
 				when SparseMatrix
 					hash_result = this_matrix.matrix_table.merge(other_matrix.matrix_table) {|key,vala,valb| vala+valb}
 					SparseMatrix.new(hash_result, @num_rows, @num_columns)
@@ -368,11 +368,11 @@ class SparseMatrix
 		end
 
 		def subtraction(other_matrix)
-			case other
+			case other_matrix
 				when Matrix
-					SparseMatrix.new(Matrix.rows(to_a) - other)
+					SparseMatrix.new(Matrix.rows(to_a) - other_matrix)
 				when TriDiagonalMatrix
-					SparseMatrix.new(TriDiagonalMatrix.new(to_a) - other)
+					SparseMatrix.new(TriDiagonalMatrix.new(to_a) - other_matrix)
 				when SparseMatrix
 					temp = other_matrix.matrix_table.clone
 					hash_result = @matrix_table.merge(temp.each {|k,v| temp[k]=v*-1}) {|key,vala,valb| vala+valb}
