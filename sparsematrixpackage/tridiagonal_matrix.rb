@@ -443,8 +443,9 @@ class TriDiagonalMatrix
 	def check_correct_dimensions_after_multiplication(result)
 		if result.respond_to?(:row_count)
 			raise "Multiplication dimensions are incorrect." unless @row_count == result.row_count && @column_count == result.column_count
-		end 
-		raise "Multiplication dimensions are incorrect. Could not properly check dimensions." 
+		else 
+			raise "Multiplication dimensions are incorrect. Could not properly check dimensions." 
+		end
 	end
 
 	def check_opposite_order_addition(other_matrix, return_result_matrix)
