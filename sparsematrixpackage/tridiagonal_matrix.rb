@@ -15,14 +15,15 @@ class TriDiagonalMatrix
 		new Matrix.scalar(n, value)
 	end 
 
-	def initialize(input)
-		case input
-			when Array
-				rows(input)
-			when Matrix
-				rows(input.to_a())
+	def initialize(*args)
+		if args.size == 1
+			if args[0].is_a? Matrix
+				rows(args[0].to_a)
 			else 
-				raise "Must input Array or Matrix"
+				rows(args[0])
+			end
+		else 
+			init_default(*args)
 		end
 
 		#POST
@@ -367,10 +368,7 @@ class TriDiagonalMatrix
 	
 	private 
 
-	def rows(rows, copy = true)
-		
-		# rows = convert_to_array(rows, true) 
-		# rows.map! { |row| convert_to_array(row, copy) }
+	def rows(rows)
 
 		# basing column size on first row
 		@column_count = (rows[0] || []).size
@@ -412,6 +410,18 @@ class TriDiagonalMatrix
 		end 
 	end
 
+	def init_default(*args) 
+
+		check_input_dimensions(args[0],args[1])
+
+		@row_count = args[0]
+		@column_count = args[1]
+		
+		@upper_diagonal = Array.new(@row_count-1,0)
+		@middle_diagonal = Array.new(@row_count,0)
+		@lower_diagonal = Array.new(@row_count-1,0)
+	end
+
 	def invariant
 		raise "TriDiagonalMatrix does not satisfy that it should be square" unless @row_count == @column_count
 
@@ -439,6 +449,10 @@ class TriDiagonalMatrix
 
 	def check_dimensions(other_matrix)
 		raise "Matricies do not have the same dimensions" unless @row_count == other_matrix.row_count
+	end
+
+	def check_input_dimensions(row,col)
+		raise "Matrix dimensions must be greater than 0 and square" unless row > 0 && col > 0 && row == col
 	end
 
 	def check_correct_dimensions_after_multiplication(result)
@@ -512,11 +526,7 @@ class TriDiagonalMatrix
 
 	def getInverse
 		begin
-			# puts self.to_m
-			m = self.to_m.inverse
-			# puts 'm'
-			# puts m
-			m
+			self.to_m.inverse
 		rescue
 			nil
 		end 
