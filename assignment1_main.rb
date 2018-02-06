@@ -20,7 +20,7 @@ triDiagonal = MatrixFactory.create(TridiagonalMatrix, [[1, 0, 0],
 
 
 
-# Benchmarks
+# Testing
 require 'test/unit'
 require_relative './tests/sparse_matrixtest'
 require_relative './tests/tridiagonal_matrixtest'
