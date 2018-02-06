@@ -411,11 +411,15 @@ class TriDiagonalMatrix
 	end
 
 	def check_dimensions(other_matrix)
-		raise "Matricies do not have the same dimensions" unless self.num_rows == other_matrix.num_rows
+		raise "Matricies do not have the same dimensions" unless @num_rows == other_matrix.num_rows
 	end
 
 	def check_correct_dimensions_after_multiplication(result)
-		raise "Multiplication dimensions are incorrect." unless @num_rows == result.num_rows && @num_columns == result.num_columns
+		if result.respond_to?(num_rows)
+			raise "Multiplication dimensions are incorrect." unless @num_rows == result.num_rows && @num_columns == result.num_columns
+		else 
+			raise "Multiplication dimensions are incorrect." unless @num_rows == result.row_count && @num_columns == result.column_count
+		end
 	end
 
 	def check_opposite_order_addition(other_matrix, return_result_matrix)
