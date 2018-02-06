@@ -242,6 +242,31 @@ class SparseMatrix
 		[@num_rows, @num_columns]
 	end
 
+	def each(which = :all, &block) 
+		return to_enum :each, which unless block_given?
+		case which
+			when :all 
+				to_m.each(which, &block) #must pass to matrix since 0 elements are not present
+			when :non_zero  
+				@matrix_table.each{|k,v| block.call(v)}
+			when :diagonal
+				@matrix_table.select {|k,v| k[:row]==k[:column]}.each{|k,v| block.call(v)}
+			when :off_diagonal
+				@matrix_table.select {|k,v| k[:row]!=k[:column]}.each{|k,v| block.call(v)}
+			when :lower
+				@matrix_table.select {|k,v| k[:row]>=k[:column]}.each{|k,v| block.call(v)}
+			when :strict_lower
+				@matrix_table.select {|k,v| k[:row]>k[:column]}.each{|k,v| block.call(v)}
+			when :upper
+				@matrix_table.select {|k,v| k[:row]<=k[:column]}.each{|k,v| block.call(v)}
+			when :strict_upper
+				@matrix_table.select {|k,v| k[:row]<k[:column]}.each{|k,v| block.call(v)}
+			else 
+				# anything else I missed? try to see if matrix implements it (when :row, :column, :regular)
+				to_m.each(which, &block)
+		end
+	end 
+
 	def map(&block)
 		return to_enum(:collect) unless block_given?
 		temp = @matrix_table.clone
