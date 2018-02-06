@@ -17,10 +17,10 @@ class TriDiagonalMatrix
 
 	def initialize(*args)
 		if args.size == 1
-			if args[0].is_a? Matrix
+			if args[0].respond_to?(:to_a)
 				rows(args[0].to_a)
 			else 
-				rows(args[0])
+				raise "Must be able to convert to an array to be made into a TriDiagonalMatrix"
 			end
 		elsif args.size == 3
 			init_diagonals(*args)
@@ -290,7 +290,14 @@ class TriDiagonalMatrix
 	def trace
 		invariant()
 
-		@middle_diagonal.reduce(:+)
+		result = @middle_diagonal.reduce(:+)
+
+		#POST
+		check_result_is_number(result)
+		
+		invariant()
+
+		result
 	end
 
 	def diagonal?
@@ -345,22 +352,26 @@ class TriDiagonalMatrix
 	end
 
 	def map
+		invariant()
 		return to_enum(:map) unless block_given?
 		block = Proc.new
 		TriDiagonalMatrix.new(@upper_diagonal.map(&block), @middle_diagonal.map(&block), @lower_diagonal.map(&block))
 	end
 
 	def row(i)
-		return self unless i < row_count
-		Array.new(row_count) { |j| self[i, j] }
+		invariant()
+		return self unless i < @row_count
+		Array.new(@row_count) { |j| self[i, j] }
 	end
 
 	def column(j)
-		return self unless j < column_count
-		Array.new(column_count) { |i| self[i, j] }
+		invariant()
+		return self unless j < @column_count
+		Array.new(@column_count) { |i| self[i, j] }
 	end
 
 	def each(which = :all, &block) 
+		invariant()
 		return to_enum :each, which unless block_given?
 		case which
 			when :non_zero  
