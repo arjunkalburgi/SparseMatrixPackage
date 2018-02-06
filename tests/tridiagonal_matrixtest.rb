@@ -140,4 +140,61 @@ class TridiagonalMatrixTest < Test::Unit::TestCase
 												    [0,0,0,2,1]])
 		assert_equal(@matrix1.transpose, matrix1_transpose)
 	end
+	
+	def test_get
+		assert_equal(@matrix1.get(0,0), 1)
+	end
+	
+	def test_invalid_get
+	
+	end
+	
+	def test_set
+		@matrix1.set(0,0,19)
+		assert_equal(@matrix1.get(0,0), 19)
+	end
+	
+	def test_to_s
+	
+	end
+	
+	def test_to_m
+	
+	end
+	
+	def test_to_a
+		assert_equal(@matrix1.to_a, [[1,2,0,0,0],
+									 [3,1,2,0,0],
+									 [0,3,1,2,0],
+									 [0,0,3,1,2],
+									 [0,0,0,3,1]]
+	end
+	
+	def test_invalid_set
+	
+	end
+	
+	def test_dimensions
+	
+	end
+	
+	def test_map
+	
+	end
+	
+	def test_row
+		assert_equal(@matrix1.row(0),[1,2,0,0,0])
+	end
+	
+	def test_invalid_row
+	
+	end
+	
+	def test_column
+		assert_equal(@matrix1.column(0),[1,3,0,0,0])
+	end
+	
+	def test_invalid_column
+	
+	end
 end

@@ -107,6 +107,14 @@ class SparseMatrixTest < Test::Unit::TestCase
 	
 	end
 	
+	def test_to_m
+	
+	end
+	
+	def test_to_a
+		
+	end
+	
 	def test_invalid_set
 	
 	end
