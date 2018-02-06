@@ -106,11 +106,11 @@ class SparseMatrix
 
 		case other
 			when SparseMatrix
-				check_compatible_dimensions_for_multiplication(other.getInverse)
+				check_compatible_dimensions_for_multiplication(other.inverse)
 
-				result_matrix = multiplication(other.getInverse)
+				result_matrix = multiplication(other.inverse)
 
-				check_correct_dimensions_after_multiplication(other.getInverse, result_matrix)
+				check_correct_dimensions_after_multiplication(other.inverse, result_matrix)
 			else 
 				result_matrix = multiplication(1.0/other)
 		end
