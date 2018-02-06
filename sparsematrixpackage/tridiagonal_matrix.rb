@@ -444,7 +444,7 @@ class TriDiagonalMatrix
 				puts middle
 				puts 'lower'
 				puts lower
-				m = Matrix.rows(to_a(upper, middle, lower))
+				m = Matrix.rows(to_a_help(upper, middle, lower))
 				puts 'm'
 				puts m.to_s
 				TriDiagonalMatrix.new(m)
@@ -461,7 +461,7 @@ class TriDiagonalMatrix
 				upper = [@upper_diagonal, other_matrix.upper_diagonal].transpose.map {|x| x.reduce(:-)}
 				middle = [@middle_diagonal, other_matrix.middle_diagonal].transpose.map {|x| x.reduce(:-)}
 				lower = [@lower_diagonal, other_matrix.lower_diagonal].transpose.map {|x| x.reduce(:-)}
-				TriDiagonalMatrix.new(Matrix.rows(to_a(upper, middle, lower)))
+				TriDiagonalMatrix.new(Matrix.rows(to_a_help(upper, middle, lower)))
 			else 
 				raise "Subtraction must be with TriDiagonalMatrix or Matrix"
 		end
@@ -485,7 +485,7 @@ class TriDiagonalMatrix
 	end
 
 	def getTranspose
-		TridiagonalMatrix.new(Matrix.rows(to_a(upper, middle, lower)gonal, lower: @upper_diagonal)))
+		TridiagonalMatrix.new(Matrix.rows(to_a_help(@lower_diagonal, @middle_diagonal, @upper_diagonal)))
 	end 
 
 	def getInverse
