@@ -260,6 +260,14 @@ class SparseMatrix
 	private
 
 		# FUNCTIONALITY
+			def from_matrix(matrix)
+				rows(matrix.to_a)
+			end
+
+			def from_array(array)
+				rows(array)
+			end				
+
 			def rows(matrixarray)
 
 				@num_rows = matrixarray.size
@@ -389,8 +397,8 @@ class SparseMatrix
 	alias_method :det, :determinant
 	alias_method :t, :transpose
 	alias_method :eql?,  :==
-	alias_method :[] :get
-	alias_method :[]= :put
-	alias_method :set :put
+	alias_method :[], :get
+	alias_method :[]=, :set
+	alias_method :put, :set 
 end
 
