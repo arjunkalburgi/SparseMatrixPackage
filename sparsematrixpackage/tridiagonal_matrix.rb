@@ -491,7 +491,12 @@ class TriDiagonalMatrix
 	end
 
 	def check_opposite_order_addition(other_matrix, return_result_matrix)
-		raise "Order should have been maintained." unless addition(other_matrix.to_m, self.to_m).to_m == return_result_matrix.to_m
+		case return_result_matrix
+			when Matrix
+				raise "Order should have been maintained." unless addition(other_matrix, self).to_m == return_result_matrix
+			else 
+				raise "Order should have been maintained." unless addition(other_matrix, self).to_m == return_result_matrix.to_m
+		end
 	end
 
 	def check_result_is_number(result) 
