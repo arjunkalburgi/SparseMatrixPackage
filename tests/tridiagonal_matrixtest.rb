@@ -104,12 +104,11 @@ class TridiagonalMatrixTest < Test::Unit::TestCase
 											    [0,0,3,1,2],
 											    [0,0,0,3,1]])
 		assert_equal(dividedMatrix2, matrixToDivide/2)
-		dividedMatrix = Matrix.rows([[10945/43181,-3848/43181,6832/43181,2016/43181,-2464/43181], 
-									 [21960/43181,6581/43181,-732/43181,-216/43181,264/43181],
-									 [879/43181,-1465/43181,12925/43181,-8928/43181,10912/43181],
-									 [-4860/43181,8100/43181,162/43181,5003/43181,3481/43181],
-									 [-1710/43181,2850/43181,57/43181,-13433/43181,21216/43181]])
-		assert_equal(dividedMatrix, @matrix1/@matrix2)
+		
+		dividedMatrix = Matrix.rows([[-2,-2],[-6,-2]])
+		matrix1_1 = TriDiagonalMatrix.new([[2,4],[6,8]])
+		matrix2_2 = TriDiagonalMatrix.new([[-1, -1],[0,-1]])
+		assert_equal(dividedMatrix, matrix1_1/matrix2_2)
 	end
 	
 	def test_equals
