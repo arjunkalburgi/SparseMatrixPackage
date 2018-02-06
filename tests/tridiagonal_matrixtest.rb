@@ -92,18 +92,18 @@ class TridiagonalMatrixTest < Test::Unit::TestCase
 	
 	
 	def test_divide
-		dividedMatrix = Matrix.rows([[10945/43181,-3848/43181,6832/43181,2016/43181,-2464/43181], 
-									 [21960/43181,6581/43181,-732/43181,-216/43181,264/43181],
-									 [879/43181,-1465/43181,12925/43181,-8928/43181,10912/43181],
-									 [-4860/43181,8100/43181,162/43181,5003/43181,3481/43181],
-									 [-1710/43181,2850/43181,57/43181,-13433/43181,21216/43181]])
-		assert_equal(dividedMatrix, @matrix1/@matrix2)
 		dividedMatrix2 = TriDiagonalMatrix.new([[0.5,1,0,0,0],
 												[1.5,0.5,1,0,0],
 												[0,1.5,0.5,1,0],
 												[0,0,1.5,0.5,1],
 												[0,0,0,1.5,0.5]])
 		assert_equal(dividedMatrix2, @matrix1/2)
+		dividedMatrix = Matrix.rows([[10945/43181,-3848/43181,6832/43181,2016/43181,-2464/43181], 
+									 [21960/43181,6581/43181,-732/43181,-216/43181,264/43181],
+									 [879/43181,-1465/43181,12925/43181,-8928/43181,10912/43181],
+									 [-4860/43181,8100/43181,162/43181,5003/43181,3481/43181],
+									 [-1710/43181,2850/43181,57/43181,-13433/43181,21216/43181]])
+		assert_equal(dividedMatrix, @matrix1/@matrix2)
 	end
 	
 	def test_equals
@@ -145,56 +145,60 @@ class TridiagonalMatrixTest < Test::Unit::TestCase
 		assert_equal(@matrix1.get(0,0), 1)
 	end
 	
-	def test_invalid_get
+	# def test_invalid_get
 	
-	end
+	# end
 	
 	def test_set
 		@matrix1.set(0,0,19)
 		assert_equal(@matrix1.get(0,0), 19)
 	end
 	
-	def test_to_s
+	# def test_to_s
 	
-	end
+	# end
 	
-	def test_to_m
+	# def test_to_m
 	
-	end
+	# end
 	
 	def test_to_a
 		assert_equal(@matrix1.to_a, [[1,2,0,0,0],
 									 [3,1,2,0,0],
 									 [0,3,1,2,0],
 									 [0,0,3,1,2],
-									 [0,0,0,3,1]]
+									 [0,0,0,3,1]])
 	end
 	
-	def test_invalid_set
+	# def test_invalid_set
 	
-	end
+	# end
 	
-	def test_dimensions
+	# def test_dimensions
 	
-	end
+	# end
 	
-	def test_map
+	# def test_map
 	
-	end
+	# end
 	
 	def test_row
 		assert_equal(@matrix1.row(0),[1,2,0,0,0])
 	end
 	
-	def test_invalid_row
+	# def test_invalid_row
 	
-	end
+	# end
 	
 	def test_column
 		assert_equal(@matrix1.column(0),[1,3,0,0,0])
 	end
 	
-	def test_invalid_column
+	# def test_invalid_column
 	
-	end
+	# end
+	
+	#def test_each
+	
+	#end
 end
