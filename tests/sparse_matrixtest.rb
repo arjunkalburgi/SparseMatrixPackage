@@ -107,9 +107,10 @@ class SparseMatrixTest < Test::Unit::TestCase
 	
 	# end
 	
-	# def test_to_m
-	
-	# end
+	def test_to_m
+		assert_equal(@matrix1.to_m, Matrix.rows([[8, 10],
+												 [0, 0]]))
+	end
 	
 	def test_to_a
 		assert_equal(@matrix1.to_a, [[8, 10],[0, 0]])
