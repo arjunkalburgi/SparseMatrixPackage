@@ -123,12 +123,12 @@ class TridiagonalMatrixTest < Test::Unit::TestCase
 	end
 	
 	def test_inverse
-		inverseMatrix = Matrix.rows([[19/85,22/85,-4/17,-8/85,16/85],
-									 [33/85,-11/85,2/17,4/85,-8/85],
-									 [-9/17,3/17,5/17,2/17,-4/17],
-									 [-27/85,9/85,3/17,-11/85,22/85],
-									 [81/85,-27/85,-9/17,33/85,19/85]]) #calculated by hand
-		assert_equal(@matrix1.inverse, inverseMatrix)
+		matrixToInvert = TriDiagonalMatrix.new([[-1,-1],
+												[0,-1]])
+									 
+		inverseMatrix = Matrix.rows([[-1, 1],
+									 [0, -1]])
+		assert_equal(matrixToInvert.inverse, inverseMatrix)
 	end
 	
 	
