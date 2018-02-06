@@ -2,6 +2,8 @@ require 'matrix'
 # require_relative './sparse_matrix'
 
 class TriDiagonalMatrix
+
+	include Enumerable
 	
 	attr_reader :column_count, :row_count, :upper_diagonal, :middle_diagonal, :lower_diagonal
 	
@@ -104,7 +106,7 @@ class TriDiagonalMatrix
 		return_result_matrix = multiplication(other_matrix.inverse)
 		
 		#POST
-		check_correct_dimensions_after_multiplication(other_matrix, return_result_matrix)
+		check_correct_dimensions_after_multiplication(return_result_matrix)
 		
 		invariant()
 
@@ -337,6 +339,30 @@ class TriDiagonalMatrix
 	def to_s
 		"#{self.class.name}#{to_a}"
 	end
+
+	def map
+		return to_enum :map 
+	end
+
+	def row(i)
+		return self unless i < row_count
+		row = Array.new(row_count) { |j| self[i, j] }
+		row.each(&Proc.new) if block_given?
+		Vector.elements(row, false)
+	end
+
+	def column(j)
+		return self unless j < column_count
+		col = Array.new(column_count) { |i| self[i, j] }
+		col.each(&Proc.new) if block_given?
+		Vector.elements(col, false)
+	end
+
+	def each(which = :all)
+		return to_enum :each, which unless block_given?
+		each_with_index(which) { |x| yield x }
+		self
+	end
 	
 	private 
 
@@ -417,9 +443,8 @@ class TriDiagonalMatrix
 	def check_correct_dimensions_after_multiplication(result)
 		if result.respond_to?(row_count)
 			raise "Multiplication dimensions are incorrect." unless @row_count == result.row_count && @column_count == result.column_count
-		else 
-			raise "Multiplication dimensions are incorrect." 
-		end
+		end 
+		raise "Multiplication dimensions are incorrect. Could not properly check dimensions." 
 	end
 
 	def check_opposite_order_addition(other_matrix, return_result_matrix)
