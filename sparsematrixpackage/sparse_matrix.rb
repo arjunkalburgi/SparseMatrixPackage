@@ -17,9 +17,9 @@ class SparseMatrix
 		#add a way to handle blank creation (ie .new(2,3) gives 2x3 blank matrix)
 		case input 
 			when Array 
-				rows(input)
+				from_array(input)
 			when Matrix
-				rows(input.to_a)
+				from_matrix(input)
 			when Hash
 				@matrix_table = input
 				if input.keys.size > 0 && rows==nil && columns==nil
@@ -226,7 +226,36 @@ class SparseMatrix
 		array
 	end
 	
+	def to_s
+		to_a.to_s
+	end
+	
+	def get(r, c)
+		@matrix_table[{row: r, column: c}]
+	end
+	
+	def set(r, c, v)
+		@matrix_table[{row: r, column: c}] = v
+	end
+	
+	def dimensions
+		[@num_rows, @num_columns]
+	end
 
+	def map(&block)
+		return to_enum(:collect) unless block_given?
+		temp = @matrix_table.clone
+		temp.map{|k,v| temp[k]=block.call(v)}
+		SparseMatrix.new(temp, @num_rows, @num_columns)
+	end
+	
+	def row(i)
+		@matrix_table.select{|k,v| k[:row]==i}
+	end
+	
+	def column(i)
+		@matrix_table.select{|k,v| k[:column]==i}
+	end
 
 	private
 
