@@ -435,23 +435,10 @@ class TriDiagonalMatrix
 			when Matrix
 				other_matrix + this_matrix.to_m
 			when TriDiagonalMatrix
-				upper = [@upper_diagonal, other_matrix.upper_diagonal].transpose.map {|x| x.reduce(:+)}
-				middle = [@middle_diagonal, other_matrix.middle_diagonal].transpose.map {|x| x.reduce(:+)}
-				lower = [@lower_diagonal, other_matrix.lower_diagonal].transpose.map {|x| x.reduce(:+)}
-				puts 'this_matrix'
-				puts this_matrix.to_s
-				puts 'other_matrix'
-				puts other_matrix.to_s
-				puts 'upper'
-				puts upper
-				puts 'middle'
-				puts middle
-				puts 'lower'
-				puts lower
-				m = Matrix.rows(to_a_help(upper, middle, lower))
-				puts 'm'
-				puts m.to_s
-				TriDiagonalMatrix.new(m)
+				upper = [this_matrix.upper_diagonal, other_matrix.upper_diagonal].transpose.map {|x| x.reduce(:+)}
+				middle = [this_matrix.middle_diagonal, other_matrix.middle_diagonal].transpose.map {|x| x.reduce(:+)}
+				lower = [this_matrix.lower_diagonal, other_matrix.lower_diagonal].transpose.map {|x| x.reduce(:+)}
+				TriDiagonalMatrix.new(Matrix.rows(to_a_help(upper, middle, lower)))
 			else 
 				raise "Addition must be with TriDiagonalMatrix or Matrix"
 		end
