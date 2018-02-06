@@ -17,9 +17,9 @@ class SparseMatrix
 		#add a way to handle blank creation (ie .new(2,3) gives 2x3 blank matrix)
 		case input 
 			when Array 
-				rows(input)
+				from_array(input)
 			when Matrix
-				rows(input.to_a)
+				from_matrix(input)
 			when Hash
 				@matrix_table = input
 				if input.keys.size > 0 && rows==nil && columns==nil
@@ -227,38 +227,72 @@ class SparseMatrix
 	end
 	
 	def to_s
-		# hit me up bby
+		to_a.to_s
 	end
 	
-	def get(i, j)
-	
+	def get(r, c)
+		@matrix_table[{row: r, column: c}]
 	end
 	
-	def set(i, j, v)
-	
+	def set(r, c, v)
+		@matrix_table[{row: r, column: c}] = v
 	end
 	
 	def dimensions
-		
+		[@num_rows, @num_columns]
 	end
 
-	def map
-	
+	def each(which = :all, &block) 
+		return to_enum :each, which unless block_given?
+		case which
+			when :all 
+				to_m.each(which, &block) #must pass to matrix since 0 elements are not present
+			when :non_zero  
+				@matrix_table.each{|k,v| block.call(v)}
+			when :diagonal
+				@matrix_table.select {|k,v| k[:row]==k[:column]}.each{|k,v| block.call(v)}
+			when :off_diagonal
+				@matrix_table.select {|k,v| k[:row]!=k[:column]}.each{|k,v| block.call(v)}
+			when :lower
+				@matrix_table.select {|k,v| k[:row]>=k[:column]}.each{|k,v| block.call(v)}
+			when :strict_lower
+				@matrix_table.select {|k,v| k[:row]>k[:column]}.each{|k,v| block.call(v)}
+			when :upper
+				@matrix_table.select {|k,v| k[:row]<=k[:column]}.each{|k,v| block.call(v)}
+			when :strict_upper
+				@matrix_table.select {|k,v| k[:row]<k[:column]}.each{|k,v| block.call(v)}
+			else 
+				# anything else I missed? try to see if matrix implements it (when :row, :column, :regular)
+				to_m.each(which, &block)
+		end
+	end 
+
+	def map(&block)
+		return to_enum(:collect) unless block_given?
+		temp = @matrix_table.clone
+		temp.map{|k,v| temp[k]=block.call(v)}
+		SparseMatrix.new(temp, @num_rows, @num_columns)
 	end
 	
 	def row(i)
-	
+		@matrix_table.select{|k,v| k[:row]==i}
 	end
 	
 	def column(i)
-	
+		@matrix_table.select{|k,v| k[:column]==i}
 	end
-	
-	#other TODO: iterators that walk (row, col, regular, diagonal, etc), each, matrix, array of arrays
 
 	private
 
 		# FUNCTIONALITY
+			def from_matrix(matrix)
+				rows(matrix.to_a)
+			end
+
+			def from_array(array)
+				rows(array)
+			end				
+
 			def rows(matrixarray)
 
 				@num_rows = matrixarray.size
@@ -388,8 +422,8 @@ class SparseMatrix
 	alias_method :det, :determinant
 	alias_method :t, :transpose
 	alias_method :eql?,  :==
-	alias_method :[] :get
-	alias_method :[]= :put
-	alias_method :set :put
+	alias_method :[], :get
+	alias_method :[]=, :set
+	alias_method :put, :set 
 end
 
