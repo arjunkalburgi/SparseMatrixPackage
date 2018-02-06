@@ -8,13 +8,15 @@
 #     Andrew McKernan
 #     Arjun Kalburgi
 
-require_relative 'sparsematrixpackage'
+require_relative './sparsematrixpackage/matrixfactory'
+require_relative './sparsematrixpackage/sparse_matrix'
+require_relative './sparsematrixpackage/tridiagonal_matrix'
 
 # MatrixFactory builds Sparse and Tridiagonal matrices
 sparseMatrix = MatrixFactory.create(SparseMatrix, [[1, 0, 0], 
                                                    [0, 4, 0],
                                                    [0, 1, 0]])
-triDiagonal = MatrixFactory.create(TridiagonalMatrix, [[1, 0, 0],
+triDiagonal = MatrixFactory.create(TriDiagonalMatrix, [[1, 0, 0],
                                                        [0, 1, 0],
                                                        [0, 0, 1]])
 
@@ -28,40 +30,40 @@ require_relative './tests/tridiagonal_matrixtest'
 
 
 # Math Operations 
-triDiagonal + sparse
+triDiagonal + sparseMatrix
 
-sparse - triDiagonal
+sparseMatrix - triDiagonal
 
-sparse * 2
+sparseMatrix * 2
 
 triDiagonal * sparse
 
-sparse / 2
+sparseMatrix / 2
 
 triDiagonal.determinant
 
 triDiagonal.inverse
 
-sparse.transpose
+sparseMatrix.transpose
 
 
 
 # Properties
 triDiagonal.diagonal?
 
-sparse.zero?
+sparseMatrix.zero?
 
-sparse.square?
+sparseMatrix.square?
 
 triDiagonal.real?
 
-sparse.imaginary?
+sparseMatrix.imaginary?
 
 triDiagonal.orthoganal?
 
 
 
 # Enumerate
-sparse.each(:nonzero) { |x| x }
+sparseMatrix.each(:nonzero) { |x| x }
 
 triDiagonal.each(:tridiagonal) { |x| x }
