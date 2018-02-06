@@ -237,7 +237,7 @@ class SparseMatrix
 	end
 
 	def to_m 
-		Matrix.new(to_a)
+		Matrix.rows(to_a)
 	end
 	
 	def get(r, c)
