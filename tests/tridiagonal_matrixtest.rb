@@ -195,17 +195,21 @@ class TridiagonalMatrixTest < Test::Unit::TestCase
 		assert_equal(@matrix1.row(0),[1,2,0,0,0])
 	end
 	
-	# def test_invalid_row
-	
-	# end
+	def test_invalid_row
+		assert_raise do
+			@matrix1.row(-5)
+		end
+	end
 	
 	def test_column
 		assert_equal(@matrix1.column(0),[1,3,0,0,0])
 	end
 	
-	# def test_invalid_column
-	
-	# end
+	def test_invalid_column
+		assert_raise do
+			@matrix1.column(-5)
+		end
+	end
 	
 	#def test_each
 	
