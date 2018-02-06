@@ -1,4 +1,5 @@
 require 'matrix'
+require_relative './sparse_matrix'
 
 class TriDiagonalMatrix
 
@@ -386,7 +387,6 @@ class TriDiagonalMatrix
 	private 
 
 	def rows(rows)
-
 		# basing column size on first row
 		@column_count = (rows[0] || []).size
 		@row_count = rows.size 
@@ -487,8 +487,6 @@ class TriDiagonalMatrix
 	def check_correct_dimensions_after_multiplication(result)
 		if result.respond_to?(:row_count)
 			raise "Multiplication dimensions are incorrect." unless @row_count == result.row_count && @column_count == result.column_count
-		# else 
-		# 	raise "Multiplication dimensions are incorrect. Could not properly check dimensions." 
 		end
 	end
 
@@ -508,6 +506,8 @@ class TriDiagonalMatrix
 		case other_matrix
 			when Matrix
 				other_matrix + this_matrix.to_m
+			when SparseMatrix
+				this_matrix.to_m + other_matrix.to_m
 			when TriDiagonalMatrix
 				upper = [this_matrix.upper_diagonal, other_matrix.upper_diagonal].transpose.map {|x| x.reduce(:+)}
 				middle = [this_matrix.middle_diagonal, other_matrix.middle_diagonal].transpose.map {|x| x.reduce(:+)}
@@ -521,7 +521,9 @@ class TriDiagonalMatrix
 	def subtraction(other_matrix)
 		case other_matrix
 			when Matrix
-				other_matrix*(-1) + self.to_m
+				self.to_m - other_matrix
+			when SparseMatrix
+				self.to_m - other_matrix.to_m
 			when TriDiagonalMatrix
 				upper = [@upper_diagonal, other_matrix.upper_diagonal].transpose.map {|x| x.reduce(:-)}
 				middle = [@middle_diagonal, other_matrix.middle_diagonal].transpose.map {|x| x.reduce(:-)}
@@ -539,6 +541,8 @@ class TriDiagonalMatrix
 			when Matrix
 				self.to_m * other
 			when TriDiagonalMatrix
+				self.to_m * other.to_m
+			when SparseMatrix
 				self.to_m * other.to_m
 			else 
 				raise "Must multiply by scalar, matrix, or tridiagonal matrix"
