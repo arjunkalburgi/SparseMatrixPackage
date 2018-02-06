@@ -57,12 +57,21 @@ class SparseMatrix
 	
 	def +(other_matrix)
 		invariant
-		check_matching_dimensions(other_matrix)
-		
-		result_matrix = addition(self, other_matrix)
 
-		check_dimensions_are_the_same(result_matrix)
-		check_opposite_order_addition(other_matrix, result_matrix)
+		result_matrix = nil
+		case other
+			when SparseMatrix
+				check_matching_dimensions(other_matrix)
+				
+				result_matrix = addition(self, other_matrix)
+
+				check_dimensions_are_the_same(result_matrix)
+				check_opposite_order_addition(other_matrix, result_matrix)
+				
+			else 
+				result_matrix = addition(other)
+		end
+
 		invariant
 
 		result_matrix
@@ -70,11 +79,20 @@ class SparseMatrix
 	
 	def -(other_matrix)
 		invariant
-		check_matching_dimensions(other_matrix)
-		
-		result_matrix = subtraction(other_matrix)
 
-		check_dimensions_are_the_same(result_matrix)
+		result_matrix = nil
+		case other
+			when SparseMatrix
+				check_matching_dimensions(other_matrix)
+		
+				result_matrix = subtraction(other_matrix)
+
+				check_dimensions_are_the_same(result_matrix)
+				
+			else 
+				result_matrix = subtraction(other)
+		end
+		
 		invariant
 
 		result_matrix
@@ -346,14 +364,32 @@ class SparseMatrix
 		end
 
 		def addition(this_matrix, other_matrix)
-			hash_result = this_matrix.matrix_table.merge(other_matrix.matrix_table) {|key,vala,valb| vala+valb}
-			SparseMatrix.new(hash_result, @num_rows, @num_columns)
+			case other
+				when Matrix
+					SparseMatrix.new(Matrix.rows(to_a) + other)
+				when TriDiagonalMatrix
+					SparseMatrix.new(TriDiagonalMatrix.new(to_a) + other))
+				when SparseMatrix
+					hash_result = this_matrix.matrix_table.merge(other_matrix.matrix_table) {|key,vala,valb| vala+valb}
+					SparseMatrix.new(hash_result, @num_rows, @num_columns)
+				else 
+					raise "Must add by matrix, sparse matrix, or tridiagonal matrix"
+			end
 		end
 
 		def subtraction(other_matrix)
-			temp = other_matrix.matrix_table.clone
-			hash_result = @matrix_table.merge(temp.each {|k,v| temp[k]=v*-1}) {|key,vala,valb| vala+valb}
-			SparseMatrix.new(hash_result, @num_rows, @num_columns)
+			case other
+				when Matrix
+					SparseMatrix.new(Matrix.rows(to_a) - other)
+				when TriDiagonalMatrix
+					SparseMatrix.new(TriDiagonalMatrix.new(to_a) - other))
+				when SparseMatrix
+					temp = other_matrix.matrix_table.clone
+					hash_result = @matrix_table.merge(temp.each {|k,v| temp[k]=v*-1}) {|key,vala,valb| vala+valb}
+					SparseMatrix.new(hash_result, @num_rows, @num_columns)
+				else 
+					raise "Must subtract by matrix, sparse matrix, or tridiagonal matrix"
+			end
 		end
 
 		def multiplication(other)
