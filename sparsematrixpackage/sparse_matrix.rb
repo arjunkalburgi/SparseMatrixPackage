@@ -233,7 +233,11 @@ class SparseMatrix
 	end
 	
 	def to_s
-		to_a.to_s
+		"#{self.class.name}#{to_a}"
+	end
+
+	def to_m 
+		Matrix.new(to_a)
 	end
 	
 	def get(r, c)
