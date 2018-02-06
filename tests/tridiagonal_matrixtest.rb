@@ -187,13 +187,9 @@ class TridiagonalMatrixTest < Test::Unit::TestCase
 									 [0,0,0,3,1]])
 	end
 	
-	# def test_dimensions
-	
-	# end
-	
-	# def test_map
-	
-	# end
+	def test_dimensions
+		assert_equal(@matrix1.dimensions, [5,5])
+	end
 	
 	def test_row
 		assert_equal(@matrix1.row(0),[1,2,0,0,0])

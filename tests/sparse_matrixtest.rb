@@ -118,10 +118,6 @@ class SparseMatrixTest < Test::Unit::TestCase
 		end
 	end
 	
-	# def test_to_s
-	
-	# end
-	
 	def test_to_m
 		assert_equal(@matrix1.to_m, Matrix.rows([[8, 10],
 												 [0, 0]]))
@@ -131,9 +127,9 @@ class SparseMatrixTest < Test::Unit::TestCase
 		assert_equal(@matrix1.to_a, [[8, 10],[0, 0]])
 	end
 	
-	# def test_dimensions
-	
-	# end
+	def test_dimensions
+		assert_equal(@matrix1.dimensions, [2,2])
+	end
 	
 	def test_map
 		
