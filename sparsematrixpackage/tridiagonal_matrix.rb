@@ -77,20 +77,14 @@ class TriDiagonalMatrix
 	def *(other)
 		invariant()
 		
-		return_result_matrix = nil
-		case other
-			when TriDiagonalMatrix
-				#PRE 
-				check_tridiagonality(other)
-				check_dimensions(other)
-				
-				return_result_matrix = multiplication(other)
-				#POST
-				check_correct_dimensions_after_multiplication(return_result_matrix)
-			else
-				return_result_matrix = self *(new other)
-		end
+		#PRE 
+		check_tridiagonality(other)
+		check_dimensions(other)
 		
+		return_result_matrix = multiplication(other)
+		#POST
+		check_correct_dimensions_after_multiplication(return_result_matrix)
+
 		invariant()
 
 		return_result_matrix
@@ -490,7 +484,7 @@ class TriDiagonalMatrix
 
 	def multiplication(other)
 		case other
-			when Numeric || Integer
+			when Numeric
 				TriDiagonalMatrix.new(self.to_m * other)
 			when Matrix
 				self.to_m * other
@@ -515,6 +509,7 @@ class TriDiagonalMatrix
 			m = self.to_m.inverse
 			puts 'm'
 			puts m
+			m
 		rescue
 			nil
 		end 
