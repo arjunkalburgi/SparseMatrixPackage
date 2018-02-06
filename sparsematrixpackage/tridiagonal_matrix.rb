@@ -351,16 +351,12 @@ class TriDiagonalMatrix
 
 	def row(i)
 		return self unless i < row_count
-		row = Array.new(row_count) { |j| self[i, j] }
-		# row.each(&Proc.new) if block_given?
-		# Vector.elements(row, false)
+		Array.new(row_count) { |j| self[i, j] }
 	end
 
 	def column(j)
 		return self unless j < column_count
-		col = Array.new(column_count) { |i| self[i, j] }
-		# col.each(&Proc.new) if block_given?
-		# Vector.elements(col, false)
+		Array.new(column_count) { |i| self[i, j] }
 	end
 
 	def each(which = :all)
@@ -516,10 +512,10 @@ class TriDiagonalMatrix
 
 	def getInverse
 		begin
-			puts self.to_m
+			# puts self.to_m
 			m = self.to_m.inverse
-			puts 'm'
-			puts m
+			# puts 'm'
+			# puts m
 			m
 		rescue
 			nil
