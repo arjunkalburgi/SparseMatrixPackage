@@ -1,5 +1,4 @@
 require 'matrix'
-require_relative './sparse_matrix'
 
 class TriDiagonalMatrix
 
@@ -501,7 +500,7 @@ class TriDiagonalMatrix
 	end
 
 	def check_opposite_order_addition(other_matrix, return_result_matrix)
-		raise "Order should have been maintained." unless addition(other_matrix, self).to_m == return_result_matrix
+		raise "Order should have been maintained." unless addition(other_matrix, self) == return_result_matrix
 	end
 
 	def check_result_is_number(result) 
@@ -516,8 +515,6 @@ class TriDiagonalMatrix
 		case other_matrix
 			when Matrix
 				other_matrix + this_matrix.to_m
-			when SparseMatrix
-				this_matrix.to_m + other_matrix.to_m
 			when TriDiagonalMatrix
 				upper = [this_matrix.upper_diagonal, other_matrix.upper_diagonal].transpose.map {|x| x.reduce(:+)}
 				middle = [this_matrix.middle_diagonal, other_matrix.middle_diagonal].transpose.map {|x| x.reduce(:+)}
@@ -532,8 +529,6 @@ class TriDiagonalMatrix
 		case other_matrix
 			when Matrix
 				self.to_m - other_matrix
-			when SparseMatrix
-				self.to_m - other_matrix.to_m
 			when TriDiagonalMatrix
 				upper = [@upper_diagonal, other_matrix.upper_diagonal].transpose.map {|x| x.reduce(:-)}
 				middle = [@middle_diagonal, other_matrix.middle_diagonal].transpose.map {|x| x.reduce(:-)}
@@ -551,8 +546,6 @@ class TriDiagonalMatrix
 			when Matrix
 				self.to_m * other
 			when TriDiagonalMatrix
-				self.to_m * other.to_m
-			when SparseMatrix
 				self.to_m * other.to_m
 			else 
 				raise "Must multiply by scalar, matrix, or tridiagonal matrix"
