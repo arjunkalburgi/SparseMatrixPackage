@@ -57,12 +57,21 @@ class SparseMatrix
 	
 	def +(other_matrix)
 		invariant
-		check_matching_dimensions(other_matrix)
-		
-		result_matrix = addition(self, other_matrix)
 
-		check_dimensions_are_the_same(result_matrix)
-		check_opposite_order_addition(other_matrix, result_matrix)
+		result_matrix = nil
+		case other
+			when SparseMatrix
+				check_matching_dimensions(other_matrix)
+				
+				result_matrix = addition(self, other_matrix)
+
+				check_dimensions_are_the_same(result_matrix)
+				check_opposite_order_addition(other_matrix, result_matrix)
+				
+			else 
+				result_matrix = addition(other)
+		end
+
 		invariant
 
 		result_matrix
@@ -70,11 +79,20 @@ class SparseMatrix
 	
 	def -(other_matrix)
 		invariant
-		check_matching_dimensions(other_matrix)
-		
-		result_matrix = subtraction(other_matrix)
 
-		check_dimensions_are_the_same(result_matrix)
+		result_matrix = nil
+		case other
+			when SparseMatrix
+				check_matching_dimensions(other_matrix)
+		
+				result_matrix = subtraction(other_matrix)
+
+				check_dimensions_are_the_same(result_matrix)
+				
+			else 
+				result_matrix = subtraction(other)
+		end
+		
 		invariant
 
 		result_matrix
@@ -255,24 +273,12 @@ class SparseMatrix
 	def each(which = :all, &block) 
 		return to_enum :each, which unless block_given?
 		case which
-			when :all 
-				to_m.each(which, &block) #must pass to matrix since 0 elements are not present
 			when :non_zero  
 				@matrix_table.each{|k,v| block.call(v)}
-			when :diagonal
-				@matrix_table.select {|k,v| k[:row]==k[:column]}.each{|k,v| block.call(v)}
-			when :off_diagonal
-				@matrix_table.select {|k,v| k[:row]!=k[:column]}.each{|k,v| block.call(v)}
-			when :lower
-				@matrix_table.select {|k,v| k[:row]>=k[:column]}.each{|k,v| block.call(v)}
-			when :strict_lower
-				@matrix_table.select {|k,v| k[:row]>k[:column]}.each{|k,v| block.call(v)}
-			when :upper
-				@matrix_table.select {|k,v| k[:row]<=k[:column]}.each{|k,v| block.call(v)}
-			when :strict_upper
-				@matrix_table.select {|k,v| k[:row]<k[:column]}.each{|k,v| block.call(v)}
 			else 
-				# anything else I missed? try to see if matrix implements it (when :row, :column, :regular)
+				# must pass to matrix since 0 elements are not present
+				# handles :all :diagonal, :off_diagonal, :lower, :strict_lower, :upper, :strict_upper
+				# anything missed? matrix might implement it (when :row, :column, :regular)
 				to_m.each(which, &block)
 		end
 	end 
@@ -346,14 +352,32 @@ class SparseMatrix
 		end
 
 		def addition(this_matrix, other_matrix)
-			hash_result = this_matrix.matrix_table.merge(other_matrix.matrix_table) {|key,vala,valb| vala+valb}
-			SparseMatrix.new(hash_result, @num_rows, @num_columns)
+			case other
+				when Matrix
+					SparseMatrix.new(Matrix.rows(to_a) + other)
+				when TriDiagonalMatrix
+					SparseMatrix.new(TriDiagonalMatrix.new(to_a) + other))
+				when SparseMatrix
+					hash_result = this_matrix.matrix_table.merge(other_matrix.matrix_table) {|key,vala,valb| vala+valb}
+					SparseMatrix.new(hash_result, @num_rows, @num_columns)
+				else 
+					raise "Must add by matrix, sparse matrix, or tridiagonal matrix"
+			end
 		end
 
 		def subtraction(other_matrix)
-			temp = other_matrix.matrix_table.clone
-			hash_result = @matrix_table.merge(temp.each {|k,v| temp[k]=v*-1}) {|key,vala,valb| vala+valb}
-			SparseMatrix.new(hash_result, @num_rows, @num_columns)
+			case other
+				when Matrix
+					SparseMatrix.new(Matrix.rows(to_a) - other)
+				when TriDiagonalMatrix
+					SparseMatrix.new(TriDiagonalMatrix.new(to_a) - other))
+				when SparseMatrix
+					temp = other_matrix.matrix_table.clone
+					hash_result = @matrix_table.merge(temp.each {|k,v| temp[k]=v*-1}) {|key,vala,valb| vala+valb}
+					SparseMatrix.new(hash_result, @num_rows, @num_columns)
+				else 
+					raise "Must subtract by matrix, sparse matrix, or tridiagonal matrix"
+			end
 		end
 
 		def multiplication(other)
