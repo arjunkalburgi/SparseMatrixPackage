@@ -17,7 +17,7 @@ class MatrixFactoryTest < Test::Unit::TestCase
 		assert(true,"pass")
     end
     
-    def test_bad_create
+    def test_invalid_create
 		assert_raise do
 			MatrixFactory.create(SparseMatrix, 123)
 		end
@@ -31,7 +31,7 @@ class MatrixFactoryTest < Test::Unit::TestCase
 		MatrixFactory.create(TriDiagonalMatrix, 3, 3)
     end
     
-    def test_bad_create_by_dimension
+    def test_invalid_create_by_dimension
 		assert_raise do
 			MatrixFactory.create(SparseMatrix, -2, -3)
 		end
