@@ -484,14 +484,14 @@ class TriDiagonalMatrix
 
 	def multiplication(other)
 		case other
-			when Numeric
-				TriDiagonalMatrix.new(Matrix.rows(self.to_a) * other)
+			when Numeric || Integer
+				TriDiagonalMatrix.new(self.to_m * other)
 			when Matrix
-				Matrix.rows(self.to_a) * other
+				self.to_m * other
 			when TriDiagonalMatrix
-				Matrix.rows(self.to_a) * Matrix.rows(other.to_a)
+				self.to_m * other.to_m
 			else 
-				raise "Must multiply by scalar, matrix, sparse matrix, or tridiagonal matrix"
+				raise "Must multiply by scalar, matrix, or tridiagonal matrix"
 		end
 	end
 
