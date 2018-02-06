@@ -32,11 +32,11 @@ require_relative './tests/tridiagonal_matrixtest'
 # Math Operations 
 triDiagonal + sparseMatrix
 
-sparseMatrix - triDiagonal
+triDiagonal - sparseMatrix
 
 sparseMatrix * 2
 
-triDiagonal * sparse
+sparseMatrix * triDiagonal
 
 sparseMatrix / 2
 
@@ -59,11 +59,11 @@ triDiagonal.real?
 
 sparseMatrix.imaginary?
 
-triDiagonal.orthoganal?
+triDiagonal.orthogonal?
 
 
 
 # Enumerate
-sparseMatrix.each(:nonzero) { |x| x }
+sparseMatrix.each(:non_zero) { |x| x }
 
-triDiagonal.each(:tridiagonal) { |x| x }
+triDiagonal.each(:diagonal) { |x| x }
