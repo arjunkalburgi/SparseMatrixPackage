@@ -13,30 +13,36 @@ class SparseMatrix
 		new Matrix.scalar(n, value)
 	end
 	
-	def initialize(input, rows=nil, columns=nil)
-		#add a way to handle blank creation (ie .new(2,3) gives 2x3 blank matrix)
-		case input 
-			when Array 
-				from_array(input)
-			when Matrix
-				from_matrix(input)
-			when Hash
-				@matrix_table = input
-				if input.keys.size > 0 && rows==nil && columns==nil
-					# assume the maximum row and col given gives the dimensions in zero index, +1 to 1 index
-					@num_rows = input.keys.map{|key| key[:row]}.max + 1
-					@num_columns = input.keys.map{|key| key[:column]}.max + 1
-				elsif rows==nil && columns==nil
-					raise "Must either define dimensions via input or explicitly passing arguments."
+	def initialize(*args)
+		#add a way to handle blank creation (ie .new(2,3) gives 2x3 blank matrix) input={}, rows=nil, columns=nil
+		if args.size == 1
+			case args[0]
+				when Array 
+					from_array(args[0])
+				when Matrix
+					from_matrix(args[0])
+				when Hash
+					@matrix_table = args[0]
+					if args[0].keys.size > 0
+						# assume the maximum row and col given gives the dimensions in zero index, +1 to 1 index
+						@num_rows = args[0].keys.map{|key| key[:row]}.max + 1
+						@num_columns = args[0].keys.map{|key| key[:column]}.max + 1
+					end
 				else 
-					@num_rows = rows
-					@num_columns = columns
-				end
-				removeZeroElements
-			else 
-				raise "Input must be of type Array (array of arrays), Matrix or Hash."
+					raise "Single input must be of type Array (array of arrays), Matrix or Hash."		
+			end 
+		elsif args.size == 3
+			check_input_dimensions(args[1],args[2])
+			@matrix_table = args[0]
+			@num_rows = args[1]
+			@num_columns = args[2]
+			removeZeroElements
+		elsif args.size == 2
+			init_default(*args)
+		else 
+			raise "Only accepts 1, 2 or 3 arguments."
 		end
-	end
+	end 
 	
 	def ==(other_matrix)
 		invariant
@@ -275,24 +281,24 @@ class SparseMatrix
 	end
 	
 	def row(i)
-		@matrix_table.select{|k,v| k[:row]==i}
+		arr = []
+		(0..@num_columns-1).each do |c|
+			arr.push(@matrix_table[{row: i, column: c}])
+		end
+		arr
 	end
 	
 	def column(i)
-		@matrix_table.select{|k,v| k[:column]==i}
+		arr = []
+		(0..@num_rows-1).each do |r|
+			arr.push(@matrix_table[{row: r, column: i}])
+		end
+		arr
 	end
 
 	private
 
-		# FUNCTIONALITY
-			def from_matrix(matrix)
-				rows(matrix.to_a)
-			end
-
-			def from_array(array)
-				rows(array)
-			end				
-
+		# FUNCTIONALITY			
 			def rows(matrixarray)
 
 				@num_rows = matrixarray.size
@@ -309,6 +315,22 @@ class SparseMatrix
 				end
 
 			end
+
+			def init_default(*args)
+				check_input_dimensions(args[0],args[1])
+
+				@matrix_table = Hash.new(0)
+				@num_rows = args[0]
+				@num_columns = args[1]
+			end
+
+			def from_matrix(matrix)
+				rows(matrix.to_a)
+			end
+
+			def from_array(array)
+				rows(array)
+			end	
 
 			def equals(this_matrix, other_matrix)
 				(this_matrix.matrix_table == other_matrix.matrix_table)
@@ -417,6 +439,10 @@ class SparseMatrix
 
 			def check_opposite_order_addition(other_matrix, result_matrix)
 				raise "Matricies do not support opposite order addition" unless equals(result_matrix, addition(other_matrix, self))
+			end
+
+			def check_input_dimensions(row,col)
+				raise "Matrix dimensions must be greater than 0 and square" unless row > 0 && col > 0
 			end
 
 	alias_method :det, :determinant
