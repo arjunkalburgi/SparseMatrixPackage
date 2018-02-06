@@ -506,7 +506,7 @@ class TriDiagonalMatrix
 	end
 
 	def getTranspose
-		TridiagonalMatrix.new(Matrix.rows(to_a_help(@lower_diagonal, @middle_diagonal, @upper_diagonal)))
+		TriDiagonalMatrix.new(Matrix.rows(to_a_help(@lower_diagonal, @middle_diagonal, @upper_diagonal)))
 	end 
 
 	def getInverse
