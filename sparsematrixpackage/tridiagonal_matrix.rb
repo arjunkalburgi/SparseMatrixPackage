@@ -77,27 +77,38 @@ class TriDiagonalMatrix
 	def *(other)
 		invariant()
 		
-		#PRE 
-		check_tridiagonality(other)
-		check_dimensions(other)
-		
-		return_result_matrix = multiplication(other)
-		#POST
-		check_correct_dimensions_after_multiplication(return_result_matrix)
+		return_result_matrix = nil
+ 		case other
+ 			when TriDiagonalMatrix
+ 				#PRE 
+ 				check_tridiagonality(other)
+ 				check_dimensions(other)
+ 				
+ 				return_result_matrix = multiplication(other)
+ 				#POST
+ 				check_correct_dimensions_after_multiplication(return_result_matrix)
+ 			else
+ 				return_result_matrix = self *(new other)
+ 		end
 
 		invariant()
 
 		return_result_matrix
 	end
 	
-	def /(other_matrix)
+	def /(other)
 		invariant()
 
 		#PRE 
-		check_tridiagonality(other_matrix)
-		check_dimensions(other_matrix)
+		check_tridiagonality(other)
+		check_dimensions(other)
 
-		return_result_matrix = multiplication(other_matrix.inverse)
+		return_result_matrix = nil
+		if other.respond_to?(:inverse)
+			return_result_matrix = multiplication(other.inverse)
+		else 
+			return map { |x| x / other }
+		end
 		
 		#POST
 		check_correct_dimensions_after_multiplication(return_result_matrix)
@@ -340,16 +351,12 @@ class TriDiagonalMatrix
 
 	def row(i)
 		return self unless i < row_count
-		row = Array.new(row_count) { |j| self[i, j] }
-		row.each(&Proc.new) if block_given?
-		Vector.elements(row, false)
+		Array.new(row_count) { |j| self[i, j] }
 	end
 
 	def column(j)
 		return self unless j < column_count
-		col = Array.new(column_count) { |i| self[i, j] }
-		col.each(&Proc.new) if block_given?
-		Vector.elements(col, false)
+		Array.new(column_count) { |i| self[i, j] }
 	end
 
 	def each(which = :all)
@@ -485,13 +492,13 @@ class TriDiagonalMatrix
 	def multiplication(other)
 		case other
 			when Numeric
-				TriDiagonalMatrix.new(Matrix.rows(self.to_a) * other)
+				TriDiagonalMatrix.new(self.to_m * other)
 			when Matrix
-				Matrix.rows(self.to_a) * other
+				self.to_m * other
 			when TriDiagonalMatrix
-				Matrix.rows(self.to_a) * Matrix.rows(other.to_a)
+				self.to_m * other.to_m
 			else 
-				raise "Must multiply by scalar, matrix, sparse matrix, or tridiagonal matrix"
+				raise "Must multiply by scalar, matrix, or tridiagonal matrix"
 		end
 	end
 
@@ -505,10 +512,11 @@ class TriDiagonalMatrix
 
 	def getInverse
 		begin
-			puts self.to_m
+			# puts self.to_m
 			m = self.to_m.inverse
-			puts 'm'
-			puts m
+			# puts 'm'
+			# puts m
+			m
 		rescue
 			nil
 		end 
