@@ -3,7 +3,7 @@ require 'matrix'
 
 class TriDiagonalMatrix
 	
-	attr_reader :num_columns, :num_rows, :upper_diagonal, :middle_diagonal, :lower_diagonal
+	attr_reader :column_count, :row_count, :upper_diagonal, :middle_diagonal, :lower_diagonal
 	
 	def self.identity(size)
 		scalar(n: size, value: 1)
@@ -278,7 +278,7 @@ class TriDiagonalMatrix
 	end
 
 	def dimensions
-		return [self.num_rows, self.num_columns]
+		return [self.row_count, self.column_count]
 	end
 
 	def trace
@@ -312,9 +312,9 @@ class TriDiagonalMatrix
 	end
 
 	def to_a
-		array = Array.new(@num_rows){Array.new(@num_columns,0)}
-		for i in 0..@num_rows-1 do 
-			for j in 0..@num_columns-1 do
+		array = Array.new(@row_count){Array.new(@column_count,0)}
+		for i in 0..@row_count-1 do 
+			for j in 0..@column_count-1 do
 				case i
 					when j - 1
 						array[i][j] = @upper_diagonal[i]
@@ -346,8 +346,8 @@ class TriDiagonalMatrix
 		# rows.map! { |row| convert_to_array(row, copy) }
 
 		# basing column size on first row
-		@num_columns = (rows[0] || []).size
-		@num_rows = rows.size 
+		@column_count = (rows[0] || []).size
+		@row_count = rows.size 
 		
 		@upper_diagonal = []
 		@middle_diagonal = []
@@ -361,10 +361,10 @@ class TriDiagonalMatrix
 		for i in 0..rows.size-1 do 
 			# ensures that the input is correct
 			raise "Matrix not tridiagonal: rows of various sizes" unless 
-					@num_columns == rows[i].size
+					@column_count == rows[i].size
 			# ensures that matrix is nxn
 			raise "Matrix not tridiagonal: matrix not square" unless 
-					@num_rows == rows[i].size
+					@row_count == rows[i].size
 			for j in 0..rows[i].size-1 do 
 				case i
 					when j - 1
@@ -386,18 +386,18 @@ class TriDiagonalMatrix
 	end
 
 	def invariant
-		raise "TriDiagonalMatrix does not satisfy that it should be square" unless @num_rows == @num_columns
+		raise "TriDiagonalMatrix does not satisfy that it should be square" unless @row_count == @column_count
 
-		raise "Matrix does not satisfy A * A.getInverse() = I invariant" unless multiplication(getInverse()) == Matrix.identity(@num_rows)
+		raise "Matrix does not satisfy A * A.getInverse() = I invariant" unless multiplication(getInverse()) == Matrix.identity(@row_count)
 
 		# raise "Matrix does not satisfy A.getDeterminant() == 0 when I.getInverse() == null invariant" unless getDeterminant() == 0 && getInverse() == nil
 
-		raise "Matrix does not satisfy A*I = A invariant" unless multiplication(TriDiagonalMatrix.identity(@num_columns)) == self.to_m
-		raise "Matrix does not satisfy A*(0 matrix) = 0 matrix" unless multiplication(TriDiagonalMatrix.scalar(n: @num_columns, value: 0)) == Matrix.scalar(@num_columns, 0)
+		raise "Matrix does not satisfy A*I = A invariant" unless multiplication(TriDiagonalMatrix.identity(@column_count)) == self.to_m
+		raise "Matrix does not satisfy A*(0 matrix) = 0 matrix" unless multiplication(TriDiagonalMatrix.scalar(n: @column_count, value: 0)) == Matrix.scalar(@column_count, 0)
 
 		raise "Matrix does not satisfy A+A = 2A" unless addition(self, self) == multiplication(2)
-		raise "Matrix does not satisfy A-A = 0" unless subtraction(self) == TriDiagonalMatrix.scalar(n: @num_rows, value: 0)
-		raise "Matrix does not satisfy A+0 = A" unless addition(self, TriDiagonalMatrix.scalar(n: @num_rows, value: 0)) == self
+		raise "Matrix does not satisfy A-A = 0" unless subtraction(self) == TriDiagonalMatrix.scalar(n: @row_count, value: 0)
+		raise "Matrix does not satisfy A+0 = A" unless addition(self, TriDiagonalMatrix.scalar(n: @row_count, value: 0)) == self
 
 		raise "Matrix must satisfy that itself is not null" unless !(@upper_diagonal.any?{|val| val.nil? } && @middle_diagonal.any?{|val| val.nil? } && @lower_diagonal.any?{|val| val.nil? })
 	end
@@ -411,14 +411,14 @@ class TriDiagonalMatrix
 	end
 
 	def check_dimensions(other_matrix)
-		raise "Matricies do not have the same dimensions" unless @num_rows == other_matrix.num_rows
+		raise "Matricies do not have the same dimensions" unless @row_count == other_matrix.row_count
 	end
 
 	def check_correct_dimensions_after_multiplication(result)
-		if result.respond_to?(num_rows)
-			raise "Multiplication dimensions are incorrect." unless @num_rows == result.num_rows && @num_columns == result.num_columns
+		if result.respond_to?(row_count)
+			raise "Multiplication dimensions are incorrect." unless @row_count == result.row_count && @column_count == result.column_count
 		else 
-			raise "Multiplication dimensions are incorrect." unless @num_rows == result.row_count && @num_columns == result.column_count
+			raise "Multiplication dimensions are incorrect." 
 		end
 	end
 
@@ -431,7 +431,7 @@ class TriDiagonalMatrix
 	end
 
 	def check_coordinates(i,j)
-		raise "Out of coordinate matrix range" unless i >= 0 && j >= 0 && i < @num_rows && j < @num_columns
+		raise "Out of coordinate matrix range" unless i >= 0 && j >= 0 && i < @row_count && j < @column_count
 	end
 
 	def addition(this_matrix, other_matrix)
@@ -492,9 +492,9 @@ class TriDiagonalMatrix
 	end
 
 	def to_a_help(upper, middle, lower)
-		array = Array.new(@num_rows){Array.new(@num_columns,0)}
-		for i in 0..@num_rows-1 do 
-			for j in 0..@num_columns-1 do
+		array = Array.new(@row_count){Array.new(@column_count,0)}
+		for i in 0..@row_count-1 do 
+			for j in 0..@column_count-1 do
 				case i
 					when j - 1
 						array[i][j] = upper[i]
