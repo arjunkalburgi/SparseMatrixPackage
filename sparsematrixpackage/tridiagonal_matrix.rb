@@ -1,5 +1,4 @@
 require 'matrix'
-# require_relative './sparse_matrix'
 
 class TriDiagonalMatrix
 
