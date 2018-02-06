@@ -1,5 +1,5 @@
 require 'matrix'
-require_relative './sparse_matrix'
+# require_relative './sparse_matrix'
 
 class TriDiagonalMatrix
 	
@@ -13,7 +13,7 @@ class TriDiagonalMatrix
 		new Matrix.scalar(n, value)
 	end 
 
-	def initialize(input)
+	def initialize(*input)
 		case input
 			when Array
 				rows(input)
@@ -325,7 +325,11 @@ class TriDiagonalMatrix
 	end
 
 	def to_m
-		Matrix.rows(to_a)
+		Matrix.rows(self.to_a)
+	end
+
+	def to_s
+		self.to_m.to_s
 	end
 	
 	private 
@@ -409,7 +413,7 @@ class TriDiagonalMatrix
 	end
 
 	def check_opposite_order_addition(other_matrix, return_result_matrix)
-		raise "Order should have been maintained." unless addition(other_matrix, self) == return_result_matrix
+		raise "Order should have been maintained." unless addition(other_matrix, self).to_m == return_result_matrix.to_m
 	end
 
 	def check_result_is_number(result) 
@@ -428,7 +432,7 @@ class TriDiagonalMatrix
 				upper = [@upper_diagonal, other_matrix.upper_diagonal].transpose.map {|x| x.reduce(:+)}
 				middle = [@middle_diagonal, other_matrix.middle_diagonal].transpose.map {|x| x.reduce(:+)}
 				lower = [@lower_diagonal, other_matrix.lower_diagonal].transpose.map {|x| x.reduce(:+)}
-				TriDiagonalMatrix.new(Matrix.rows(to_a(upper: upper, middle: middle, lower: lower)))
+				TriDiagonalMatrix.new(Matrix.rows(self.to_a(upper: upper, middle: middle, lower: lower)))
 			else 
 				raise "Addition must be with TriDiagonalMatrix or Matrix"
 		end
@@ -442,7 +446,7 @@ class TriDiagonalMatrix
 				upper = [@upper_diagonal, other_matrix.upper_diagonal].transpose.map {|x| x.reduce(:-)}
 				middle = [@middle_diagonal, other_matrix.middle_diagonal].transpose.map {|x| x.reduce(:-)}
 				lower = [@lower_diagonal, other_matrix.lower_diagonal].transpose.map {|x| x.reduce(:-)}
-				TriDiagonalMatrix.new(Matrix.rows(to_a(upper: upper, middle: middle, lower: lower)))
+				TriDiagonalMatrix.new(Matrix.rows(self.to_a(upper: upper, middle: middle, lower: lower)))
 			else 
 				raise "Subtraction must be with TriDiagonalMatrix or Matrix"
 		end
@@ -462,16 +466,16 @@ class TriDiagonalMatrix
 	end
 
 	def getDeterminant
-		Matrix.rows(to_a).determinant
+		Matrix.rows(self.to_a).determinant
 	end
 
 	def getTranspose
-		TridiagonalMatrix.new(Matrix.rows(to_a(upper: @lower_diagonal, middle: @middle_diagonal, lower: @upper_diagonal)))
+		TridiagonalMatrix.new(Matrix.rows(self.to_a(upper: @lower_diagonal, middle: @middle_diagonal, lower: @upper_diagonal)))
 	end 
 
 	def getInverse
 		begin
-			Matrix.rows(to_a).inverse
+			Matrix.rows(self.to_a).inverse
 		rescue
 			nil
 		end 
