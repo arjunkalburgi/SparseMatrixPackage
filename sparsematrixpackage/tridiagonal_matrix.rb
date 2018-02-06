@@ -22,12 +22,14 @@ class TriDiagonalMatrix
 			else 
 				rows(args[0])
 			end
-		else 
+		elsif args.size == 3
+			init_diagonals(*args)
+		else
 			init_default(*args)
 		end
 
 		#POST
-		check_diagonal_array_sizes()
+		check_diagonal_array_sizes(@upper_diagonal, @middle_diagonal, @lower_diagonal)
 	end
 
 	def ==(other_object) 
@@ -78,19 +80,14 @@ class TriDiagonalMatrix
 	def *(other)
 		invariant()
 		
-		return_result_matrix = nil
- 		case other
- 			when TriDiagonalMatrix
- 				#PRE 
- 				check_tridiagonality(other)
- 				check_dimensions(other)
- 				
- 				return_result_matrix = multiplication(other)
- 				#POST
- 				check_correct_dimensions_after_multiplication(return_result_matrix)
- 			else
- 				return_result_matrix = self *(new other)
- 		end
+		#PRE 
+		check_tridiagonality(other)
+		check_dimensions(other)
+		
+		return_result_matrix = multiplication(other)
+
+		#POST
+		check_correct_dimensions_after_multiplication(return_result_matrix)
 
 		invariant()
 
@@ -252,6 +249,7 @@ class TriDiagonalMatrix
 	def get(i, j)
 		invariant()
 
+		#PRE
 		check_coordinates(i,j)
 
 		case i
@@ -269,6 +267,7 @@ class TriDiagonalMatrix
 	def put(i, j, v)
 		invariant()
 
+		#PRE
 		check_coordinates(i,j)
 
 		case i
@@ -411,7 +410,7 @@ class TriDiagonalMatrix
 	end
 
 	def init_default(*args) 
-
+		#PRE 
 		check_input_dimensions(args[0],args[1])
 
 		@row_count = args[0]
@@ -420,6 +419,18 @@ class TriDiagonalMatrix
 		@upper_diagonal = Array.new(@row_count-1,0)
 		@middle_diagonal = Array.new(@row_count,0)
 		@lower_diagonal = Array.new(@row_count-1,0)
+	end
+
+	def init_diagonals(*args) 
+		#PRE 
+		check_diagonal_array_sizes(args[0],args[1],args[2])
+		
+		@upper_diagonal = args[0]
+		@middle_diagonal = args[1]
+		@lower_diagonal = args[2]
+
+		@row_count = @middle_diagonal.size
+		@column_count = @middle_diagonal.size
 	end
 
 	def invariant
@@ -439,8 +450,8 @@ class TriDiagonalMatrix
 		raise "Matrix must satisfy that itself is not null" unless !(@upper_diagonal.any?{|val| val.nil? } && @middle_diagonal.any?{|val| val.nil? } && @lower_diagonal.any?{|val| val.nil? })
 	end
 
-	def check_diagonal_array_sizes
-		raise "The diagonal arrays are of improper size" unless @middle_diagonal.size == @upper_diagonal.size+1 && @middle_diagonal.size == @lower_diagonal.size+1
+	def check_diagonal_array_sizes(upper, middle, lower)
+		raise "The diagonal arrays are of improper size to make a TriDiagonalMatrix" unless middle.size == upper.size+1 && middle.size == lower.size+1
 	end
 
 	def check_tridiagonality(other_matrix)
@@ -483,7 +494,7 @@ class TriDiagonalMatrix
 				upper = [this_matrix.upper_diagonal, other_matrix.upper_diagonal].transpose.map {|x| x.reduce(:+)}
 				middle = [this_matrix.middle_diagonal, other_matrix.middle_diagonal].transpose.map {|x| x.reduce(:+)}
 				lower = [this_matrix.lower_diagonal, other_matrix.lower_diagonal].transpose.map {|x| x.reduce(:+)}
-				TriDiagonalMatrix.new(Matrix.rows(to_a_help(upper, middle, lower)))
+				TriDiagonalMatrix.new(upper, middle, lower)
 			else 
 				raise "Addition must be with TriDiagonalMatrix or Matrix"
 		end
@@ -497,7 +508,7 @@ class TriDiagonalMatrix
 				upper = [@upper_diagonal, other_matrix.upper_diagonal].transpose.map {|x| x.reduce(:-)}
 				middle = [@middle_diagonal, other_matrix.middle_diagonal].transpose.map {|x| x.reduce(:-)}
 				lower = [@lower_diagonal, other_matrix.lower_diagonal].transpose.map {|x| x.reduce(:-)}
-				TriDiagonalMatrix.new(Matrix.rows(to_a_help(upper, middle, lower)))
+				TriDiagonalMatrix.new(upper, middle, lower)
 			else 
 				raise "Subtraction must be with TriDiagonalMatrix or Matrix"
 		end
@@ -521,7 +532,7 @@ class TriDiagonalMatrix
 	end
 
 	def getTranspose
-		TriDiagonalMatrix.new(Matrix.rows(to_a_help(@lower_diagonal, @middle_diagonal, @upper_diagonal)))
+		TriDiagonalMatrix.new(@lower_diagonal, @middle_diagonal, @upper_diagonal)
 	end 
 
 	def getInverse
@@ -530,25 +541,6 @@ class TriDiagonalMatrix
 		rescue
 			nil
 		end 
-	end
-
-	def to_a_help(upper, middle, lower)
-		array = Array.new(@row_count){Array.new(@column_count,0)}
-		for i in 0..@row_count-1 do 
-			for j in 0..@column_count-1 do
-				case i
-					when j - 1
-						array[i][j] = upper[i]
-					when j
-						array[i][j] = middle[i]
-					when j + 1
-						array[i][j] = lower[j]
-					else
-						array[i][j] = 0
-				end	
-			end
-		end
-		array
 	end
 
 	alias_method :det, :determinant
