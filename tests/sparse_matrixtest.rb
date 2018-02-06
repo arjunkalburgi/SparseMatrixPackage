@@ -76,15 +76,21 @@ class SparseMatrixTest < Test::Unit::TestCase
 	end
 	
 	def test_inverse
+		@matrix1 = SparseMatrix.new([[4,7],
+									[2,6]])
+		inverseMatrix = [[0.6,-0.7],
+						[-0.2,0.4]] #calculated by hand
+		assert_equal(@matrix1.inverse, SparseMatrix.new(inverseMatrix))
+	end
+
+	def test_inverse2
 		matrixToInvert = SparseMatrix.new([[-1,-1],
-												[0,-1]])
-									 
+										   [0,-1]])
 		inverseMatrix = Matrix.rows([[-1, 1],
 									 [0, -1]])
-		assert_equal(matrixToInvert.inverse, inverseMatrix)
+		assert_equal(matrixToInvert.inverse, SparseMatrix.new(inverseMatrix))
 	end
-	
-	
+
 	def test_transpose
 		matrix1_transpose = [[8,0],
 							[10,0]]
@@ -108,10 +114,10 @@ class SparseMatrixTest < Test::Unit::TestCase
 	
 	# end
 	
-	def test_to_m
-		assert_equal(@matrix1.to_m, Matrix.rows([[8, 10],
-												 [0, 0]]))
-	end
+	# def test_to_m
+	# 	assert_equal(@matrix1.to_m, Matrix.rows([[8, 10],
+	# 											 [0, 0]]))
+	# end
 	
 	def test_to_a
 		assert_equal(@matrix1.to_a, [[8, 10],[0, 0]])
