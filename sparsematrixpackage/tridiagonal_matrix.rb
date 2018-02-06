@@ -432,7 +432,16 @@ class TriDiagonalMatrix
 				upper = [@upper_diagonal, other_matrix.upper_diagonal].transpose.map {|x| x.reduce(:+)}
 				middle = [@middle_diagonal, other_matrix.middle_diagonal].transpose.map {|x| x.reduce(:+)}
 				lower = [@lower_diagonal, other_matrix.lower_diagonal].transpose.map {|x| x.reduce(:+)}
-				TriDiagonalMatrix.new(Matrix.rows(self.to_a(upper: upper, middle: middle, lower: lower)))
+				puts 'upper'
+				puts upper
+				puts 'middle'
+				puts middle
+				puts 'lower'
+				puts lower
+				m = Matrix.rows(self.to_a(upper: upper, middle: middle, lower: lower))
+				puts 'm'
+				puts m.to_s
+				TriDiagonalMatrix.new(m)
 			else 
 				raise "Addition must be with TriDiagonalMatrix or Matrix"
 		end
