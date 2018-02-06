@@ -2,13 +2,11 @@ require_relative './tridiagonal_matrix'
 require_relative './sparse_matrix'
 
 module MatrixFactory 
-
-    def self.create(classname, matrixarray)
-        begin
-            raise "Matrix input must be an array of arrays" unless matrixarray.is_a? Array
-        end
-
-        classname.new(matrixarray)
+    def self.create(classname, *args)
+		if args.size == 1
+			classname.new(args[0])
+		else
+			classname.new(*args)
+		end
     end
-    
 end
