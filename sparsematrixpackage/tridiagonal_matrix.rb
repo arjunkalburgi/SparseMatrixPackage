@@ -117,7 +117,7 @@ class TriDiagonalMatrix
 
 		#PRE - none as it is guaranteed to be square tridiagonal at this point
 
-		result = determinant_method()
+		result = getDeterminant()
 
 		#POST
 		check_result_is_number(result)
@@ -132,7 +132,7 @@ class TriDiagonalMatrix
 
 		#PRE - none as it is guaranteed to be square tridiagonal at this point
 
-		return_result_matrix = transpose_method()
+		return_result_matrix = getTranspose()
 
 		#POST
 		check_dimensions(return_result_matrix)
@@ -147,7 +147,7 @@ class TriDiagonalMatrix
 
 		#PRE - none as it is guaranteed to be square tridiagonal at this point
 
-		return_result_matrix = inverse_method()
+		return_result_matrix = getInverse()
 
 		#POST
 		check_dimensions(return_result_matrix)
