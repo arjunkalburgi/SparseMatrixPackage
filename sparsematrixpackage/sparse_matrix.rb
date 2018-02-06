@@ -3,7 +3,7 @@ require_relative './tridiagonal_matrix'
 
 class SparseMatrix
 
-	attr_reader :matrix_table, :num_rows, :num_columns
+	attr_reader :matrix_table, :row_count, :column_count
 
 	def self.identity(size)
 		scalar(size, 1)
@@ -25,8 +25,8 @@ class SparseMatrix
 					@matrix_table = args[0]
 					if args[0].keys.size > 0
 						# assume the maximum row and col given gives the dimensions in zero index, +1 to 1 index
-						@num_rows = args[0].keys.map{|key| key[:row]}.max + 1
-						@num_columns = args[0].keys.map{|key| key[:column]}.max + 1
+						@row_count = args[0].keys.map{|key| key[:row]}.max + 1
+						@column_count = args[0].keys.map{|key| key[:column]}.max + 1
 					end
 				when TriDiagonalMatrix
 					from_array(args[0].to_a)
@@ -36,8 +36,8 @@ class SparseMatrix
 		elsif args.size == 3
 			check_input_dimensions(args[1],args[2])
 			@matrix_table = args[0]
-			@num_rows = args[1]
-			@num_columns = args[2]
+			@row_count = args[1]
+			@column_count = args[2]
 			removeZeroElements
 		elsif args.size == 2
 			init_default(*args)
@@ -157,7 +157,7 @@ class SparseMatrix
 
 		result_matrix = getTranspose
 		
-		check_correct_dimensions_after_transpose(result_matrix, {row: @num_rows, column: @num_columns})
+		check_correct_dimensions_after_transpose(result_matrix, {row: @row_count, column: @column_count})
 		invariant
 
 		result_matrix
@@ -232,7 +232,7 @@ class SparseMatrix
 	end
 
 	def square? 
-		@num_rows == @num_columns
+		@row_count == @column_count
 	end
 
 	def zero? 
@@ -245,7 +245,7 @@ class SparseMatrix
 	end
 
 	def to_a
-		array = Array.new(@num_rows){Array.new(@num_columns,0)}
+		array = Array.new(@row_count){Array.new(@column_count,0)}
 		@matrix_table.keys.each do |key|
 			array[key[:row]][key[:column]] = @matrix_table[key]
 		end
@@ -281,7 +281,7 @@ class SparseMatrix
 	def dimensions
 		invariant
 		
-		[@num_rows, @num_columns]
+		[@row_count, @column_count]
 	end
 
 	def each(which = :all, &block) 
@@ -305,7 +305,7 @@ class SparseMatrix
 		return to_enum(:collect) unless block_given?
 		temp = @matrix_table.clone
 		temp.map{|k,v| temp[k]=block.call(v)}
-		SparseMatrix.new(temp, @num_rows, @num_columns)
+		SparseMatrix.new(temp, @row_count, @column_count)
 	end
 	
 	def row(i)
@@ -314,13 +314,13 @@ class SparseMatrix
 		check_valid_coordinates(i, 0)
 
 		arr = []
-		(0..@num_columns-1).each do |c|
+		(0..@column_count-1).each do |c|
 			arr.push(@matrix_table[{row: i, column: c}])
 		end
 		arr
 	end
 	
-	def column(i)
+	def column(i)row_count
 		invariant 
 
 		check_valid_coordinates(0, i)
@@ -337,12 +337,12 @@ class SparseMatrix
 	# FUNCTIONALITY			
 		def rows(matrixarray)
 
-			@num_rows = matrixarray.size
-			@num_columns = matrixarray[0].size
+			@row_count = matrixarray.size
+			@column_count = matrixarray[0].size
 
 			@matrix_table = Hash.new(0)
 			matrixarray.each_index do |i|
-				raise "Not all columns are the same size." unless matrixarray[i].size == @num_columns 
+				raise "Not all columns are the same size." unless matrixarray[i].size == @column_count 
 				matrixarray[i].each_index do |j|
 					if matrixarray[i][j] != 0
 						@matrix_table[{row: i, column: j}] = matrixarray[i][j]
@@ -352,12 +352,12 @@ class SparseMatrix
 
 		end
 
-		def init_default(*args)
+		def init_default(*args)row_count
 			check_input_dimensions(args[0],args[1])
 
 			@matrix_table = Hash.new(0)
 			@num_rows = args[0]
-			@num_columns = args[1]
+			@column_count = args[1]
 		end
 
 		def from_matrix(matrix)
@@ -370,11 +370,11 @@ class SparseMatrix
 
 		def equals(this_matrix, other_matrix)
 			other_matrix.respond_to?(:matrix_table) && 
-			other_matrix.respond_to?(:num_rows) && 
-			other_matrix.respond_to?(:num_columns) && 
+			other_matrix.respond_to?(:row_count) && 
+			other_matrix.respond_to?(:column_count) && 
 			this_matrix.matrix_table == (other_matrix.matrix_table) &&
-			this_matrix.num_rows.eql?(other_matrix.num_rows) &&
-			this_matrix.num_columns.eql?(other_matrix.num_columns)
+			this_matrix.row_count.eql?(other_matrix.row_count) &&
+			this_matrix.column_count.eql?(other_matrix.column_count)
 		end
 
 		def addition(this_matrix, other_matrix)
@@ -385,7 +385,7 @@ class SparseMatrix
 					SparseMatrix.new(TriDiagonalMatrix.new(to_a) + other_matrix)
 				when SparseMatrix
 					hash_result = this_matrix.matrix_table.merge(other_matrix.matrix_table) {|key,vala,valb| vala+valb}
-					SparseMatrix.new(hash_result, @num_rows, @num_columns)
+					SparseMatrix.new(hash_result, @row_count, @column_count)
 				else 
 					raise "Must add by matrix, sparse matrix, or tridiagonal matrix"
 			end
@@ -400,7 +400,7 @@ class SparseMatrix
 				when SparseMatrix
 					temp = other_matrix.matrix_table.clone
 					hash_result = @matrix_table.merge(temp.each {|k,v| temp[k]=v*-1}) {|key,vala,valb| vala+valb}
-					SparseMatrix.new(hash_result, @num_rows, @num_columns)
+					SparseMatrix.new(hash_result, @row_count, @column_count)
 				else
 					raise "Must subtract by matrix, sparse matrix, or tridiagonal matrix"
 			end
@@ -410,14 +410,14 @@ class SparseMatrix
 			case other
 				when Numeric
 					temp = @matrix_table.clone 
-					SparseMatrix.new(temp.each {|k,v| temp[k]=v*other}, @num_rows, @num_columns)
+					SparseMatrix.new(temp.each {|k,v| temp[k]=v*other}, @row_count, @column_count)
 				when Matrix
 					SparseMatrix.new(Matrix.rows(to_a) * other)
 				when TriDiagonalMatrix
 					SparseMatrix.new(Matrix.rows(to_a) * Matrix.rows(other.to_a))
 				when SparseMatrix
 					if other.zero? or zero?
-						return SparseMatrix.new(Hash.new(0), @num_rows, other.num_columns)
+						return SparseMatrix.new(Hash.new(0), @row_count, other.column_count)
 					end
 					SparseMatrix.new(Matrix.rows(to_a) * Matrix.rows(other.to_a))
 				else 
@@ -447,7 +447,7 @@ class SparseMatrix
 
 	
 	# TESTS
-			def invariant
+			def invariantrow_count
 				if square?
 					identitymatrix = SparseMatrix.identity(@num_rows)
 					if getInverse
@@ -457,35 +457,35 @@ class SparseMatrix
 					end
 				end
 
-				raise "Matrix does not satisfy A*I = A invariant" unless equals(multiplication(SparseMatrix.identity(@num_columns)), itself)
+				raise "Matrix does not satisfy A*I = A invariant" unless equals(multiplication(SparseMatrix.identity(@column_count)), itself)
 
 				raise "Matrix does not satisfy A+A = 2A" unless equals(addition(itself, itself), multiplication(2))
-				raise "Matrix does not satisfy A-A = 0" unless equals(subtraction(itself), SparseMatrix.new(Hash.new(0), @num_rows, @num_columns))
-				raise "Matrix does not satisfy A+0 = A" unless equals(addition(itself, SparseMatrix.new(Hash.new(0), @num_rows, @num_columns)), itself)
-				raise "Matrix does not satisfy A*0 = 0" unless equals(multiplication(SparseMatrix.new(Hash.new(0), @num_rows, @num_columns)), SparseMatrix.new(Hash.new(0), @num_rows, @num_columns))
+				raise "Matrix does not satisfy A-A = 0" unless equals(subtraction(itself), SparseMatrix.new(Hash.new(0), @num_rows, @column_count))
+				raise "Matrix does not satisfy A+0 = A" unless equals(addition(itself, SparseMatrix.new(Hash.new(0), @num_rows, @column_count)), itself)
+				raise "Matrix does not satisfy A*0 = 0" unless equals(multiplication(SparseMatrix.new(Hash.new(0), @num_rows, @column_count)), SparseMatrix.new(Hash.new(0), @num_rows, @column_count))
 
 				raise "Matrix must satisfy that itself is not null" unless !(@matrix_table.nil? && @matrix_table.values.any?{|val| val.nil? })
 			end
 
 			def check_matching_dimensions(other_matrix)
-				raise "Cannot perform operation, deminsions do not match." unless @num_rows == other_matrix.num_rows && @num_columns == other_matrix.num_columns
+				raise "Cannot perform operation, deminsions do not match." unless @row_count == other_matrix.row_count && @column_count == other_matrix.column_count
 			end
 
 			def check_dimensions_are_the_same(result)
-				raise "Matrix dimensions must remain the same." unless @num_rows == result.num_rows && @num_columns == result.num_columns
+				raise "Matrix dimensions must remain the same." unless @row_count == result.row_count && @column_count == result.column_count
 			end
 
 			def check_compatible_dimensions_for_multiplication(other_matrix) 
-				raise "Cannot perform operation, deminsions are not compatible." unless @num_columns == other_matrix.num_rows
-				# {row: @num_rows, column: other_matrix.num_columns}
+				raise "Cannot perform operation, deminsions are not compatible." unless @column_count == other_matrix.row_count
+				# {row: @row_count, column: other_matrix.column_count}
 			end
 
 			def check_correct_dimensions_after_multiplication(other_matrix, result)
-				raise "Multiplication dimensions are incorrect." unless result.num_rows == @num_rows && result.num_columns == other_matrix.num_columns
+				raise "Multiplication dimensions are incorrect." unless result.row_count == @row_count && result.column_count == other_matrix.column_count
 			end
 
 			def check_square_matrix
-				raise "Cannot perform operation, matrix not square." unless @num_columns == @num_rows
+				raise "Cannot perform operation, matrix not square." unless @column_count == @row_count
 			end
 
 			def check_result_is_number(result) 
@@ -493,7 +493,7 @@ class SparseMatrix
 			end
 
 			def check_correct_dimensions_after_transpose(result, current_dimensions) 
-				raise "Incorrect matrix dimensions." unless current_dimensions[:row] == @num_columns && @num_rows == current_dimensions[:column]
+				raise "Incorrect matrix dimensions." unless current_dimensions[:row] == @column_count && @row_count == current_dimensions[:column]
 			end
 
 			def check_opposite_order_addition(other_matrix, result_matrix)
@@ -505,7 +505,7 @@ class SparseMatrix
 			end
 
 			def check_valid_coordinates(row, col)
-				raise "Coordinates must be greater or equal to 0 and less than the dimensions" unless row >= 0 && col >= 0 && row < @num_rows && col < @num_columns
+				raise "Coordinates must be greater or equal to 0 and less than the dimensions" unless row >= 0 && col >= 0 && row < @row_count && col < @column_count
 			end
 
 	alias_method :det, :determinant
