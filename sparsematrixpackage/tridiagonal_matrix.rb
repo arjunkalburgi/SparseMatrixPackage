@@ -101,7 +101,7 @@ class TriDiagonalMatrix
 		check_tridiagonality(other_matrix)
 		check_dimensions(other_matrix)
 
-		return_result_matrix = multiplication(other_matrix.getInverse)
+		return_result_matrix = multiplication(other_matrix.inverse)
 		
 		#POST
 		check_correct_dimensions_after_multiplication(other_matrix, return_result_matrix)
