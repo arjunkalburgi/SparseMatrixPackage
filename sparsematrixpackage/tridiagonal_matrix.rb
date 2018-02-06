@@ -241,7 +241,11 @@ class TriDiagonalMatrix
 		true
 	end
 
-	def [](i, j)
+	def get(i, j)
+		invariant()
+
+		check_coordinates(i,j)
+
 		case i
 			when j - 1
 				return @upper_diagonal[i]
@@ -252,6 +256,29 @@ class TriDiagonalMatrix
 			else
 				return 0
 		end
+	end
+
+	def put(i, j, v)
+		invariant()
+
+		check_coordinates(i,j)
+
+		case i
+			when j - 1
+				@upper_diagonal[i] = v
+			when j
+				@middle_diagonal[j] = v
+			when j + 1
+				@lower_diagonal[j] = v
+			else
+				raise "Matrix would not obey upper and lower Hessenberg matrix properties by setting this value"
+		end
+
+		invariant()
+	end
+
+	def dimensions
+		return [self.num_rows, self.num_columns]
 	end
 
 	def diagonal?
@@ -348,7 +375,7 @@ class TriDiagonalMatrix
 		end 
 	end
 
-	def invariant()
+	def invariant
 		raise "TriDiagonalMatrix does not satisfy that it should be square" unless @num_rows == @num_columns
 
 		raise "Matrix does not satisfy A * A.getInverse() = I invariant" unless multiplication(getInverse()) == Matrix.identity(@num_rows)
@@ -365,7 +392,7 @@ class TriDiagonalMatrix
 		raise "Matrix must satisfy that itself is not null" unless !(@upper_diagonal.any?{|val| val.nil? } && @middle_diagonal.any?{|val| val.nil? } && @lower_diagonal.any?{|val| val.nil? })
 	end
 
-	def check_diagonal_array_sizes()
+	def check_diagonal_array_sizes
 		raise "The diagonal arrays are of improper size" unless @middle_diagonal.size == @upper_diagonal.size+1 && @middle_diagonal.size == @lower_diagonal.size+1
 	end
 
@@ -387,6 +414,10 @@ class TriDiagonalMatrix
 
 	def check_result_is_number(result) 
 		raise "Result is a number" unless result.is_a? Numeric
+	end
+
+	def check_coordinates(i,j)
+		raise "Out of coordinate matrix range" unless i >= 0 && j >= 0 && i < @num_rows && j < @num_columns
 	end
 
 	def addition(this_matrix, other_matrix)
@@ -430,15 +461,15 @@ class TriDiagonalMatrix
 		end
 	end
 
-	def getDeterminant()
+	def getDeterminant
 		Matrix.rows(to_a).determinant
 	end
 
-	def getTranspose()
+	def getTranspose
 		TridiagonalMatrix.new(Matrix.rows(to_a(upper: @lower_diagonal, middle: @middle_diagonal, lower: @upper_diagonal)))
 	end 
 
-	def getInverse()
+	def getInverse
 		begin
 			Matrix.rows(to_a).inverse
 		rescue
@@ -449,5 +480,8 @@ class TriDiagonalMatrix
 	alias_method :det, :determinant
 	alias_method :t, :transpose
 	alias_method :eql?, :==
+	alias_method :[], :get
+	alias_method :[]=, :put
+	alias_method :set, :put
 
 end
