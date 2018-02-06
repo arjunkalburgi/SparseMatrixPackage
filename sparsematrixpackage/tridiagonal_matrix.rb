@@ -45,14 +45,19 @@ class TriDiagonalMatrix
 	def +(other_matrix)
 		invariant()
 
-		#PRE 
-		check_dimensions(other_matrix)
+		case other_matrix
+			when TriDiagonalMatrix
+				#PRE 
+				check_dimensions(other_matrix)
 
-		return_result_matrix = addition(self, other_matrix)
-		
-		#POST
-		check_dimensions(return_result_matrix)
-		check_opposite_order_addition(other_matrix, return_result_matrix)
+				return_result_matrix = addition(self, other_matrix)
+				
+				#POST
+				check_dimensions(return_result_matrix)
+				check_opposite_order_addition(other_matrix, return_result_matrix)
+			else
+				return_result_matrix = addition(self, other_matrix)
+		end
 		
 		invariant()
 
@@ -62,14 +67,19 @@ class TriDiagonalMatrix
 	def -(other_matrix)
 		invariant()
 
-		#PRE
-		check_dimensions(other_matrix)
-		
-		return_result_matrix = subtraction(other_matrix)
-		
-		#Post
-		check_dimensions(return_result_matrix)
-		
+		case other_matrix
+			when TriDiagonalMatrix
+				#PRE
+				check_dimensions(other_matrix)
+				
+				return_result_matrix = subtraction(other_matrix)
+				
+				#Post
+				check_dimensions(return_result_matrix)
+			else
+				return_result_matrix = subtraction(other_matrix)
+		end
+
 		invariant()
 
 		return_result_matrix
@@ -491,12 +501,7 @@ class TriDiagonalMatrix
 	end
 
 	def check_opposite_order_addition(other_matrix, return_result_matrix)
-		case return_result_matrix
-			when Matrix
-				raise "Order should have been maintained." unless addition(other_matrix, self).to_m == return_result_matrix
-			else 
-				raise "Order should have been maintained." unless addition(other_matrix, self).to_m == return_result_matrix.to_m
-		end
+		raise "Order should have been maintained." unless addition(other_matrix, self).to_m == return_result_matrix
 	end
 
 	def check_result_is_number(result) 
