@@ -150,13 +150,21 @@ class TridiagonalMatrixTest < Test::Unit::TestCase
 		assert_equal(@matrix1.get(0,0), 1)
 	end
 	
-	# def test_invalid_get
-	
-	# end
+	def test_invalid_get
+		assert_raise do
+			@matrix1.get(-1,-5)
+		end
+	end
 	
 	def test_set
 		@matrix1.set(0,0,19)
 		assert_equal(@matrix1.get(0,0), 19)
+	end
+	
+	def test_invalid_set
+		assert_raise do
+			@matrix1.set(-8,-11,19)
+		end
 	end
 	
 	# def test_to_s
@@ -178,10 +186,6 @@ class TridiagonalMatrixTest < Test::Unit::TestCase
 									 [0,0,3,1,2],
 									 [0,0,0,3,1]])
 	end
-	
-	# def test_invalid_set
-	
-	# end
 	
 	# def test_dimensions
 	

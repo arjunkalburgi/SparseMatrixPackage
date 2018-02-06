@@ -101,13 +101,21 @@ class SparseMatrixTest < Test::Unit::TestCase
 		assert_equal(@matrix1.get(0,0), 8)
 	end
 	
-	# def test_invalid_get
-	
-	# end
+	def test_invalid_get
+		assert_raise do
+			@matrix1.get(-1,-5)
+		end
+	end
 	
 	def test_set
 		@matrix1.set(0,0,19)
 		assert_equal(@matrix1.get(0,0), 19)
+	end
+	
+	def test_invalid_set
+		assert_raise do
+			@matrix1.set(-8,-11,19)
+		end
 	end
 	
 	# def test_to_s
@@ -122,10 +130,6 @@ class SparseMatrixTest < Test::Unit::TestCase
 	def test_to_a
 		assert_equal(@matrix1.to_a, [[8, 10],[0, 0]])
 	end
-	
-	# def test_invalid_set
-	
-	# end
 	
 	# def test_dimensions
 	
