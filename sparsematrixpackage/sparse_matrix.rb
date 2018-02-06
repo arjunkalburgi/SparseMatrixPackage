@@ -14,6 +14,7 @@ class SparseMatrix
 	end
 	
 	def initialize(input, rows=nil, columns=nil)
+		#add a way to handle blank creation (ie .new(2,3) gives 2x3 blank matrix)
 		case input 
 			when Array 
 				rows(input)
@@ -224,13 +225,7 @@ class SparseMatrix
 		end
 		array
 	end
-
-	def each 
-	end 
-
-	def to_s 
-		to_a.to_s
-	end 
+	
 
 
 	private
@@ -365,5 +360,8 @@ class SparseMatrix
 	alias_method :det, :determinant
 	alias_method :t, :transpose
 	alias_method :eql?,  :==
+	alias_method :[] :get
+	alias_method :[]= :put
+	alias_method :set :put
 end
 

@@ -39,7 +39,7 @@ class TridiagonalMatrixTest < Test::Unit::TestCase
 	def test_add
 		addedMatrix = TriDiagonalMatrix.new([[6,4,0,0,0], 
 											 [6,2,16,0,0],
-											 [0,6,2,4,0],
+											 [0,13,8,4,0],
 											 [0,0,6,4,13],
 											 [0,0,0,11,10]])
 		assert_equal(addedMatrix, @matrix1 + @matrix2)
@@ -108,7 +108,7 @@ class TridiagonalMatrixTest < Test::Unit::TestCase
 	
 	def test_equals
 		assert(@matrix1==@matrix1)
-		assert(!@matrix1==@matrix2)
+		assert(@matrix1!=@matrix2)
 		matrix3 = TriDiagonalMatrix.new([[1,2,0,0,0],
 										 [3,1,2,0,0],
 										 [0,3,1,2,0],
