@@ -76,11 +76,12 @@ class SparseMatrixTest < Test::Unit::TestCase
 	end
 	
 	def test_inverse
-		@matrix1 = SparseMatrix.new([[4,7],
-									[2,6]])
-		inverseMatrix = [[0.6,-0.7],
-						[-0.2,0.4]] #calculated by hand
-		assert_equal(@matrix1.inverse, SparseMatrix.new(inverseMatrix))
+		matrixToInvert = SparseMatrix.new([[-1,-1],
+												[0,-1]])
+									 
+		inverseMatrix = Matrix.rows([[-1, 1],
+									 [0, -1]])
+		assert_equal(matrixToInvert.inverse, inverseMatrix)
 	end
 	
 	
