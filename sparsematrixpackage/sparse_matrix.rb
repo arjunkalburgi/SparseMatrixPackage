@@ -261,18 +261,32 @@ class SparseMatrix
 	end
 	
 	def get(r, c)
+		invariant
+		
+		check_valid_coordinates(r, c)
+
 		@matrix_table[{row: r, column: c}]
 	end
 	
 	def set(r, c, v)
+		invariant
+		
+		check_valid_coordinates(r, c)
+
 		@matrix_table[{row: r, column: c}] = v
+
+		invariant		
 	end
 	
 	def dimensions
+		invariant
+		
 		[@num_rows, @num_columns]
 	end
 
 	def each(which = :all, &block) 
+		invariant
+		
 		return to_enum :each, which unless block_given?
 		case which
 			when :non_zero  
@@ -286,6 +300,8 @@ class SparseMatrix
 	end 
 
 	def map(&block)
+		invariant
+		
 		return to_enum(:collect) unless block_given?
 		temp = @matrix_table.clone
 		temp.map{|k,v| temp[k]=block.call(v)}
@@ -293,6 +309,10 @@ class SparseMatrix
 	end
 	
 	def row(i)
+		invariant 
+
+		check_valid_coordinates(i, 0)
+
 		arr = []
 		(0..@num_columns-1).each do |c|
 			arr.push(@matrix_table[{row: i, column: c}])
@@ -301,6 +321,10 @@ class SparseMatrix
 	end
 	
 	def column(i)
+		invariant 
+
+		check_valid_coordinates(0, i)
+
 		arr = []
 		(0..@num_rows-1).each do |r|
 			arr.push(@matrix_table[{row: r, column: i}])
@@ -477,7 +501,11 @@ class SparseMatrix
 			end
 
 			def check_input_dimensions(row,col)
-				raise "Matrix dimensions must be greater than 0 and square" unless row > 0 && col > 0
+				raise "Matrix dimensions must be greater than 0" unless row > 0 && col > 0
+			end
+
+			def check_valid_coordinates(row, col)
+				raise "Coordinates must be greater or equal to 0 and less than the dimensions" unless row >= 0 && col >= 0 && row < @num_rows && col < @num_columns
 			end
 
 	alias_method :det, :determinant
