@@ -77,27 +77,38 @@ class TriDiagonalMatrix
 	def *(other)
 		invariant()
 		
-		#PRE 
-		check_tridiagonality(other)
-		check_dimensions(other)
-		
-		return_result_matrix = multiplication(other)
-		#POST
-		check_correct_dimensions_after_multiplication(return_result_matrix)
+		return_result_matrix = nil
+ 		case other
+ 			when TriDiagonalMatrix
+ 				#PRE 
+ 				check_tridiagonality(other)
+ 				check_dimensions(other)
+ 				
+ 				return_result_matrix = multiplication(other)
+ 				#POST
+ 				check_correct_dimensions_after_multiplication(return_result_matrix)
+ 			else
+ 				return_result_matrix = self *(new other)
+ 		end
 
 		invariant()
 
 		return_result_matrix
 	end
 	
-	def /(other_matrix)
+	def /(other)
 		invariant()
 
 		#PRE 
-		check_tridiagonality(other_matrix)
-		check_dimensions(other_matrix)
+		check_tridiagonality(other)
+		check_dimensions(other)
 
-		return_result_matrix = multiplication(other_matrix.inverse)
+		return_result_matrix = nil
+		if other.respond_to?(:inverse)
+			return_result_matrix = multiplication(other.inverse)
+		else 
+			return map { |x| x / other }
+		end
 		
 		#POST
 		check_correct_dimensions_after_multiplication(return_result_matrix)
