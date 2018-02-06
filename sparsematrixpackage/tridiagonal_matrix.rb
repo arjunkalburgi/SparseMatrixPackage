@@ -13,7 +13,7 @@ class TriDiagonalMatrix
 		new Matrix.scalar(n, value)
 	end 
 
-	def initialize(*input)
+	def initialize(input)
 		case input
 			when Array
 				rows(input)
@@ -281,6 +281,12 @@ class TriDiagonalMatrix
 		return [self.num_rows, self.num_columns]
 	end
 
+	def trace
+		invariant()
+
+		@middle_diagonal.reduce(:+)
+	end
+
 	def diagonal?
 		@upper_diagonal.all? { |val| val == 0 } && @lower_diagonal.all? { |val| val == 0 }
 	end
@@ -305,17 +311,17 @@ class TriDiagonalMatrix
 		self == transpose
 	end
 
-	def to_a(upper: @upper_diagonal, middle: @middle_diagonal, lower: @lower_diagonal)
+	def to_a
 		array = Array.new(@num_rows){Array.new(@num_columns,0)}
 		for i in 0..@num_rows-1 do 
 			for j in 0..@num_columns-1 do
 				case i
 					when j - 1
-						array[i][j] = upper[i]
+						array[i][j] = @upper_diagonal[i]
 					when j
-						array[i][j] = middle[i]
+						array[i][j] = @middle_diagonal[i]
 					when j + 1
-						array[i][j] = lower[j]
+						array[i][j] = @lower_diagonal[j]
 					else
 						array[i][j] = 0
 				end	
@@ -329,7 +335,7 @@ class TriDiagonalMatrix
 	end
 
 	def to_s
-		self.to_m.to_s
+		"#{self.class.name}#{to_a}"
 	end
 	
 	private 
@@ -438,7 +444,7 @@ class TriDiagonalMatrix
 				puts middle
 				puts 'lower'
 				puts lower
-				m = Matrix.rows(self.to_a(upper: upper, middle: middle, lower: lower))
+				m = Matrix.rows(to_a(upper, middle, lower))
 				puts 'm'
 				puts m.to_s
 				TriDiagonalMatrix.new(m)
@@ -455,7 +461,7 @@ class TriDiagonalMatrix
 				upper = [@upper_diagonal, other_matrix.upper_diagonal].transpose.map {|x| x.reduce(:-)}
 				middle = [@middle_diagonal, other_matrix.middle_diagonal].transpose.map {|x| x.reduce(:-)}
 				lower = [@lower_diagonal, other_matrix.lower_diagonal].transpose.map {|x| x.reduce(:-)}
-				TriDiagonalMatrix.new(Matrix.rows(self.to_a(upper: upper, middle: middle, lower: lower)))
+				TriDiagonalMatrix.new(Matrix.rows(to_a(upper, middle, lower)))
 			else 
 				raise "Subtraction must be with TriDiagonalMatrix or Matrix"
 		end
@@ -479,7 +485,7 @@ class TriDiagonalMatrix
 	end
 
 	def getTranspose
-		TridiagonalMatrix.new(Matrix.rows(self.to_a(upper: @lower_diagonal, middle: @middle_diagonal, lower: @upper_diagonal)))
+		TridiagonalMatrix.new(Matrix.rows(to_a(upper, middle, lower)gonal, lower: @upper_diagonal)))
 	end 
 
 	def getInverse
@@ -490,8 +496,28 @@ class TriDiagonalMatrix
 		end 
 	end
 
+	def to_a_help(upper, middle, lower)
+		array = Array.new(@num_rows){Array.new(@num_columns,0)}
+		for i in 0..@num_rows-1 do 
+			for j in 0..@num_columns-1 do
+				case i
+					when j - 1
+						array[i][j] = upper[i]
+					when j
+						array[i][j] = middle[i]
+					when j + 1
+						array[i][j] = lower[j]
+					else
+						array[i][j] = 0
+				end	
+			end
+		end
+		array
+	end
+
 	alias_method :det, :determinant
 	alias_method :t, :transpose
+	alias_method :tr, :trace
 	alias_method :eql?, :==
 	alias_method :[], :get
 	alias_method :[]=, :put
