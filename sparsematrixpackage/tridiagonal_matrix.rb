@@ -483,7 +483,7 @@ class TriDiagonalMatrix
 				upper = [this_matrix.upper_diagonal, other_matrix.upper_diagonal].transpose.map {|x| x.reduce(:+)}
 				middle = [this_matrix.middle_diagonal, other_matrix.middle_diagonal].transpose.map {|x| x.reduce(:+)}
 				lower = [this_matrix.lower_diagonal, other_matrix.lower_diagonal].transpose.map {|x| x.reduce(:+)}
-				TriDiagonalMatrix.new(Matrix.rows(to_a_help(upper, middle, lower)))
+				TriDiagonalMatrix.new(to_a_help(upper, middle, lower))
 			else 
 				raise "Addition must be with TriDiagonalMatrix or Matrix"
 		end
@@ -497,7 +497,7 @@ class TriDiagonalMatrix
 				upper = [@upper_diagonal, other_matrix.upper_diagonal].transpose.map {|x| x.reduce(:-)}
 				middle = [@middle_diagonal, other_matrix.middle_diagonal].transpose.map {|x| x.reduce(:-)}
 				lower = [@lower_diagonal, other_matrix.lower_diagonal].transpose.map {|x| x.reduce(:-)}
-				TriDiagonalMatrix.new(Matrix.rows(to_a_help(upper, middle, lower)))
+				TriDiagonalMatrix.new(to_a_help(upper, middle, lower))
 			else 
 				raise "Subtraction must be with TriDiagonalMatrix or Matrix"
 		end
@@ -521,7 +521,7 @@ class TriDiagonalMatrix
 	end
 
 	def getTranspose
-		TriDiagonalMatrix.new(Matrix.rows(to_a_help(@lower_diagonal, @middle_diagonal, @upper_diagonal)))
+		TriDiagonalMatrix.new(to_a_help(@lower_diagonal, @middle_diagonal, @upper_diagonal))
 	end 
 
 	def getInverse
