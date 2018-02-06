@@ -87,17 +87,23 @@ class TridiagonalMatrixTest < Test::Unit::TestCase
 										[0,6,2,4,0],
 										[0,0,6,2,4],
 										[0,0,0,6,2]])
-		assert_equal(multipliedMatrix2, @matrix1*2)
+		triMultipliedMatrix2 = TriDiagonalMatrix.new (multipliedMatrix2)
+		assert_equal(triMultipliedMatrix2, @matrix1*2)
 	end
 	
 	
 	def test_divide
-		dividedMatrix2 = TriDiagonalMatrix.new([[0.5,1,0,0,0],
-												[1.5,0.5,1,0,0],
-												[0,1.5,0.5,1,0],
-												[0,0,1.5,0.5,1],
-												[0,0,0,1.5,0.5]])
-		assert_equal(dividedMatrix2, @matrix1/2)
+		matrixToDivide = TriDiagonalMatrix.new([[2,4,0,0,0],
+											    [6,2,4,0,0],
+											    [0,6,2,4,0],
+									  		    [0,0,6,2,4],
+											    [0,0,0,6,2]])
+		dividedMatrix2 = TriDiagonalMatrix.new([[1,2,0,0,0],
+											    [3,1,2,0,0],
+											    [0,3,1,2,0],
+											    [0,0,3,1,2],
+											    [0,0,0,3,1]])
+		assert_equal(dividedMatrix2, matrixToDivide/2)
 		dividedMatrix = Matrix.rows([[10945/43181,-3848/43181,6832/43181,2016/43181,-2464/43181], 
 									 [21960/43181,6581/43181,-732/43181,-216/43181,264/43181],
 									 [879/43181,-1465/43181,12925/43181,-8928/43181,10912/43181],
