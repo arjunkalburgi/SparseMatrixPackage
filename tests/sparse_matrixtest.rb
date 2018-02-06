@@ -131,10 +131,6 @@ class SparseMatrixTest < Test::Unit::TestCase
 		assert_equal(@matrix1.dimensions, [2,2])
 	end
 	
-	def test_map
-		
-	end
-	
 	def test_row
 		assert_equal(@matrix1.row(0),[8,10])
 	end
@@ -154,9 +150,4 @@ class SparseMatrixTest < Test::Unit::TestCase
 			@matrix1.column(-5)
 		end
 	end
-	
-	#def test_each
-	
-	#end
-	
 end
