@@ -438,6 +438,10 @@ class TriDiagonalMatrix
 				upper = [@upper_diagonal, other_matrix.upper_diagonal].transpose.map {|x| x.reduce(:+)}
 				middle = [@middle_diagonal, other_matrix.middle_diagonal].transpose.map {|x| x.reduce(:+)}
 				lower = [@lower_diagonal, other_matrix.lower_diagonal].transpose.map {|x| x.reduce(:+)}
+				puts 'this_matrix'
+				puts this_matrix.to_s
+				puts 'other_matrix'
+				puts other_matrix.to_s
 				puts 'upper'
 				puts upper
 				puts 'middle'
