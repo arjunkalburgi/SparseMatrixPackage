@@ -167,10 +167,6 @@ class TridiagonalMatrixTest < Test::Unit::TestCase
 		end
 	end
 	
-	# def test_to_s
-	
-	# end
-	
 	def test_to_m
 		assert_equal(@matrix1.to_m, Matrix.rows([[1,2,0,0,0],
 												 [3,1,2,0,0],
@@ -210,8 +206,4 @@ class TridiagonalMatrixTest < Test::Unit::TestCase
 			@matrix1.column(-5)
 		end
 	end
-	
-	#def test_each
-	
-	#end
 end
